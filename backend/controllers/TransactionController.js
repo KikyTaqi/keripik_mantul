@@ -1,4 +1,4 @@
-const Transaction = require("../models/Transacsion");
+const Transaction = require("../models/Transaction");
 const midtransClient = require("midtrans-client");
 
 exports.createTransaction = async (req, res) => {
