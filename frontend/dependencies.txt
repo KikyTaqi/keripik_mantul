@@ -1,0 +1,29 @@
+# Dependecies ReactJS
+
+- cd frontend
+- npm i antd axios jsonwebtoken react-router-dom
+
+# Install TailwindCSS
+
+- npm install -D tailwindcss postcss autoprefixer
+- npx tailwindcss init -p
+
+# Configure Template Path (Yg ada di file tailwind.config,js dibuat seperti dibawah)
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+# Add the Tailwind directives to your CSS (Di ./src/index.css ditambah kode dibawah)
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
