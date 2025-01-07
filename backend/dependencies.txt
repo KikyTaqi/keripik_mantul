@@ -1,2 +1,2 @@
 cd backend
-npm i body-parser cloudinary cors dotenv jsonwebtoken midtrans-client mongoose multer
+npm i body-parser cloudinary cors dotenv jsonwebtoken midtrans-client mongoose multer nodemon
