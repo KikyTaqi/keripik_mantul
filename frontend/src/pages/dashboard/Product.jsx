@@ -3,6 +3,7 @@ import { Table, Button, Image } from 'antd';
 import axios from 'axios';
 import { URL_PRODUCT } from '../../utils/Endpoint';
 import { Link } from 'react-router-dom';
+import '../../style.css';
 
 const Product = () => {
     const [Products, setProducts] = useState([]);
@@ -78,7 +79,16 @@ const Product = () => {
             <Link to={'/dashboard/products/create'}>
                 <Button type="primary">Tambah</Button>
             </Link>
-            <Table dataSource={Products} columns={column} loading="loading" />
+            <Table
+            dataSource={Products}
+            columns={column}
+            loading="loading"
+            pagination={{ 
+                pageSize: 4, 
+                showSizeChanger: false,
+                className: 'custom-pagination',
+            }}
+            />
         </div>
     );
 };
