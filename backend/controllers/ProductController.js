@@ -29,21 +29,26 @@ exports.getDetailProduct = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
+        console.log('req.body:', req.body);
+        console.log('req.file:', req.file);
+
         const result = await cloudinary.uploader.upload(req.file.path);
-        
-        //membuat produk dengan data dari body dan menambahkan tumbnail URL
+        console.log('Cloudinary result:', result);
+
         const product = new Product({
             ...req.body,
-            thumbnail: result?.secure_url,
-            cloudinaryId: result?.public_id,
+            thumbnail: result.secure_url,
+            cloudinaryId: result.public_id,
         });
 
         await product.save();
         res.status(201).json(product);
     } catch (err) {
-        res.status(400).json({mesasge: err.message});
+        console.error('Error:', err.message);
+        res.status(400).json({ message: err.message });
     }
 };
+
 
 exports.deleteProduct = async (req, res) => {
     try {

@@ -20,9 +20,14 @@ const AddProduct = () => {
 
         console.log('values', values);
         const data = new FormData();
-        data.append('name', values.name);
-        data.append('price', values.price)
-        data.append('thumbnail', values.thumbnail[0].originFileObj);
+        data.append("name", values.name);
+        data.append("price", values.price);
+        data.append("thumbnail", values.thumbnail[0].originFileObj);
+        console.log('data: ', data);
+        console.log('FormData entries:');
+        for (let pair of data.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
+        }
 
         try {
             await axios.post(URL_PRODUCT, data);
@@ -61,7 +66,7 @@ const AddProduct = () => {
                 
                 <Form.Item
                     name='price'
-                    label='price'
+                    label='Price'
                     rules={[{ required: true, message: 'Please input price!' }]}
                 >
                     <Input type="number" placeholder="Enter product price" />

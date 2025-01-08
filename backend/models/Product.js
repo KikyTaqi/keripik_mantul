@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const fileSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required!'],
@@ -18,4 +18,4 @@ const fileSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Products', fileSchema);
+module.exports = mongoose.model('Products', productSchema);
