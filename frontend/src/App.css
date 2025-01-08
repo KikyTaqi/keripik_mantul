@@ -40,3 +40,23 @@
 .read-the-docs {
   color: #888;
 }
+
+body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-layout {
+  display: flex;
+}
+
+.ant-layout-header {
+  flex: 0 0 auto;
+}
+
+.ant-layout-content {
+  flex: 1;
+}
