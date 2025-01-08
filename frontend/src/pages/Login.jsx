@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Input, Button, Form, Alert } from "antd";
-import { UserOutlined, LockOutlined } from "@antd-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from 'axios';
 import { URL_SIGNIN } from "../utils/Endpoint";
 import { useNavigate } from "react-router-dom";

@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import Sidebar from "./components/Siderbar"
-import Dashboard from "./pages/dashboard/Dashboard"
-import Checkout from "./pages/Checkout"
-import Home from "./pages/Home"
-import Login from "./pages/Login"
-import UpdateProduct from "./pages/dashboard/ProductUpdate2  "
+import Sidebar from "./components/Siderbar";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Product from "./pages/dashboard/Product";
+import AddProduct from "./pages/dashboard/ProductCreate";
+import Checkout from "./pages/Checkout";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 
 const { Header, Content } = Layout;
 
@@ -24,7 +26,7 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/checkout/:id" element={<Checkout />} />
-        <Route path="/sigin" element={<Login />} />
+        <Route path="/signin" element={<Login />} />
 
         {/* Protected Routes - Dashboard */}
         <Route

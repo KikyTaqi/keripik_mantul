@@ -11,10 +11,10 @@ import {
     Select,
 } from "antd";
 import {
-    ShoppingChartOutlined,
-    CreditCardOnlined,
+    ShoppingCartOutlined,
+    CreditCardOutlined,
     HomeOutlined,
-} from "@antd-design/icons";
+} from "@ant-design/icons";
 import axios from "axios";
 import { URL_PRODUCT, URL_TRANSACTION } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
@@ -75,7 +75,7 @@ const Checkout = () => {
                         title='Product Details'
                         bordered={false}
                         style={{ width: "100%" }}
-                        extra={<ShoppingChartOutlined />}>
+                        extra={<ShoppingCartOutlined />}>
                         <p>
                             <strong>Product Name:</strong> {product?.name}
                         </p>
@@ -95,7 +95,7 @@ const Checkout = () => {
                         title="Shipping & Payment"
                         bordered={false}
                         style={{ width: '100%' }}
-                        extra={<CreditCardOnlined />}>
+                        extra={<CreditCardOutlined />}>
                         <Form
                             form={form}
                             layout="vertical"
