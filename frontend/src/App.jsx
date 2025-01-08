@@ -11,8 +11,9 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,22 +35,7 @@ const App = () => {
           path="/dashboard/*"
           element={
             <Layout>
-              <Header
-                  style={{
-                    padding: 0,
-                    background: "#fff",
-                    boxShadow: "0 2px 8px #f0f1f2"
-                  }}
-                >
-                  <Button
-                    type="text"
-                    icon={
-                      collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
-                    }
-                    onClick={toggleSidebar}
-                    style={{ fontSize: "16px", marginLeft: "16px" }}
-                  />
-              </Header>
+              
               {/* Main Content */}
               <Layout style={{ padding: '0', minHeight: '20vh' }}>
                 <div className="flex">
@@ -57,6 +43,7 @@ const App = () => {
                     <Sidebar collapsed={collapsed} />
                   </div>
                   <div className="flex-1">
+                    <Header />
                     <Content
                       style={{
                         margin: "16px",
