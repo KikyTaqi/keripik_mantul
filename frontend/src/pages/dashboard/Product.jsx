@@ -78,7 +78,14 @@ const Product = () => {
             <Link to={'/dashboard/products/create'}>
                 <Button type="primary">Tambah</Button>
             </Link>
-            <Table dataSource={Products} columns={column} loading="loading" />
+            <Table
+            dataSource={Products}
+            columns={column}
+            loading="loading"
+            pagination={{ 
+                pageSize: 4, 
+                showSizeChanger: false,
+            }} />
         </div>
     );
 };
