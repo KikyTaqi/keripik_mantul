@@ -34,7 +34,7 @@ const AddProduct = () => {
             message.success('Product added successfully!');
             form.resetFields();
             setFileList([]);
-            navigate('/dashboard/product');
+            navigate('/dashboard/products');
         } catch (error) {
             message.error("Failed to add product!")
         } finally {
