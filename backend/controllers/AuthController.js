@@ -1,4 +1,4 @@
-const user = require('../models/User');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 // Generate JWT Token
@@ -15,7 +15,7 @@ exports.signIn = async (req, res) => {
 
     try {
         //cek apakah pengguna terdaftar
-        const user = await UserActivation.findOne({ email });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({message: 'User not register'});
         }else {
@@ -33,7 +33,7 @@ exports.signIn = async (req, res) => {
             token: generateToken(user._id),
         });
     }catch (err) {
-        res.status(500).json({message: 'Server error'});
+        res.status(500).json({message: res});
     }
 
 };
