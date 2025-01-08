@@ -30,7 +30,6 @@ function Login() {
                 setLoading(false);
             })
             .catch((err) => {
-                // console.log('err', err.response.data.message);
                 setErrMsg(err.response.data.message);
                 setLoading(false);
             });
@@ -43,9 +42,10 @@ function Login() {
                     <Alert message={errMsg} type="error" />
                 </div>
             )}
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                    <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+            <div className="flex items-center justify-center min-h-screen bg-gray-100" style={{ paddingTop: '10%' }}>
+                <div className="bg-white p-8 rounded-lg max-w-md">
+                    <h1 className="font-bold text-center mt-6" style={{ color: "#800000" }}>Login</h1>
+                    <h3 className="text-2xl text-center mb-6">Masuk ke akun Anda untuk pengalaman belanja terbaik.</h3>
                     <Form
                         form={form}
                         onFinish={handleSubmit}
@@ -62,6 +62,7 @@ function Login() {
                                 placeholder="Email"
                                 size="large"
                                 autoComplete="off"
+                                style={{ background: "#F2E8C6" }}
                             />
                         </Form.Item>
 
@@ -75,6 +76,7 @@ function Login() {
                                 placeholder="Password"
                                 size="large"
                                 autoComplete="off"
+                                style={{ background: "#F2E8C6" }}  
                             />
                         </Form.Item>
 
@@ -85,8 +87,9 @@ function Login() {
                                 block
                                 loading={loading}
                                 size="large"
+                                style={{ background: "#800000" }}
                             >
-                            Login
+                                Login
                             </Button>
                         </Form.Item>
                     </Form>

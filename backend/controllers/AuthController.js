@@ -37,3 +37,39 @@ exports.signIn = async (req, res) => {
     }
 
 };
+
+exports.signUp = async (req, res) => {
+    console.log('req', req.body);
+    const { email, password, name, role } = req.body;
+
+    try {
+        // Cek apakah pengguna sudah terdaftar
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already registered' });
+        }
+
+        // Buat pengguna baru
+        const newUser = new User({
+            name,
+            email,
+            password,
+            role: role || 'User', // Atur default role jika tidak diberikan
+        });
+
+        // Simpan pengguna ke database
+        await newUser.save();
+
+        // Berikan token
+        res.status(201).json({
+            _id: newUser._id,
+            name: newUser.name,
+            role: newUser.role,
+            email: newUser.email,
+            token: generateToken(newUser._id),
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

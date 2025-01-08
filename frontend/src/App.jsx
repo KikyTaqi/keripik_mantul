@@ -9,6 +9,7 @@ import AddProduct from "./pages/dashboard/ProductCreate";
 import Checkout from "./pages/Checkout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 import Footer from "./components/Footer";
 
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/signin" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         {/* Protected Routes - Dashboard */}
         <Route
