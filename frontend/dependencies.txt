@@ -3,6 +3,10 @@
 - cd frontend
 - npm i antd axios jsonwebtoken react-router-dom
 
+# Update
+
+- npm i tailwindcss react-icons
+
 # Install TailwindCSS
 
 - npm install -D tailwindcss postcss autoprefixer

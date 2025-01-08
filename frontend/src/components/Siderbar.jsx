@@ -1,32 +1,61 @@
 import React from "react";
-import { Layout, Menu } from "antd";
-import  {
-    DashboardOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-} from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from "react-router-dom";
+import { RightOutlined } from "@ant-design/icons";
 
-const { Sider } = Layout;
+const Sidebar = () => {
+  const location = useLocation(); // Mendapatkan rute saat ini
+  const menuItems = [
+    { name: "Dashboard", path: "/dashboard", icon: "fa-regular fa-message" },
+    { name: "Pesanan", path: "/dashboard/pesanan", icon: "fa-solid fa-bag-shopping" },
+    { name: "Produk", path: "/dashboard/products", icon: "fa-solid fa-box-open" },
+    { name: "Kategori", path: "/dashboard/kategori", icon: "fa-solid fa-icons" },
+    { name: "Ongkos Kirim", path: "/dashboard/ongkos-kirim", icon: "fa-solid fa-truck-fast" },
+    { name: "Ulasan", path: "/dashboard/ulasan", icon: "fa-regular fa-comment-dots" },
+    { name: "Customer", path: "/dashboard/customer", icon: "fa-solid fa-users" },
+    { name: "Log Out", path: "/logout", icon: "fa-solid fa-arrow-right-from-bracket" },
+  ];
 
-const Sidebar = ({ collapse }) => {
-    return (
-        <Sider collapsible collapsed={collapse} trigger={null}>
-            <div className="demo-logo-vertical">
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                    <Menu.Item key={1} icon={<DashboardOutlined />}>
-                        <Link to="/dashboard">Dashboard</Link>
-                    </Menu.Item>
-                    <Menu.Item key={2} icon={<SettingOutlined />}>
-                        <Link to="/dashboard/products">Products</Link>
-                    </Menu.Item>
-                    <Menu.Item key={3} icon={<LogoutOutlined />}>
-                        <Link to="/logout">Logout</Link>
-                    </Menu.Item>
-                </Menu>
-            </div>
-        </Sider>
-    );
-}
+  return (
+    <div className="w-64 bg-white shadow-md h-full flex flex-col rounded-br-lg">
+      {/* Logo */}
+      <div className="p-4 flex justify-center">
+        <img
+          src="./src/assets/logo_keripik.png"
+          alt="Keripik Martul Logo"
+          className="h-16"
+        />
+      </div>
+
+      {/* Menu Items */}
+      <nav className="flex-1 px-4">
+        <ul className="space-y-2 mb-6">
+          {menuItems.map((item, index) => {
+            const isActive = location.pathname === item.path; // Periksa apakah rute saat ini aktif
+            return (
+              <li key={index} className="border-solid border rounded-lg border-stone-700">
+                <Link
+                  to={item.path}
+                  className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg ${
+                    isActive ? "bg-yellow-200 text-black font-semibold" : ""
+                  }`}
+                >
+                  <div className="flex">
+                    <div className="flex-none w-7">
+                        <i className={item.icon}></i>
+                    </div>
+                    <div className="flex-1">
+                      <span>{item.name}</span>
+                    </div>
+                  </div>
+                  <RightOutlined />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </div>
+  );
+};
 
 export default Sidebar;

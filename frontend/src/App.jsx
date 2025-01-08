@@ -10,6 +10,7 @@ import Checkout from "./pages/Checkout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
+import Footer from "./components/Footer";
 
 const { Header, Content } = Layout;
 
@@ -32,13 +33,8 @@ const App = () => {
         <Route
           path="/dashboard/*"
           element={
-            <Layout style={{ minHeight: "100vh" }}>
-              {/* Sidebar */}
-              <Sidebar collapsed={collapsed} />
-
-              {/* Main Content */}
-              <Layout>
-                <Header
+            <Layout>
+              <Header
                   style={{
                     padding: 0,
                     background: "#fff",
@@ -53,23 +49,35 @@ const App = () => {
                     onClick={toggleSidebar}
                     style={{ fontSize: "16px", marginLeft: "16px" }}
                   />
-                </Header>
-                <Content
-                  style={{
-                    margin: "16px",
-                    padding: '16px',
-                    background: '#fff',
-                    minHeight: '200px'
-                  }}
-                >
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/products" element={<Product />} />
-                    <Route path="/products/create" element={<AddProduct />} />
-                    <Route path="/product/:id" element={<UpdateProduct />} />
-                  </Routes>
-                </Content>
+              </Header>
+              {/* Main Content */}
+              <Layout style={{ padding: '0', minHeight: '20vh' }}>
+                <div className="flex">
+                  <div className="flex-none w-14">
+                    <Sidebar collapsed={collapsed} />
+                  </div>
+                  <div className="flex-1">
+                    <Content
+                      style={{
+                        margin: "16px",
+                        padding: '16px',
+                        background: '#fff',
+                        minHeight: '200px',
+                      }}
+                    >
+                      <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/products" element={<Product />} />
+                        <Route path="/products/create" element={<AddProduct />} />
+                        <Route path="/product/:id" element={<UpdateProduct />} />
+                      </Routes>
+                    </Content>
+                  </div>
+                </div>
+              {/* Sidebar */}
+                
               </Layout>
+              <Footer />
             </Layout>
           }
         />
