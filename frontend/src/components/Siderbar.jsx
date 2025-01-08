@@ -32,11 +32,11 @@ const Sidebar = () => {
           {menuItems.map((item, index) => {
             const isActive = location.pathname === item.path; // Periksa apakah rute saat ini aktif
             return (
-              <li key={index} className="border-solid border rounded-lg border-stone-700 hover:border-stone-900">
+              <li key={index} className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
                 <Link
                   to={item.path}
-                  className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg ${
-                    isActive ? "bg-yellow-200 text-black font-semibold" : ""
+                  className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 rounded-lg ${
+                    isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
                   }`}
                 >
                   <div className="flex">

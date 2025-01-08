@@ -37,7 +37,7 @@ const Home = () => {
                     <Col span={8} key={product.id}>
                         <Card
                             hoverable
-                            cover={<img alt={product.name} src="{product.thumbnail}" />}>
+                            cover={<img alt={product.name} src={product.thumbnail} />}>
                             <Card.Meta
                                 title={product.name}
                                 description={`Rp ${product.price}`}

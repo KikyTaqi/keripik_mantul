@@ -19,7 +19,7 @@ const Footer = () => {
           {/* Social Media Icons */}
           <div className="flex space-x-4 mt-4">
             <a
-              href="https://www.facebook.com"
+              href="https://www.facebook.com/profile.php?id=61571625809897"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300"
@@ -27,7 +27,7 @@ const Footer = () => {
               <FaFacebook size={24} />
             </a>
             <a
-              href="https://www.instagram.com"
+              href="https://www.instagram.com/keripikmantull/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-gray-300"
@@ -54,7 +54,7 @@ const Footer = () => {
           <p>Jl Air Panas No.25 Nglimut</p>
           <p>Gonoharjo Limbangan Kendal</p>
           <p>+62 888-0276-9036</p>
-          <p>keripikmantul@gmail.com</p>
+          <p>mantulchipsl@gmail.com</p>
         </div>
       </div>
 

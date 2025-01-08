@@ -45,7 +45,7 @@ function Login() {
             <div className="flex items-center justify-center min-h-screen bg-gray-100" style={{ paddingTop: '10%' }}>
                 <div className="bg-white p-8 rounded-lg max-w-md">
                     <h1 className="font-bold text-center mt-6" style={{ color: "#800000" }}>Login</h1>
-                    <h3 className="text-2xl text-center mb-6">Masuk ke akun Anda untuk pengalaman belanja terbaik.</h3>
+                    <h3 className="text-center mb-6">Masuk ke akun Anda untuk pengalaman belanja terbaik.</h3>
                     <Form
                         form={form}
                         onFinish={handleSubmit}
