@@ -17,10 +17,9 @@ const userRoutes = require('./routes/UserRoutes');
 const productsRoutes = require('./routes/ProductRoutes');
 const FileRoutes = require('./routes/FileRoutes');
 const authRoutes = require('./routes/AuthRoutes')
-const TransactionRoutes = require('./routes/TransactionRoutes');
-const { translateAliases } = require('./models/User');
+const TransactionRoutes = require('./routes/TransactionRoutes')
 app.use('/api/users', userRoutes);
-app.use('/api/products', productsRoutes);
+app.use('/api/products', productsRoutes)
 app.use('/api/files', FileRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', TransactionRoutes);
