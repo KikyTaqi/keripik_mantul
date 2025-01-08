@@ -21,7 +21,7 @@ const TransactionRoutes = require('./routes/TransactionRoutes')
 app.use('/api/users', userRoutes);
 app.use('/api/products', productsRoutes)
 app.use('/api/files', FileRoutes);
-app.use('api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/transactions', TransactionRoutes);
 
 const PORT = process.env.PORT || 5000;
