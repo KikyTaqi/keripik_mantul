@@ -1,0 +1,31 @@
+.custom-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: center !important;
+    text-decoration: none !important;
+  }
+  
+  .custom-pagination .ant-pagination-item{
+    font-size: 20px;
+    border-radius: 0 !important;
+    border: 0;
+    color: black !important;
+    font-weight: 600 !important;
+  }
+   .custom-pagination button:hover{
+    border-radius: 0 !important;
+    border: 0;
+  }
+  
+  .custom-pagination .ant-pagination-item:hover {
+    background-color: rgba(0, 0, 0, 0.014);
+    border-radius: 0 !important;
+    /* border-bottom: 0; */
+  }
+  
+  .custom-pagination .ant-pagination-item-active a{
+      color: #800000 !important;
+  }
+  .custom-pagination .ant-pagination-item-active {
+    border-bottom: solid #800000 2px !important;
+  }
