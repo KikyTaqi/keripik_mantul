@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
+import logo from "../assets/logo_keripik.png";
 
 const Footer = () => {
   return (
@@ -8,7 +9,7 @@ const Footer = () => {
         {/* Logo and Slogan */}
         <div className="flex flex-col items-center md:items-start">
           <img
-            src="./src/assets/logo_keripik.png"
+            src={logo}
             alt="Keripik Mantul Logo"
             className="h-16 mb-4"
           />

@@ -102,7 +102,7 @@ const Signup = () => {
                         className="rounded-full"
                         style={{ background: "#800000" }}
                     >
-                        Login
+                        Register
                     </Button>
                     <h3 className="mt-2 text-center">Sudah punya akun? Login <a className="underline" href="/signin" style={{ color: "#800000" }}>disini.</a></h3>
                 </Form.Item>

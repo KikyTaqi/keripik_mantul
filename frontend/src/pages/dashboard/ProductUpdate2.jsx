@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Upload, message, Select } from "antd";
+import { Form, Input, Button, Upload, message, Select, Image } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import axios from "axios";
 import { URL_PRODUCT } from '../../utils/Endpoint';
@@ -92,7 +92,7 @@ const UpdateProduct = () => {
                 
                 <Form.Item
                     name='price'
-                    label='price'
+                    label='Price'
                     rules={[{ required: true, message: 'Please input price!' }]}
                 >
                     <Input type="number" placeholder="Enter product price" />
@@ -106,9 +106,13 @@ const UpdateProduct = () => {
                     rules={[{ required: true, message: 'Please upload a thumbnail!' }]}
                 >
                     <p>
-                        Current: {" "}
+                        Current: {" "}<br></br>
                         {product && product.thumbnail ? (
-                            <a href={product.thumbnail}>{product.thumbnail}</a>
+                            
+                            <Image
+                                width={200}
+                                src={product.thumbnail}
+                            />
                         ) : (
                             "-"
                         )}
