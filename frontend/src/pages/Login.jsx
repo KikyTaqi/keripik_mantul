@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, Form, Alert } from "antd";
+import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from 'axios';
 import { URL_SIGNIN } from "../utils/Endpoint";
@@ -9,6 +9,7 @@ function Login() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
 
     const navigate = useNavigate();
 
@@ -17,6 +18,7 @@ function Login() {
         const data = {
             email: values.email,
             password: values.password,
+            rememberMe: rememberMe,
         };
         axios
             .post(URL_SIGNIN, data)
@@ -42,9 +44,9 @@ function Login() {
                     <Alert message={errMsg} type="error" />
                 </div>
             )}
-            <div className="flex items-center justify-center min-h-screen bg-gray-100" style={{ paddingTop: '10%' }}>
-                <div className="bg-white p-8 rounded-lg max-w-md">
-                    <h1 className="font-bold text-center mt-6" style={{ color: "#800000" }}>Login</h1>
+            <div className="flex items-center justify-center">
+                <div className="bg-white p-8 rounded-lg w-2/4">
+                    <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Login</h1>
                     <h3 className="text-center mb-6">Masuk ke akun Anda untuk pengalaman belanja terbaik.</h3>
                     <Form
                         form={form}
@@ -58,8 +60,7 @@ function Login() {
                             rules={[{ required: true, message: "Please input your Email!" }]}
                         >
                             <Input 
-                                prefix={<UserOutlined />}
-                                placeholder="Email"
+                                placeholder="Masukkan email Anda"
                                 size="large"
                                 autoComplete="off"
                                 style={{ background: "#F2E8C6" }}
@@ -72,12 +73,22 @@ function Login() {
                             rules={[{ required: true, message: "Please input your password!" }]}
                         >
                             <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="Password"
+                                placeholder="Masukkan password Anda"
                                 size="large"
                                 autoComplete="off"
                                 style={{ background: "#F2E8C6" }}  
                             />
+                            <div className="flex justify-between">
+                                <Checkbox
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                >
+                                    Remember me
+                                </Checkbox>
+                                    <a href="/forgot-password">
+                                        Lupa Password?
+                                    </a>
+                                </div>
                         </Form.Item>
 
                         <Form.Item>
@@ -87,10 +98,12 @@ function Login() {
                                 block
                                 loading={loading}
                                 size="large"
+                                className="rounded-full"
                                 style={{ background: "#800000" }}
                             >
                                 Login
                             </Button>
+                            <h3 className="mt-2 text-center">Belum punya akun? Buat <a className="underline" href="/signup" style={{ color: "#800000" }}>disini.</a></h3>
                         </Form.Item>
                     </Form>
                 </div>
