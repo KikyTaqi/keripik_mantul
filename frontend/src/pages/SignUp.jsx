@@ -29,19 +29,15 @@ const Signup = () => {
 
     return (
         <div>
-            <h1>Signup</h1>
+            <div className="flex items-center justify-center">
+            <div className="bg-white p-8 rounded-lg w-2/4">
+            <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Registrasi</h1>
+            <h3 className="text-center mb-6">Buat akun dan mulai belanja sekarang !</h3>
             <Form 
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
             >
-                <Form.Item
-                    name='name'
-                    label='Full Name'
-                    rules={[{ required: true, message: 'Please input your full name!' }]}
-                >
-                    <Input placeholder="Enter your full name" />
-                </Form.Item>
 
                 <Form.Item
                     name='email'
@@ -51,7 +47,12 @@ const Signup = () => {
                         { type: 'email', message: 'Please enter a valid email!' }
                     ]}
                 >
-                    <Input placeholder="Enter your email" />
+                    <Input 
+                    placeholder="Masukkan email Anda" 
+                    size="large"
+                    autoComplete="off"
+                    style={{ background: "#F2E8C6" }}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -59,7 +60,12 @@ const Signup = () => {
                     label='Password'
                     rules={[{ required: true, message: 'Please input your password!' }]}
                 >
-                    <Input.Password placeholder="Enter your password" />
+                    <Input.Password 
+                    placeholder="Masukkan password Anda" 
+                    size="large"
+                    autoComplete="off"
+                    style={{ background: "#F2E8C6" }}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -78,15 +84,31 @@ const Signup = () => {
                         }),
                     ]}
                 >
-                    <Input.Password placeholder="Confirm your password" />
+                    <Input.Password 
+                    placeholder="Konfirmasi password" 
+                    size="large"
+                    autoComplete="off"
+                    style={{ background: "#F2E8C6" }}
+                    />
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={loading}>
-                        Sign Up
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        block
+                        loading={loading}
+                        size="large"
+                        className="rounded-full"
+                        style={{ background: "#800000" }}
+                    >
+                        Login
                     </Button>
+                    <h3 className="mt-2 text-center">Sudah punya akun? Login <a className="underline" href="/signup" style={{ color: "#800000" }}>disini.</a></h3>
                 </Form.Item>
             </Form>
+            </div>
+            </div>
         </div>
     );
 };
