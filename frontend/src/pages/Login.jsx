@@ -20,6 +20,8 @@ function Login() {
             password: values.password,
             rememberMe: rememberMe,
         };
+        console.log(values.password);
+        console.log(values.email);
         axios
             .post(URL_SIGNIN, data)
             .then((res) => {
@@ -70,7 +72,7 @@ function Login() {
                         <Form.Item
                             label="Password"
                             name='password'
-                            rules={[{ required: true, message: "Please input your password!" }]}
+                            className="mb-1"
                         >
                             <Input.Password
                                 placeholder="Masukkan password Anda"
@@ -78,18 +80,18 @@ function Login() {
                                 autoComplete="off"
                                 style={{ background: "#F2E8C6" }}  
                             />
-                            <div className="flex justify-between">
+                        </Form.Item>
+                            <div className="flex justify-between mb-7">
                                 <Checkbox
                                     checked={rememberMe}
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 >
                                     Remember me
                                 </Checkbox>
-                                    <a href="/forgot-password">
-                                        Lupa Password?
-                                    </a>
-                                </div>
-                        </Form.Item>
+                                <a href="/forgot-password">
+                                    Lupa Password?
+                                </a>
+                            </div>
 
                         <Form.Item>
                             <Button
