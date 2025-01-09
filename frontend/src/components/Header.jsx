@@ -1,24 +1,44 @@
 import React from "react";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
-  return (
-    <div className="flex items-center justify-end px-8 py-4 bg-white">
-      {/* Title */}
-      <h1 className="text-2xl font-semibold text-red-800" style={{ color: "#800000" }}>Dashboard</h1>
-        
-      {/* Search Bar */}
-      <div className="flex items-center border-solid border rounded-lg ms-5 px-4 py-2 border-red-800">
-        <input
-          type="text"
-          placeholder="Cari ..."
-          className="focus:outline-none w-100 font-semibold text-red-800 placeholder-red-800"
-        />
-        <FaSearch className="text-red-800 ml-10" />
-      </div>
+  const location = useLocation(); // Mendapatkan rute saat ini
 
-      {/* User Icon */}
-      <FaUserCircle className="text-red-800 text-3xl object-right" />
+  const menuItems = [
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Pesanan", path: "/dashboard/pesanan" },
+    { name: "Produk", path: "/dashboard/products" },
+    { name: "Kategori", path: "/dashboard/kategori" },
+    { name: "Ongkos Kirim", path: "/dashboard/ongkos-kirim" },
+    { name: "Ulasan", path: "/dashboard/ulasan" },
+    { name: "Customer", path: "/dashboard/customer" },
+  ];
+
+  // Menemukan menu yang aktif berdasarkan lokasi
+  const activeMenu = menuItems.find((item) => location.pathname === item.path);
+
+  return (
+    <div className="flex items-center justify-between border-b-red-800 border border-b-4 px-8 py-4 bg-white">
+      {/* Title */}
+      <h1 className="text-2xl font-semibold" style={{ color: "#800000" }}>
+        {activeMenu ? activeMenu.name : "Dashboard"}
+      </h1>
+
+      <div className="flex items-center">
+        {/* Search Bar */}
+        <div className="flex items-center border-solid border rounded-lg ms-5 me-4 px-4 py-2 border-red-800">
+          <input
+            type="text"
+            placeholder="Cari ..."
+            className="focus:outline-none w-100 font-semibold text-red-800 placeholder-red-800"
+          />
+          <FaSearch className="text-red-800 ml-10" />
+        </div>
+
+        {/* User Icon */}
+        <FaUserCircle className="text-red-800 text-3xl object-right" />
+      </div>
     </div>
   );
 };
