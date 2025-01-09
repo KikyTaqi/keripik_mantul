@@ -54,15 +54,16 @@ const UpdateProduct = () => {
         if (values.thumbnail !== undefined || values.thumbnail !== "undefined") {
             data.append("thumbnail", values.thumbnail[0].originFileObj);
         };
+        console.log("Data upload: "+values.thumbnail);
 
         try {
-            await axios.patch(`${URL_PRODUCT}/${id}`);
-            message.success("Product added successfully!");
+            await axios.patch(`${URL_PRODUCT}/${id}`, data);
+            message.success("Product updated successfully!");
             form.resetFields();
             setFileList([]);
-            navigate("/dashboard/product");
+            navigate("/dashboard/products");
         } catch (error) {
-            message.error("Failed to add product!")
+            message.error("Failed to update product!")
         } finally {
             setLoading(false);
         };
@@ -98,6 +99,18 @@ const UpdateProduct = () => {
                     <Input type="number" placeholder="Enter product price" />
                 </Form.Item>
 
+                <p>
+                    Current: {" "}<br></br>
+                    {product && product.thumbnail ? (
+                        
+                        <Image
+                            width={200}
+                            src={product.thumbnail}
+                        />
+                    ) : (
+                        "-"
+                    )}
+                </p>
                 <Form.Item
                     name='thumbnail'
                     label='Thumbnail'
@@ -105,24 +118,12 @@ const UpdateProduct = () => {
                     getValueFromEvent={({ fileList }) => fileList}
                     rules={[{ required: true, message: 'Please upload a thumbnail!' }]}
                 >
-                    <p>
-                        Current: {" "}<br></br>
-                        {product && product.thumbnail ? (
-                            
-                            <Image
-                                width={200}
-                                src={product.thumbnail}
-                            />
-                        ) : (
-                            "-"
-                        )}
-                    </p>
                     <Upload
                         action='/upload' // atur endpoint
                         listType="picture"
-                        valuePropName='fileList'
-                        getValueFromEvent={({ fileList }) => fileList}
-                        rules={({ required: false })}
+                        fileList={fileList}
+                        onChange={handleChange}
+                        beforeUpload={() => false} // menghindari upload otomatis
                         maxCount={1}
                     >
                         <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -131,7 +132,7 @@ const UpdateProduct = () => {
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading}>
-                        Add Product
+                        Update Product
                     </Button>
                 </Form.Item>
             </Form>
