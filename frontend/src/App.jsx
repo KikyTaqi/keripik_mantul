@@ -42,7 +42,7 @@ const App = () => {
               <Layout style={{ padding: '0', minHeight: '20vh' }}>
                 <div className="flex">
                   <div className="flex-none w-14">
-                    <Sidebar collapsed={collapsed} />
+                    <Sidebar/>
                   </div>
                   <div className="flex-1">
                     <Header />
