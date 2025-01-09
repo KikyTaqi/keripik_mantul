@@ -19,8 +19,9 @@ exports.signIn = async (req, res) => {
         if (!user) {
             return res.status(401).json({message: 'User not register'});
         }else {
+            console.error(user.password+" "+password);
             if (user.password !== password){
-                return res.status(401).json({message: 'Email and password did not match'});
+                return res.status(401).json({message: 'Email or password did not match'});
             }
         }
 
