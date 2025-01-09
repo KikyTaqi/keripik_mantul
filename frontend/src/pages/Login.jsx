@@ -27,7 +27,7 @@ function Login() {
             .then((res) => {
                 console.log("res", res);
                 if (res.data.role !== "Admin") {
-                    setErrMsg('Anda tidak memiliki akses ke dalam dashboard admin');
+                    navigate("/");
                 } else {
                     navigate("/dashboard");
                 }
