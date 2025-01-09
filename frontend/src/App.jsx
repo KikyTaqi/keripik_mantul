@@ -1,7 +1,6 @@
 import React, { useState } from "react"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout, Button } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import Sidebar from "./components/Siderbar";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Product from "./pages/dashboard/Product";
@@ -17,11 +16,6 @@ import Header from "./components/Header";
 const { Content } = Layout;
 
 const App = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
 
   return (
     <Router>
@@ -42,7 +36,7 @@ const App = () => {
               <Layout style={{ padding: '0', minHeight: '20vh' }}>
                 <div className="flex">
                   <div className="flex-none w-14">
-                    <Sidebar collapsed={collapsed} />
+                    <Sidebar/>
                   </div>
                   <div className="flex-1">
                     <Header />
@@ -58,7 +52,7 @@ const App = () => {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/products" element={<Product />} />
                         <Route path="/products/create" element={<AddProduct />} />
-                        <Route path="/product/:id" element={<UpdateProduct />} />
+                        <Route path="/products/:id" element={<UpdateProduct />} />
                       </Routes>
                     </Content>
                   </div>
