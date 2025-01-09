@@ -55,7 +55,7 @@ const Footer = () => {
           <p>Jl Air Panas No.25 Nglimut</p>
           <p>Gonoharjo Limbangan Kendal</p>
           <p>+62 888-0276-9036</p>
-          <p>mantulchipsl@gmail.com</p>
+          <p>mantulchips@gmail.com</p>
         </div>
       </div>
 
