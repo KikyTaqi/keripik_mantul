@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from 'axios';
-import { URL_SIGNIN } from "../utils/Endpoint";
+import { URL_SIGNIN } from "../../utils/Endpoint"; 
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function ResetCode() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState("");
@@ -48,8 +48,10 @@ function Login() {
             )}
             <div className="flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg w-2/4">
-                    <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Login</h1>
-                    <h3 className="text-center mb-6">Masuk ke akun Anda untuk pengalaman belanja terbaik.</h3>
+                    <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Dapatkan Kode Anda</h1>
+                    <h3 className="text-center mb-6">
+                    Kami telah mengirimkan kode verifikasi ke email Anda. <br /> Gunakan kode tersebut untuk melanjutkan ke langkah berikutnya
+                    </h3>
                     <Form
                         form={form}
                         onFinish={handleSubmit}
@@ -57,7 +59,7 @@ function Login() {
                         layout="vertical"
                     >
                         <Form.Item
-                            label="Email"
+                            label="Code"
                             name='email'
                             rules={[{ required: true, message: "Please input your Email!" }]}
                         >
@@ -69,31 +71,7 @@ function Login() {
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Password"
-                            name='password'
-                            className="mb-1"
-                        >
-                            <Input.Password
-                                placeholder="Masukkan password Anda"
-                                size="large"
-                                autoComplete="off"
-                                style={{ background: "#F2E8C6" }}  
-                            />
-                        </Form.Item>
-                            <div className="flex justify-between mb-7">
-                                <Checkbox
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                >
-                                    Remember me
-                                </Checkbox>
-                                <a href="/password/reset">
-                                    Lupa Password?
-                                </a>
-                            </div>
-
-                        <Form.Item>
+                        <Form.Item className="mb-1">
                             <Button
                                 type="primary"
                                 htmlType="submit"
@@ -103,10 +81,12 @@ function Login() {
                                 className="rounded-full"
                                 style={{ background: "#800000" }}
                             >
-                                Login
+                                Verifikasi Kode
                             </Button>
-                            <h3 className="mt-2 text-center">Belum punya akun? Buat <a className="underline" href="/signup" style={{ color: "#800000" }}>disini.</a></h3>
                         </Form.Item>
+                        <div className="justify-center flex">
+                            <a href="/signin">Kembali ke login</a>
+                        </div>
                     </Form>
                 </div>
             </div>
@@ -114,4 +94,4 @@ function Login() {
     );
 };
 
-export default Login;
+export default ResetCode;
