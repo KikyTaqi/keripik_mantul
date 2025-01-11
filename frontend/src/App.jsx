@@ -36,10 +36,10 @@ const App = () => {
         <Route
           path="/dashboard/*"
           element={
-            <Layout>
+            <Layout style={{backgroundColor: "white"}}>
               
               {/* Main Content */}
-              <Layout style={{ padding: '0', minHeight: '20vh' }}>
+              <Layout style={{ padding: '0', minHeight: '20vh', backgroundColor: "white" }}>
                 <div className="flex">
                   <div className="flex-none w-14">
                     <Sidebar/>
@@ -48,8 +48,7 @@ const App = () => {
                     <Header />
                     <Content
                       style={{
-                        margin: "16px",
-                        padding: '16px',
+                        margin: '16px', 
                         background: '#fff',
                         minHeight: '200px',
                       }}

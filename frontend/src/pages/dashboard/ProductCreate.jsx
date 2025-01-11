@@ -22,6 +22,7 @@ const AddProduct = () => {
         const data = new FormData();
         data.append("name", values.name);
         data.append("price", values.price);
+        data.append("stok", values.stok);
         data.append("thumbnail", values.thumbnail[0].originFileObj);
         console.log('data: ', data);
         console.log('FormData entries:');
@@ -60,6 +61,14 @@ const AddProduct = () => {
                     name='name'
                     label='Product Name'
                     rules={[{ required: true, message: 'Please input product name!' }]}
+                >
+                    <Input placeholder="Enter product name" />
+                </Form.Item>
+
+                <Form.Item
+                    name='stok'
+                    label='Stok'
+                    rules={[{ required: true, message: 'Please input stok!' }]}
                 >
                     <Input placeholder="Enter product name" />
                 </Form.Item>
