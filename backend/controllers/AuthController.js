@@ -99,7 +99,7 @@ exports.sendEmail = async (req, res) => {
       
       var mailOptions = {
         from: process.env.GMAIL,
-        to: 'elemari502@gmail.com',
+        to: 'rifqiramandhani3@gmail.com',
         subject: 'Reset Password',
         text: 'That was easy!'
       };
