@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
+import logo from "../assets/logo_keripik.png";
 
 const Sidebar = () => {
   const location = useLocation(); // Mendapatkan rute saat ini
@@ -20,7 +21,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="p-4 flex justify-center">
         <img
-          src="./src/assets/logo_keripik.png"
+          src={logo}
           alt="Keripik Martul Logo"
           className="h-16"
         />
@@ -35,7 +36,7 @@ const Sidebar = () => {
               <li key={index} className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
                 <Link
                   to={item.path}
-                  className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 rounded-lg ${
+                  className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 hover:bg-orange-100 rounded-lg ${
                     isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
                   }`}
                 >

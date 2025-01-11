@@ -73,6 +73,7 @@ exports.updateProduct = async (req, res) => {
 
         //cari produk by id
         let product = await Product.findById(id);
+        console.error("findProduct: "+product);
         if (!product){
             return res.status(404).json({message: 'Product not found!'})
         }
@@ -80,18 +81,25 @@ exports.updateProduct = async (req, res) => {
         //jika ada file diunggah, update gambar di cloudinary
         console.log('req.file', req.file);
         
-        let result;
         if (req.file){
             //hapus gambar lama
             await cloudinary.uploader.destroy(product.cloudinaryId);
-
+            
             //Unggah gambar baru
             result = await cloudinary.uploader.upload(req.file.path)
         }
 
-        //simpan pembaruan ke database
-        product = await Product.findByIdAndUpdate(id, updatedProduct, {new: true});
+        const updatedProduct = {
+            ...req.body,
+        };
+        if (result) {
+            updatedProduct.thumbnail = result.secure_url;
+            updatedProduct.cloudinaryId = result.public_id;
+        }
         
+        //simpan pembaruan ke database
+        console.error("findProduct2: "+product);
+        product = await Product.findByIdAndUpdate(id, updatedProduct, {new: true});
         res.status(200).json(product);
     } catch (err) {
         res.status(400).json({message: err.message});

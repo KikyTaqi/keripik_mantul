@@ -1,28 +1,30 @@
 import React, { useState } from "react"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout, Button } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+// Components
 import Sidebar from "./components/Siderbar";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+
 import Dashboard from "./pages/dashboard/Dashboard";
+
+// Product
+import Home from "./pages/Home";
 import Product from "./pages/dashboard/Product";
 import AddProduct from "./pages/dashboard/ProductCreate";
 import Checkout from "./pages/Checkout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+
+// Auth
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp"; 
+import EmailConfirm from "./pages/passwordReset/EmailConfirm";
+import ResetCode from "./pages/passwordReset/ResetCode";
 
 const { Content } = Layout;
 
 const App = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
-
+  
   return (
     <Router>
       <Routes>
@@ -31,6 +33,8 @@ const App = () => {
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/password/reset" element={<EmailConfirm />} />
+        <Route path="/password/reset/code" element={<ResetCode />} />
 
         {/* Protected Routes - Dashboard */}
         <Route
@@ -57,7 +61,7 @@ const App = () => {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/products" element={<Product />} />
                         <Route path="/products/create" element={<AddProduct />} />
-                        <Route path="/product/:id" element={<UpdateProduct />} />
+                        <Route path="/products/:id" element={<UpdateProduct />} />
                       </Routes>
                     </Content>
                   </div>

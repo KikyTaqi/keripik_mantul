@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -10,33 +11,34 @@ const generateToken = (id) => {
 
 // Sign In (Login) 
 exports.signIn = async (req, res) => {
-    console.log('req', req.body );
-    const { email, password } = req.body;
-
-    try {
-        //cek apakah pengguna terdaftar
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({message: 'User not register'});
-        }else {
-            console.error(user.password+" "+password);
-            if (user.password !== password){
-                return res.status(401).json({message: 'Email or password did not match'});
-            }
-        }
-
-        //berikan token
-        res.json({
-            _id: user._id,
-            name: user.name,
-            role: user.role,
-            email: user.email,
-            token: generateToken(user._id),
-        });
-    }catch (err) {
-        res.status(500).json({message: res});
+    const {email} = req.body;
+    const user = User.findOne({email: email});
+    if (!user) {
+        return res.status(401).json({message: 'User not registered'});
     }
-
+    const token = generateToken(user._id);
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'mantulchips@gmail.com',
+          pass: 'keripikmantul123'
+        }
+      });
+      
+      var mailOptions = {
+        from: 'mantulchips@gmail.com',
+        to: 'elemari502@gmail.com',
+        subject: 'Reset Password',
+        text: 'That was easy!'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
 };
 
 exports.signUp = async (req, res) => {
@@ -74,3 +76,95 @@ exports.signUp = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+exports.sendEmail = async (req, res) => {
+    const {email} = req.body;
+    const user = User.findOne({email: email});
+    if (!user) {
+        return res.status(401).json({message: 'User not registered'});
+    }
+    const token = generateToken(user._id);
+    var transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          type: 'OAuth2',
+          user: process.env.GMAIL,
+          clientId: process.env.GMAIL_CLIENT_ID,
+          clientSecret: process.env.GMAIL_CLIENT_SECRET,
+          refreshToken: process.env.GMAIL_REFRESH_TOKEN
+        }
+      });
+      
+      var mailOptions = {
+        from: process.env.GMAIL,
+        to: 'rifqiramandhani3@gmail.com',
+        subject: 'Reset Password',
+        text: 'That was easy!'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+};
+
+// const {email} = req.body;
+//     const user = User.findOne({email: email});
+//     if (!user) {
+//         return res.status(401).json({message: 'User not registered'});
+//     }
+//     const token = generateToken(user._id);
+//     var transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//           user: 'mantulchips@gmail.com',
+//           pass: 'keripikmantul123'
+//         }
+//       });
+      
+//       var mailOptions = {
+//         from: 'mantulchips@gmail.com',
+//         to: 'elemari502@gmail.com',
+//         subject: 'Reset Password',
+//         text: 'That was easy!'
+//       };
+      
+//       transporter.sendMail(mailOptions, function(error, info){
+//         if (error) {
+//           console.log(error);
+//         } else {
+//           console.log('Email sent: ' + info.response);
+//         }
+//       });
+
+// console.log('req', req.body );
+//     const { email, password } = req.body;
+
+//     try {
+//         //cek apakah pengguna terdaftar
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             return res.status(401).json({message: 'User not register'});
+//         }else {
+//             console.error(user.password+" "+password);
+//             if (user.password !== password){
+//                 return res.status(401).json({message: 'Email or password did not match'});
+//             }
+//         }
+
+//         //berikan token
+//         res.json({
+//             _id: user._id,
+//             name: user.name,
+//             role: user.role,
+//             email: user.email,
+//             token: generateToken(user._id),
+//         });
+//     }catch (err) {
+//         res.status(500).json({message: res});
+//     }
