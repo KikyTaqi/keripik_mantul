@@ -17,7 +17,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-white shadow-md h-full flex flex-col rounded-br-lg">
+    <div className="w-64 bg-white shadow-lg h-full flex flex-col rounded-br-lg">
       {/* Logo */}
       <div className="p-4 flex justify-center">
         <img
