@@ -1,43 +1,109 @@
-import { useState } from "react";
+import { useState,useRef,useEffect } from "react";
 import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from 'axios';
-import { URL_SIGNIN } from "../../utils/Endpoint"; 
+import { URL_SIGNIN, URL_VERIFYOTP } from "../../utils/Endpoint"; 
 import { useNavigate } from "react-router-dom";
 
 function ResetCode() {
+    const ref1 = useRef(null);
+    const ref2 = useRef(null);
+    const ref3 = useRef(null);
+    const ref4 = useRef(null);
+    const inputRef = [ref1, ref2, ref3, ref4];
+    const [isexpire, setIsExpire] = useState(false);
+    const [otpTime, setOtpTime] = useState(null);
+    const [otp1, setOtp1] = useState("");
+    const [otp2, setOtp2] = useState("");
+    const [otp3, setOtp3] = useState("");
+    const [otp4, setOtp4] = useState("");
+
+    const otpArray = [setOtp1, setOtp2, setOtp3, setOtp4];
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
 
     const navigate = useNavigate();
 
-    const handleSubmit = (values) => {
+    const getTime = async () => {
+        try {
+            const data = {
+                token: localStorage.getItem("passToken")
+            };
+            console.log(data);
+            axios
+                .post(URL_VERIFYOTP+"/time", data)
+                .then((res) => {
+                    console.log("res", res);
+                    // localStorage.setItem("passToken", res?.data.token);
+                    // console.log("resToken:"+ res?.data.token);
+                    // localStorage.setItem("email", email);
+                    const remaningTime =
+                        new Date(res.sendTime).getTime() - new Date().getTime();
+            
+                    if (remaningTime > 0) {
+                        setOtpTime(remaningTime);
+                    } else {
+                        setIsExpire(true);
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error:", err);
+                    if (err.response) {
+                        setErrMsg(err.response.data.message); // Jika response ada
+                    } else {
+                        setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+                    }
+                });
+    
+          
+        } catch (error) {
+        //   toast.error(error.message);
+        }
+      };
+
+    useEffect(() => {
+        if (ref1.current) {
+            ref1.current.focus();
+        }
+        getTime();
+    }, []);
+
+    const inputChange = (event, location) => {
+        if (location < inputRef.length - 1 && event.target.value) {
+            inputRef[location + 1].current.focus();
+        }
+        otpArray[location](event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        const finalOtp = otp1 + otp2 + otp3 + otp4;
         setLoading(true);
         const data = {
-            email: values.email,
-            password: values.password,
-            rememberMe: rememberMe,
+            otp: finalOtp,
         };
-        console.log(values.password);
-        console.log(values.email);
+        console.log(data);
         axios
-            .post(URL_SIGNIN, data)
+            .post(URL_VERIFYOTP, data)
             .then((res) => {
                 console.log("res", res);
-                if (res.data.role !== "Admin") {
-                    navigate("/");
-                } else {
-                    navigate("/dashboard");
-                }
+                localStorage.setItem("passToken", res?.data.token);
+                // console.log("resToken:"+ res?.data.token);
+                // localStorage.setItem("email", email);
+                navigate("/password/change");
                 setLoading(false);
             })
             .catch((err) => {
-                setErrMsg(err.response.data.message);
+                console.error("Error:", err);
+                if (err.response) {
+                    setErrMsg(err.response.data.message); // Jika response ada
+                } else {
+                    setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+                }
                 setLoading(false);
             });
     };
+    
 
     return (
         <>
@@ -60,15 +126,24 @@ function ResetCode() {
                     >
                         <Form.Item
                             label="Code"
-                            name='email'
-                            rules={[{ required: true, message: "Please input your Email!" }]}
                         >
-                            <Input 
-                                placeholder="Masukkan email Anda"
-                                size="large"
-                                autoComplete="off"
-                                style={{ background: "#F2E8C6" }}
-                            />
+                        {inputRef.map((item, index) => {
+                            return (
+                                <input
+                                    required
+                                    key={index}
+                                    onChange={(event) => inputChange(event, index)}
+                                    ref={item}
+                                    onInput={(event) => {
+                                    if (event.target.value.length > 1) {
+                                        event.target.value = event.target.value.slice(0, 1);
+                                    }
+                                    }}
+                                    type="number"
+                                    className="ui_input otp_input"
+                                />
+                            );
+                        })}
                         </Form.Item>
 
                         <Form.Item className="mb-1">
@@ -85,7 +160,7 @@ function ResetCode() {
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/signin">Kembali ke login</a>
+                            <a href="/password/reset">Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

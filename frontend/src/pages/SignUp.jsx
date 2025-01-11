@@ -3,6 +3,7 @@ import { Form, Input, Button, message } from "antd";
 import axios from "axios";
 import { URL_SIGNUP } from '../utils/Endpoint'; // Update ke endpoint signup
 import { useNavigate } from 'react-router-dom';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 const Signup = () => {
     const [form] = Form.useForm();
@@ -11,6 +12,20 @@ const Signup = () => {
     const navigate = useNavigate(); // Hook untuk navigasi
 
     // fn -> submit form
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const { credential } = credentialResponse;
+
+        try {
+            const response = await axios.post(URL_SIGNUP+'/google', { token: credential });
+            console.log(response.data);
+            navigate('/signin');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleGoogleFailure = () => {
+        alert('Google Sign-In Failed');
+    };
     const handleSubmit = async (values) => {
         setLoading(true);
 
@@ -19,7 +34,7 @@ const Signup = () => {
             await axios.post(URL_SIGNUP, values);
             message.success('Signup successful!');
             form.resetFields();
-            navigate('/signin'); // Arahkan ke halaman login setelah signup
+            navigate('/signin');
         } catch (error) {
             message.error("Failed to signup!");
         } finally {
@@ -107,6 +122,14 @@ const Signup = () => {
                     <h3 className="mt-2 text-center">Sudah punya akun? Login <a className="underline" href="/signin" style={{ color: "#800000" }}>disini.</a></h3>
                 </Form.Item>
             </Form>
+            <GoogleOAuthProvider clientId="853769351673-tv8qth8b3g3of3r046nni0obf0hklcpg.apps.googleusercontent.com">
+                <div>
+                    <GoogleLogin 
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleFailure}
+                    />
+                </div>
+            </GoogleOAuthProvider>
             </div>
             </div>
         </div>

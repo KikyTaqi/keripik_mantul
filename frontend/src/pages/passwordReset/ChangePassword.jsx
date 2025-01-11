@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from 'axios';
-import { URL_EMAILSEND } from "../../utils/Endpoint"; 
+import { URL_NEWPASSWORD } from "../../utils/Endpoint"; 
 import { useNavigate } from "react-router-dom";
 
-function EmailConfirm() {
+function ChangePassword() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState("");
@@ -15,17 +15,19 @@ function EmailConfirm() {
     const handleSubmit = (values) => {
         setLoading(true);
         const data = {
-            email: values.email,
+            token: localStorage.getItem("passToken"),
+            password: values.password,
+            confirmPassword: values.confirmPassword
         };
         console.log(data);
         axios
-            .post(URL_EMAILSEND, data)
+            .post(URL_NEWPASSWORD, data)
             .then((res) => {
                 console.log("res", res);
-                localStorage.setItem("passToken", res?.data.token);
-                console.log("resToken:"+ res?.data.token);
-                localStorage.setItem("email", email);
-                navigate("/password/reset/code");
+                // localStorage.setItem("passToken", res?.data.token);
+                // console.log("resToken:"+ res?.data.token);
+                // localStorage.setItem("email", email);
+                navigate("/signin");
                 setLoading(false);
             })
             .catch((err) => {
@@ -48,9 +50,9 @@ function EmailConfirm() {
             )}
             <div className="flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg w-2/4">
-                    <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Lupa Password?</h1>
+                    <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Masukkan Password Baru</h1>
                     <h3 className="text-center mb-6">
-                        Masukkan alamat email Anda yang terdaftar, dan kami<br />akan mengirimkan tautan untuk mereset password.
+                        Silakan masukkan password baru yang ingin Anda <br /> gunakan. 
                     </h3>
                     <Form
                         form={form}
@@ -59,15 +61,39 @@ function EmailConfirm() {
                         layout="vertical"
                     >
                         <Form.Item
-                            label="Email"
-                            name='email'
-                            rules={[{ required: true, message: "Please input your Email!" }]}
+                            name='password'
+                            label='Password'
+                            rules={[{ required: true, message: 'Please input your password!' }]}
                         >
-                            <Input 
-                                placeholder="Masukkan email Anda"
-                                size="large"
-                                autoComplete="on"
-                                style={{ background: "#F2E8C6" }}
+                            <Input.Password 
+                            placeholder="Masukkan password Anda" 
+                            size="large"
+                            autoComplete="off"
+                            style={{ background: "#F2E8C6" }}
+                            />
+                        </Form.Item>
+        
+                        <Form.Item
+                            name='confirmPassword'
+                            label='Confirm Password'
+                            dependencies={['password']}
+                            rules={[
+                                { required: true, message: 'Please confirm your password!' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('The two passwords do not match!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password 
+                            placeholder="Konfirmasi password" 
+                            size="large"
+                            autoComplete="off"
+                            style={{ background: "#F2E8C6" }}
                             />
                         </Form.Item>
 
@@ -81,7 +107,7 @@ function EmailConfirm() {
                                 className="rounded-full"
                                 style={{ background: "#800000" }}
                             >
-                                Kirim Kode
+                                Simpan Password Baru
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
@@ -94,4 +120,4 @@ function EmailConfirm() {
     );
 };
 
-export default EmailConfirm;
+export default ChangePassword;

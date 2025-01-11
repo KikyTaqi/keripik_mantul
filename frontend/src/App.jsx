@@ -1,6 +1,7 @@
 import React, { useState } from "react"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout, Button } from "antd";
+
 // Components
 import Sidebar from "./components/Siderbar";
 import Footer from "./components/Footer";
@@ -20,6 +21,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/SignUp"; 
 import EmailConfirm from "./pages/passwordReset/EmailConfirm";
 import ResetCode from "./pages/passwordReset/ResetCode";
+import ChangePassword from "./pages/passwordReset/ChangePassword";
 
 const { Content } = Layout;
 
@@ -35,6 +37,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/password/reset" element={<EmailConfirm />} />
         <Route path="/password/reset/code" element={<ResetCode />} />
+        <Route path="/password/change" element={<ChangePassword />} />
 
         {/* Protected Routes - Dashboard */}
         <Route

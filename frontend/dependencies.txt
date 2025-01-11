@@ -7,6 +7,9 @@
 
 - npm i tailwindcss react-icons
 
+!Update Terbaru!
+npm install @react-oauth/google
+
 # Install TailwindCSS
 
 - npm install -D tailwindcss postcss autoprefixer

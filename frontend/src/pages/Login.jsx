@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { GoogleOAuthProvider,GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { URL_SIGNIN } from "../utils/Endpoint";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,24 @@ function Login() {
     const [rememberMe, setRememberMe] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const { credential } = credentialResponse;
+
+        try {
+            const res = await axios.post(URL_SIGNIN+'/google', { token: credential });
+            if (res.data.role !== "Admin") {
+                navigate("/");
+            } else {
+                navigate("/dashboard");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleGoogleFailure = () => {
+        alert('Google Sign-In Failed');
+    };
 
     const handleSubmit = (values) => {
         setLoading(true);
@@ -108,6 +127,17 @@ function Login() {
                             <h3 className="mt-2 text-center">Belum punya akun? Buat <a className="underline" href="/signup" style={{ color: "#800000" }}>disini.</a></h3>
                         </Form.Item>
                     </Form>
+                    <button onClick={() => handleLogin()}>
+                        Login with Google
+                    </button>
+                    <GoogleOAuthProvider clientId="853769351673-tv8qth8b3g3of3r046nni0obf0hklcpg.apps.googleusercontent.com">
+                        <div>
+                            <GoogleLogin 
+                                onSuccess={handleGoogleSuccess}
+                                onError={handleGoogleFailure}
+                            />
+                        </div>
+                    </GoogleOAuthProvider>
                 </div>
             </div>
         </>
