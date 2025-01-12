@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema(
             sendTime: { type: Number },
             token: { type: String },
         },
+        isRegistered: {
+            type: Boolean,
+            default: false
+        }
     },
     { timestamps: true }
 );

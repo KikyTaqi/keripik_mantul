@@ -3,7 +3,7 @@ import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider,GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
-import { URL_SIGNIN } from "../utils/Endpoint";
+import { URL_SIGNIN, URL_SIGNUP } from "../utils/Endpoint";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -32,6 +32,31 @@ function Login() {
         alert('Google Sign-In Failed');
     };
 
+    const handleSendConfirm = async (user) => {
+        console.log(user);  
+        const data = {
+            email: user.email,
+            otp: user.otp.otp,
+            token: user.otp.token
+        }
+        axios
+        .post(URL_SIGNUP+"/confirm/send", data)
+        .then((res) => {
+            localStorage.setItem("passToken", res?.data.token);
+            navigate("/password/reset/code");
+            setLoading(false);
+        })
+        .catch((err) => {
+            console.error("Error:", err);
+            if (err.response) {
+                setErrMsg(err.response.data.message); // Jika response ada
+            } else {
+                setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+            }
+            setLoading(false);
+        });
+    }
+
     const handleSubmit = (values) => {
         setLoading(true);
         const data = {
@@ -53,6 +78,17 @@ function Login() {
                 setLoading(false);
             })
             .catch((err) => {
+                if(err.response.data.reg === true){
+                    const user = {
+                        email: values.email,
+                        otp: {
+                            otp: "",
+                            token: ""
+                        }
+                    }
+                    handleSendConfirm(user);
+                    navigate("/signup/confirm");
+                }
                 setErrMsg(err.response.data.message);
                 setLoading(false);
             });
@@ -127,9 +163,6 @@ function Login() {
                             <h3 className="mt-2 text-center">Belum punya akun? Buat <a className="underline" href="/signup" style={{ color: "#800000" }}>disini.</a></h3>
                         </Form.Item>
                     </Form>
-                    <button onClick={() => handleLogin()}>
-                        Login with Google
-                    </button>
                     <GoogleOAuthProvider clientId="853769351673-tv8qth8b3g3of3r046nni0obf0hklcpg.apps.googleusercontent.com">
                         <div>
                             <GoogleLogin 

@@ -22,6 +22,7 @@ import Signup from "./pages/SignUp";
 import EmailConfirm from "./pages/passwordReset/EmailConfirm";
 import ResetCode from "./pages/passwordReset/ResetCode";
 import ChangePassword from "./pages/passwordReset/ChangePassword";
+import ConfirmAccount from "./pages/ConfirmAccount";
 
 const { Content } = Layout;
 
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/signup/confirm" element={<ConfirmAccount />} />
         <Route path="/password/reset" element={<EmailConfirm />} />
         <Route path="/password/reset/code" element={<ResetCode />} />
         <Route path="/password/change" element={<ChangePassword />} />

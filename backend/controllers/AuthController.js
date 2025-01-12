@@ -19,14 +19,18 @@ exports.signIn = async (req, res) => {
 
     try {
         //cek apakah pengguna terdaftar
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email });
+        const userIsReg = await User.findOne({ email: email, isRegistered: true });
         if (!user) {
-            return res.status(401).json({message: 'User not register'});
+            return res.status(401).json({message: 'User not registered'});
         }else {
-            console.error(user.password+" "+password);
-            if (user.password !== password){
-                return res.status(401).json({message: 'Email or password did not match'});
-            }
+          console.error(user.password+" "+password);
+          if (user.password !== password){
+            return res.status(401).json({message: 'Email or password did not match'});
+          }
+        }
+        if(!userIsReg){
+          return res.status(401).json({message: 'You need to confirm your account', reg: true});
         }
 
         //berikan token
@@ -79,59 +83,92 @@ exports.signInGoogle = async (req, res) => {
   }
 };
 
-exports.confirmAccount = async (req, res) => {
-  const { email, password, name, role } = req.body;
-    try{
-      // Cek apakah pengguna sudah terdaftar
-      const existingUser = await User.findOne({ email });
-      const formatedEmail = existingUser.email.toLowerCase();
-      if (existingUser) {
-          return res.status(400).json({ message: 'User already registered' });
-      }
-
-      const otp = Math.floor(Math.random()*9000)+1000;
-      const token = crypto.randomBytes(32).toString('hex');
-
-      localStorage.setItem("otp", otp);
-      localStorage.setItem("sendTime", new Date().getTime +1*60*1000);
-      localStorage.setItem("token", token);
-
-      var transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          type: 'OAuth2',
-          user: process.env.GMAIL,
-          clientId: process.env.GMAIL_CLIENT_ID,
-          clientSecret: process.env.GMAIL_CLIENT_SECRET,
-          refreshToken: process.env.GMAIL_REFRESH_TOKEN
-        }
-      });
-      
-      var mailOptions = {
-        from: process.env.GMAIL,
-        to: formatedEmail,
-        subject: 'Konfirmasi Akun Anda - Keripik Mantul',
-        text: 
-        `Halo ${formatedEmail},
-        Kami menerima permintaan untuk mereset password akun Anda di Keripik Mantul. Jika Anda yang membuat permintaan ini, silakan gunakan kode OTP berikut untuk melanjutkan proses reset password Anda:
-        
-        🔑 Kode OTP: ${otp}
-  
-        Jika Anda tidak melakukan permintaan ini, abaikan email ini dan pastikan akun Anda aman. Jika Anda membutuhkan bantuan lebih lanjut, hubungi kami di ${process.env.GMAIL}.
-  
-    Terima kasih telah mempercayai Keripik Mantul!
-    Salam hangat,
-    Tim Keripik Mantul`
-      };
-      
-      await transporter.sendMail(mailOptions);
-      return res.status(200).json({ message: "OTP sent to your email" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
+exports.sendConfirmAccount = async (req, res) => {
+  var { email, otp, token } = req.body;
+  console.log("Hehey "+ req.body);
+  if(otp == "" && token == ""){
+    const user = await User.findOne({ email: email, isRegistered: false });
+    if(!user){
+      return res.status(401).json({ message: "Something went wrong"});
     }
+
+    otp = Math.floor(Math.random()*9000)+1000;
+    user.otp.otp = otp;
+    user.otp.sendTime = new Date().getTime() +9999*60*1000;
+    await user.save();
+    token = user.otp.token;
+    console.log("Hehey not bad");
+  }
+  const formatedEmail = email.toLowerCase();
+  var transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: 'OAuth2',
+      user: process.env.GMAIL,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN
+    }
+  });
+  
+  var mailOptions = {
+    from: process.env.GMAIL,
+    to: formatedEmail,
+    subject: 'Confirm Account - Keripik Mantul',
+    text: 
+    `Halo ${formatedEmail},
+    Kami menerima permintaan untuk mengkonfirmasi akun Anda di Keripik Mantul. Jika Anda yang membuat permintaan ini, silakan gunakan kode OTP berikut untuk melanjutkan proses reset password Anda:
+    
+    🔑 Kode OTP: ${otp}
+
+    Jika Anda tidak melakukan permintaan ini, abaikan email ini dan pastikan akun Anda aman. Jika Anda membutuhkan bantuan lebih lanjut, hubungi kami di ${process.env.GMAIL}.
+
+Terima kasih telah mempercayai Keripik Mantul!
+Salam hangat,
+Tim Keripik Mantul`
+  };
+  
+  await transporter.sendMail(mailOptions);
+  res.status(200).json({ message: 'OTP sent to your email',token});
+}
+
+exports.confirmAccount = async (req, res) => {
+  const {email, password} = req.body;
+  const formatedEmail = email.toLowerCase();
+  
+  const user = new User({
+    email,
+    password,
+    role: 'User', // Atur default role jika tidak diberikan
+    isRegistered: false
+  });
+  try{
+    await user.save();
+  }catch(error){
+    return res.status(401).json({ message: 'Email is already in use!' });
+  }
+  if(user.otp.otp){
+    const dateNow = new Date().getTime  ;
+    const userDate = new Date(user.otp.sendTime).getTime();
+    if(userDate > dateNow){
+      return res.status(400).json({ message: `Please wait until ${new Date(
+          user.otp.sendTime
+        ).toLocaleTimeString()}` });
+    }
+  }
+
+  const otp = Math.floor(Math.random()*9000)+1000;
+  console.log(otp);
+  const token = crypto.randomBytes(32).toString('hex');
+
+  user.otp.otp = otp;
+  user.otp.sendTime = new Date().getTime() +9999*60*1000;
+  user.otp.token = token;
+
+  await user.save();
+  res.status(200).json({ message: 'Sending OTP to your email', user});
 };
 
 exports.signUp = async (req, res) => {
@@ -139,7 +176,6 @@ exports.signUp = async (req, res) => {
 
         // Buat pengguna baru
         const newUser = new User({
-            name,
             email,
             password,
             role: role || 'User', // Atur default role jika tidak diberikan
@@ -151,7 +187,6 @@ exports.signUp = async (req, res) => {
         // Berikan token
         res.status(201).json({
             _id: newUser._id,
-            name: newUser.name,
             role: newUser.role,
             email: newUser.email,
             token: generateToken(newUser._id),
@@ -178,6 +213,7 @@ exports.signUpGoogle = async (req, res) => {
                 name,
                 email,
                 googleAuth: true, // Tandai akun sebagai akun Google
+                isRegistered: true
             });
             await user.save();
         }
@@ -191,69 +227,69 @@ exports.signUpGoogle = async (req, res) => {
 
 exports.sendEmail = async (req, res, next) => {
   const {email} = req.body;
-    const formatedEmail = email.toLowerCase();
-    const user = await User.findOne({email: formatedEmail});
-    if (!user) {
-        return res.status(401).json({message: 'User not registered'});
+  const formatedEmail = email.toLowerCase();
+  const user = await User.findOne({email: formatedEmail});
+  if (!user) {
+      return res.status(401).json({message: 'User not registered'});
+  }
+  if(user.otp.otp){
+    const dateNow = new Date().getTime  ;
+    const userDate = new Date(user.otp.sendTime).getTime();
+    if(userDate > dateNow){
+      return res.status(400).json({ message: `Please wait until ${new Date(
+          user.otp.sendTime
+        ).toLocaleTimeString()}` });
     }
-    if(user.otp.otp){
-      const dateNow = new Date().getTime  ;
-      const userDate = new Date(user.otp.sendTime).getTime();
-      if(userDate > dateNow){
-        return res.status(400).json({ message: `Please wait until ${new Date(
-            user.otp.sendTime
-          ).toLocaleTimeString()}` });
-      }
+  }
+
+  const otp = Math.floor(Math.random()*9000)+1000;
+  console.log(otp);
+  const token = crypto.randomBytes(32).toString('hex');
+
+  user.otp.otp = otp;
+  user.otp.sendTime = new Date().getTime() +1*60*1000;
+  user.otp.token = token;
+
+  await user.save(); 
+  var transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      type: 'OAuth2',
+      user: process.env.GMAIL,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN
     }
-
-    const otp = Math.floor(Math.random()*9000)+1000;
-    console.log(otp);
-    const token = crypto.randomBytes(32).toString('hex');
-
-    user.otp.otp = otp;
-    user.otp.sendTime = new Date().getTime() +1*60*1000;
-    user.otp.token = token;
-
-    await user.save(); 
-    var transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        type: 'OAuth2',
-        user: process.env.GMAIL,
-        clientId: process.env.GMAIL_CLIENT_ID,
-        clientSecret: process.env.GMAIL_CLIENT_SECRET,
-        refreshToken: process.env.GMAIL_REFRESH_TOKEN
-      }
-    });
+  });
+  
+  var mailOptions = {
+    from: process.env.GMAIL,
+    to: formatedEmail,
+    subject: 'Reset Password - Keripik Mantul',
+    text: 
+    `Halo ${user.email},
+    Kami menerima permintaan untuk mereset password akun Anda di Keripik Mantul. Jika Anda yang membuat permintaan ini, silakan gunakan kode OTP berikut untuk melanjutkan proses reset password Anda:
     
-    var mailOptions = {
-      from: process.env.GMAIL,
-      to: formatedEmail,
-      subject: 'Reset Password - Keripik Mantul',
-      text: 
-      `Halo ${user.email},
-      Kami menerima permintaan untuk mereset password akun Anda di Keripik Mantul. Jika Anda yang membuat permintaan ini, silakan gunakan kode OTP berikut untuk melanjutkan proses reset password Anda:
-      
-      🔑 Kode OTP: ${otp}
+    🔑 Kode OTP: ${otp}
 
-      Jika Anda tidak melakukan permintaan ini, abaikan email ini dan pastikan akun Anda aman. Jika Anda membutuhkan bantuan lebih lanjut, hubungi kami di ${process.env.GMAIL}.
+    Jika Anda tidak melakukan permintaan ini, abaikan email ini dan pastikan akun Anda aman. Jika Anda membutuhkan bantuan lebih lanjut, hubungi kami di ${process.env.GMAIL}.
 
-  Terima kasih telah mempercayai Keripik Mantul!
-  Salam hangat,
-  Tim Keripik Mantul`
-    };
-    
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'OTP sent to your email',token});
+Terima kasih telah mempercayai Keripik Mantul!
+Salam hangat,
+Tim Keripik Mantul`
+  };
+  
+  await transporter.sendMail(mailOptions);
+  res.status(200).json({ message: 'OTP sent to your email',token});
 };
 
 exports.verifyOtp = async (req, res, next) => {
   const { otp } = req.body;
 
   const findedUser = await User.findOne({ "otp.otp": otp });
-  console.log(findedUser);
+  console.log("FindedUser: "+findedUser);
   if (!findedUser) {
     return res.status(400).json({ message: "Invalid OTP!"});
   }
@@ -262,6 +298,7 @@ exports.verifyOtp = async (req, res, next) => {
   }
 
   findedUser.otp.otp = null;
+  findedUser.isRegistered = true;
   await findedUser.save();
   return res.status(200).json({ message: "OTP verified", token: findedUser.otp.token}); 
 };

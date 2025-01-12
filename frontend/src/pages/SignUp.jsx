@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, Alert, message } from "antd";
 import axios from "axios";
 import { URL_SIGNUP } from '../utils/Endpoint'; // Update ke endpoint signup
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 const Signup = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
 
     const navigate = useNavigate(); // Hook untuk navigasi
 
@@ -26,24 +27,65 @@ const Signup = () => {
     const handleGoogleFailure = () => {
         alert('Google Sign-In Failed');
     };
+    const handleSendConfirm = async (user) => {
+        console.log(user);  
+        const data = {
+            email: user.email,
+            otp: user.otp.otp,
+            token: user.otp.token
+        }
+        axios
+        .post(URL_SIGNUP+"/confirm/send", data)
+        .then((res) => {
+            console.log("res", res);
+            localStorage.setItem("passToken", res?.data.token);
+            console.log("resToken:"+ res?.data.token);
+            localStorage.setItem("email", email);
+            navigate("/password/reset/code");
+            setLoading(false);
+        })
+        .catch((err) => {
+            console.error("Error:", err);
+            if (err.response) {
+                setErrMsg(err.response.data.message); // Jika response ada
+            } else {
+                setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+            }
+            setLoading(false);
+        });
+    }
     const handleSubmit = async (values) => {
         setLoading(true);
 
         console.log('values', values);
-        try {
-            await axios.post(URL_SIGNUP, values);
-            message.success('Signup successful!');
-            form.resetFields();
-            navigate('/signin');
-        } catch (error) {
-            message.error("Failed to signup!");
-        } finally {
+        const data = {
+            email: values.email,
+            password: values.password,
+        };
+        console.log('Data', data);
+        axios
+        .post(URL_SIGNUP+"/confirm", data)
+        .then((res) => {
+            handleSendConfirm(res?.data.user);
+        })
+        .catch((err) => {
+            console.error("Error:", err);
+            if (err.response) {
+                setErrMsg(err.response.data.message); // Jika response ada
+            } else {
+                setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+            }
             setLoading(false);
-        }
+        });
     };
 
     return (
-        <div>
+        <>
+            {errMsg !== "" && (
+                <div style={{ padding: "20px" }}>
+                    <Alert message={errMsg} type="error" />
+                </div>
+            )}
             <div className="flex items-center justify-center">
             <div className="bg-white p-8 rounded-lg w-2/4">
             <h1 className="text-2xl font-bold text-center" style={{ color: "#800000" }}>Registrasi</h1>
@@ -65,7 +107,7 @@ const Signup = () => {
                     <Input 
                     placeholder="Masukkan email Anda" 
                     size="large"
-                    autoComplete="off"
+                    autoComplete="on"
                     style={{ background: "#F2E8C6" }}
                     />
                 </Form.Item>
@@ -132,7 +174,7 @@ const Signup = () => {
             </GoogleOAuthProvider>
             </div>
             </div>
-        </div>
+        </>
     );
 };
 
