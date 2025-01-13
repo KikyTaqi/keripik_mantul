@@ -123,7 +123,7 @@ const Product = () => {
                     
                     <div className="flex">
                         <Link to={'/dashboard/products/create'}>
-                            <Button type="secondary" className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-8 py-5 justify-items-center text-base"><FaCirclePlus /> Tambah Produk</Button>
+                            <Button type="secondary" className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-8 py-5 justify-items-center text-base"><FaCirclePlus /> <span className="mb-1">Tambah Produk</span></Button>
                         </Link>
                     </div>
                 </div>

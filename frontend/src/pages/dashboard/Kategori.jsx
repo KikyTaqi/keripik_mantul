@@ -13,7 +13,7 @@ const Kategori = () => {
         try {
             const response = await axios.get(URL_KATEGORI);
             setKategori(response.data);
-            const filteredKategori = response.data.map(({ _id, ...rest }) => rest);
+            const filteredKategori = response.data.map(({ ...rest }) => rest);
             setKategori(filteredKategori);
         } catch (error) {
             console.error("Error fetching kategori:", error);
@@ -58,11 +58,11 @@ const Table = ({ title, headers, data, onEdit, onDelete }) => (
                 {data.map((item, index) => (
                     <tr key={index}>
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>{index + 1}</td>
-                        {Object.values(item).map((cell, idx) => (
+                        {Object.values(item).slice(1.0).map((cell, idx) => (
                             <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
                         ))}
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                            <button onClick={() => onEdit(item.id)} style={{ marginRight: "8px" }}>Edit</button>
+                            <button onClick={() => onEdit(item._id)} style={{ marginRight: "8px" }}>Edit</button>
                             <button onClick={() => onDelete(item.id)}>Hapus</button>
                         </td>
                     </tr>
