@@ -10,21 +10,43 @@ const Kategori = () => {
     }, []);
 
     const fetchKategori = async () => {
-        const response = await axios.get(URL_KATEGORI);
-        setKategori(response.data);
+        try {
+            const response = await axios.get(URL_KATEGORI);
+            setKategori(response.data);
+            const filteredKategori = response.data.map(({ _id, ...rest }) => rest);
+            setKategori(filteredKategori);
+        } catch (error) {
+            console.error("Error fetching kategori:", error);
+        }
     };
 
-    return(
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Table title="Produk Kategori" headers={["NO", "Nama Kategori"]} data={kategori} />
+    const handleEdit = (id) => {
+        console.log(`Edit item with id: ${id}`);
+        // Implement edit functionality
+    };
+
+    const handleDelete = (id) => {
+        console.log(`Delete item with id: ${id}`);
+        // Implement delete functionality
+    };
+
+    return (
+        <div style={{ display: "flex", justifyContent: "center", height: "100vh" }}>
+            <Table
+                title="Produk Kategori"
+                headers={["NO", "Nama Kategori", "Aksi"]}
+                data={kategori}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
         </div>
     );
 };
 
-const Table = ({ title, headers, data }) => (
-    <div style={{ width: "48%", backgroundColor: "#fff", padding: "20px", borderRadius: "10px" }}>
+const Table = ({ title, headers, data, onEdit, onDelete }) => (
+    <div style={{ width: "60%", backgroundColor: "#fff", padding: "20px", borderRadius: "10px", textAlign: "center" }}>
         <h3 className="font-bold mb-5">{title}</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", margin: "0 auto" }}>
             <thead>
                 <tr>
                     {headers.map((header) => (
@@ -39,6 +61,10 @@ const Table = ({ title, headers, data }) => (
                         {Object.values(item).map((cell, idx) => (
                             <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
                         ))}
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                            <button onClick={() => onEdit(item.id)} style={{ marginRight: "8px" }}>Edit</button>
+                            <button onClick={() => onDelete(item.id)}>Hapus</button>
+                        </td>
                     </tr>
                 ))}
             </tbody>
