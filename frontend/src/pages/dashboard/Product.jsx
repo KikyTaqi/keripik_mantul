@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Image, ConfigProvider } from 'antd';
+import { Table, Button, Image, ConfigProvider, message } from 'antd';
 import axios from 'axios';
-import { URL_PRODUCT } from '../../utils/Endpoint';
+import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
 import { Link } from 'react-router-dom';
 import '../../style.css';
 import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
 const Product = () => {
     const [Products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        axios
-            .get(URL_PRODUCT)
-            .then((res) => {
-                console.log("res", res.data);
-                setProducts(res.data);
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const [productResponse, categoryResponse] = await Promise.all([
+                    axios.get(URL_PRODUCT),
+                    axios.get(URL_KATEGORI)
+                ]);
+
+                setProducts(productResponse.data);
+                setCategories(categoryResponse.data);
+            } catch (err) {
+                message.error("Gagal memuat data!");
+                console.error(err);
+            } finally {
                 setLoading(false);
-            })
-            .catch((err) => {
-                console.log(err.response);
-                setLoading(false);
-            });
+            }
+        };
+
+        fetchData();
     }, []);
 
-    // kolom utk tabel
-    const column = [
+    // Kolom untuk tabel
+    const columns = [
         {
             title: "NO",
             key: "no",
@@ -55,17 +63,21 @@ const Product = () => {
         },
         {
             title: 'Kategori',
-            dataIndex: 'kategori',
-            key: 'kategori',
+            dataIndex: 'category_id',
+            key: 'category_id',
             align: "center",
-        },
+            render: (categoryId) => {
+                const category = categories.find((cat) => String(cat._id) === String(categoryId));
+                return category ? category.nama_kategori : "Tidak Diketahui";
+            },
+        },        
         {
             title: "Gambar",
             dataIndex: "thumbnail",
-            render: (_, record) => {
-                console.log('recor', record);
-                return <Image src={record?.thumbnail} width={100} loading="lazy" />
-            },
+            key: "thumbnail",
+            render: (_, record) => (
+                <Image src={record?.thumbnail} width={100} loading="lazy" />
+            ),
             align: "center",
         },
         {
@@ -74,9 +86,12 @@ const Product = () => {
             width: "15%",
             align: "center",
             render: (_, record) => (
-                <>  
+                <>
                     <Link to={`/dashboard/products/${record?._id}`}>
-                        <Button type="secondary" className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2">
+                        <Button
+                            type="secondary"
+                            className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2"
+                        >
                             <FaPencil />
                         </Button>
                     </Link>
@@ -84,16 +99,7 @@ const Product = () => {
                         type="secondary"
                         className="border-2 border-red-800 hover:border-red-600 hover:text-red-700"
                         loading={loading}
-                        onClick={() => {
-                            console.log('id', record?._id);
-                            axios
-                                .delete(`${URL_PRODUCT}/${record?._id}`)
-                                .then((res) => {
-                                    console.log(res);
-                                    window.location.reload();
-                                })
-                                .catch((err) => console.log('err', err));
-                        }}
+                        onClick={() => handleDelete(record?._id)}
                     >
                         <FaRegTrashCan />
                     </Button>
@@ -101,6 +107,21 @@ const Product = () => {
             ),
         },
     ];
+
+    // Handle delete produk
+    const handleDelete = async (id) => {
+        setLoading(true);
+        try {
+            await axios.delete(`${URL_PRODUCT}/${id}`);
+            message.success("Produk berhasil dihapus!");
+            setProducts((prev) => prev.filter((product) => product._id !== id));
+        } catch (err) {
+            message.error("Gagal menghapus produk!");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <ConfigProvider
@@ -119,26 +140,33 @@ const Product = () => {
         >
             <div>
                 <div className="flex justify-between">
-                    <h1 className="font-bold mb-5">Daftar Produk Untuk Dikelola</h1>
+                    <h1 className="font-bold mt-1">Daftar Produk Untuk Dikelola</h1>
                     
                     <div className="flex">
                         <Link to={'/dashboard/products/create'}>
-                            <Button type="secondary" className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-8 py-5 justify-items-center text-base"><FaCirclePlus /> <span className="mb-1">Tambah Produk</span></Button>
+                            <Button
+                                type="secondary"
+                                className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-6 py-4 justify-items-center text-base"
+                            >
+                                <FaCirclePlus />
+                                <span className="mb-1">Tambah Produk</span>
+                            </Button>
                         </Link>
                     </div>
                 </div>
                 
                 <Table
-                dataSource={Products}
-                columns={column}
-                loading="loading"
-                bordered
-                className="mt-4"
-                pagination={{ 
-                    pageSize: 4, 
-                    showSizeChanger: false,
-                    className: 'custom-pagination',
-                }}
+                    dataSource={Products}
+                    columns={columns}
+                    loading={loading}
+                    bordered
+                    className="mt-4"
+                    pagination={{ 
+                        pageSize: 4, 
+                        showSizeChanger: false,
+                        className: 'custom-pagination',
+                    }}
+                    rowKey={(record) => record._id}
                 />
             </div>
         </ConfigProvider>
