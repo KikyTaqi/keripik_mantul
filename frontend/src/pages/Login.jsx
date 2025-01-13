@@ -19,7 +19,6 @@ function Login() {
 
         try {
             const res = await axios.post(URL_SIGNIN+'/google', { token: credential });
-            console.log("Res log google: "+res.data.role);
             localStorage.setItem('userToken', res.data.token);
             localStorage.setItem('userEmail', res.data.email);
             localStorage.setItem('userRole', res.data.role);
@@ -27,7 +26,6 @@ function Login() {
             const userToken = localStorage.getItem('userToken');
             const userEmail = localStorage.getItem('userEmail');
             const userRole = localStorage.getItem('userRole');
-            console.log("HMHMHM: "+userToken + userEmail + userRole);
             if (res.data.role !== "Admin") {
                 navigate("/");
             } else {
@@ -42,7 +40,6 @@ function Login() {
     };
 
     const handleSendConfirm = async (user) => {
-        console.log(user);  
         const data = {
             email: user.email,
             otp: user.otp.otp,
@@ -72,12 +69,9 @@ function Login() {
             password: values.password,
             rememberMe: rememberMe,
         };
-        console.log(values.password);
-        console.log(values.email);
         axios
             .post(URL_SIGNIN, data)
             .then((res) => {
-                console.log("res", res);
                 localStorage.setItem('userToken', res.data.token);
                 localStorage.setItem('userEmail', res.data.email);
                 localStorage.setItem('userRole', res.data.role);
