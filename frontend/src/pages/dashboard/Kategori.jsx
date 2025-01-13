@@ -17,9 +17,7 @@ const Kategori = () => {
         try {
             const response = await axios.get(URL_KATEGORI);
             setKategori(response.data);
-            const filteredKategori = response.data.map(item => ({
-                ...item
-            }));
+            const filteredKategori = response.data.map(({ ...rest }) => rest);
             setKategori(filteredKategori);
         } catch (error) {
             console.error("Error fetching kategori:", error);
@@ -75,30 +73,12 @@ const Table = ({ title, headers, data, onEdit, onDelete }) => (
                     <tr key={index}>
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>{index + 1}</td>
                         {Object.values(item).slice(1.0).map((cell, idx) => (
+                        {Object.values(item).slice(1.0).map((cell, idx) => (
                             <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
                         ))}
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                        <Link to={`/dashboard/kategori/${item?._id}`}>
-                        <Button type="secondary" className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2">
-                            <FaPencil />
-                        </Button>
-                    </Link>
-                    <Button
-                        type="secondary"
-                        className="border-2 border-red-800 hover:border-red-600 hover:text-red-700"
-                        onClick={() => {
-                            console.log('id', item?._id);
-                            axios
-                                .delete(`${URL_KATEGORI}/${item?._id}`)
-                                .then((res) => {
-                                    console.log(res);
-                                    window.location.reload();
-                                })
-                                .catch((err) => console.log('err', err));
-                        }}
-                    >
-                        <FaRegTrashCan />
-                    </Button>
+                            <button onClick={() => onEdit(item._id)} style={{ marginRight: "8px" }}>Edit</button>
+                            <button onClick={() => onDelete(item.id)}>Hapus</button>
                         </td>
                     </tr>
                 ))}
