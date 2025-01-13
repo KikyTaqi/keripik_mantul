@@ -18,7 +18,7 @@ const AddKategori = () => {
 
         console.log('values', values);
         const data = new FormData();
-        data.append("name", values.nama_kategori);
+        data.append("nama_kategori", values.nama_kategori);
         console.log('data: ', data);
         console.log('FormData entries:');
         for (let pair of data.entries()) {

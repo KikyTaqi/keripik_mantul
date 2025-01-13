@@ -73,7 +73,6 @@ const Table = ({ title, headers, data, onEdit, onDelete }) => (
                     <tr key={index}>
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>{index + 1}</td>
                         {Object.values(item).slice(1.0).map((cell, idx) => (
-                        {Object.values(item).slice(1.0).map((cell, idx) => (
                             <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
                         ))}
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>
