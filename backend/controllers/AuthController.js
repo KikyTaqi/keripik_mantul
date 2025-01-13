@@ -58,7 +58,8 @@ exports.signInGoogle = async (req, res) => {
       console.log('User Info:', payload);
 
       // Cek atau buat user di database
-      let user = await User.findOne({ email: payload.email });
+      let email = payload.email;
+      let user = await User.findOne({ email: email });
       let userToken = null;
       if (!user) {
         console.log(user);
