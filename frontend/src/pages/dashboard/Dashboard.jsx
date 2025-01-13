@@ -23,7 +23,7 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:4000/api/products");
         setProducts(response.data);
         setProductsCount(response.data.length);
-        const filteredProducts = response.data.map(({ thumbnail, _id, __v, cloudinaryId, ...rest }) => rest);
+        const filteredProducts = response.data.slice(0, 5).map(({ thumbnail, _id, __v, cloudinaryId, ...rest }) => rest);
         setProducts(filteredProducts);
     };
 
