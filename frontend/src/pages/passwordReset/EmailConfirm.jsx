@@ -13,6 +13,7 @@ function EmailConfirm() {
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
+        event.preventDefault();
         setLoading(true);
         const data = {
             email: values.email,

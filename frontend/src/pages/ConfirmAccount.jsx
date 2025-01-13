@@ -35,9 +35,6 @@ function ConfirmAccount() {
                 .post(URL_VERIFYOTP+"/time", data)
                 .then((res) => {
                     console.log("res", res);
-                    // localStorage.setItem("passToken", res?.data.token);
-                    // console.log("resToken:"+ res?.data.token);
-                    // localStorage.setItem("email", email);
                     const remaningTime =
                         new Date(res.sendTime).getTime() - new Date().getTime();
             
@@ -77,6 +74,7 @@ function ConfirmAccount() {
     };
 
     const handleSubmit = (event) => {
+        event.preventDefault();
         const finalOtp = otp1 + otp2 + otp3 + otp4;
         setLoading(true);
         const data = {
@@ -90,7 +88,7 @@ function ConfirmAccount() {
                 localStorage.setItem("passToken", res?.data.token);
                 // console.log("resToken:"+ res?.data.token);
                 // localStorage.setItem("email", email);
-                navigate("/password/change");
+                navigate("/signin");
                 setLoading(false);
             })
             .catch((err) => {
@@ -124,43 +122,46 @@ function ConfirmAccount() {
                         autoComplete="off"
                         layout="vertical"
                     >
-                        <Form.Item
-                            label="Code"
-                        >
-                        {inputRef.map((item, index) => {
-                            return (
-                                <input
-                                    required
-                                    key={index}
-                                    onChange={(event) => inputChange(event, index)}
-                                    ref={item}
-                                    onInput={(event) => {
-                                    if (event.target.value.length > 1) {
-                                        event.target.value = event.target.value.slice(0, 1);
-                                    }
-                                    }}
-                                    type="number"
-                                    className="ui_input otp_input"
-                                />
-                            );
-                        })}
+                        <Form.Item>
+                            <div className="flex gap-2 justify-center rounded-lg p-2">
+                                {inputRef.map((item, index) => {
+                                    return (
+                                        <input
+                                            key={index}
+                                            required
+                                            onChange={(event) => inputChange(event, index)}
+                                            ref={item}
+                                            onInput={(event) => {
+                                                if (event.target.value.length > 1) {
+                                                    event.target.value = event.target.value.slice(0, 1);
+                                                } else if (event.target.value.length < 1) {
+                                                    if (index > 0) {
+                                                        inputRef[index - 1].current.focus();
+                                                    }
+                                                }
+                                            }}
+                                            type="text"
+                                            style={{ width: "52px", height: "55px", textAlign: "center", backgroundColor: "#F2E8C6", borderRadius: 15, outline: 0, marginLeft: 5, marginRight: 5 }}
+                                        />
+                                    );
+                                })}
+                            </div>
                         </Form.Item>
 
-                        <Form.Item className="mb-1">
+                        <Form.Item className="mb-1 text-center">
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                block
                                 loading={loading}
                                 size="large"
                                 className="rounded-full"
-                                style={{ background: "#800000" }}
+                                style={{ background: "#800000", width: "50%" }}
                             >
                                 Verifikasi Kode
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/password/reset">Kembali ke login</a>
+                            <a href="/signin">Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

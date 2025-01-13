@@ -52,7 +52,6 @@ function Login() {
         .post(URL_SIGNUP+"/confirm/send", data)
         .then((res) => {
             localStorage.setItem("passToken", res?.data.token);
-            navigate("/password/reset/code");
             setLoading(false);
         })
         .catch((err) => {
@@ -155,8 +154,10 @@ function Login() {
                                 >
                                     Remember me
                                 </Checkbox>
-                                <a href="/password/reset">
-                                    Lupa Password?
+                                <a href="/password/reset" className="opacity-50 hover:opacity-70 transition-opacity" style={{
+                                    color: "#000",
+                                }}>
+                                    Lupa password?
                                 </a>
                             </div>
 
@@ -168,7 +169,7 @@ function Login() {
                                 loading={loading}
                                 size="large"
                                 className="rounded-full"
-                                style={{ background: "#800000" }}
+                                style={{ background: "#800000", width: "100%" }}
                             >
                                 Login
                             </Button>

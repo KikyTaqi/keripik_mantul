@@ -112,7 +112,7 @@ exports.sendConfirmAccount = async (req, res) => {
   });
   
   var mailOptions = {
-    from: process.env.GMAIL,
+    from: 'Keripik Mantul <process.env.GMAIL>',
     to: formatedEmail,
     subject: 'Confirm Account - Keripik Mantul',
     text: 
@@ -263,7 +263,7 @@ exports.sendEmail = async (req, res, next) => {
   });
   
   var mailOptions = {
-    from: process.env.GMAIL,
+    from:'Keripik Mantul <process.env.GMAIL>',
     to: formatedEmail,
     subject: 'Reset Password - Keripik Mantul',
     text: 

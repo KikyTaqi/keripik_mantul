@@ -7,9 +7,9 @@ import App from './App.jsx'
 const clientId = "853769351673-tv8qth8b3g3of3r046nni0obf0hklcpg.apps.googleusercontent.com";
 
 createRoot(document.getElementById('root')).render(
-  <GoogleOAuthProvider clientId={clientId}>
   <StrictMode>
-    <App />
+    <GoogleOAuthProvider clientId={clientId}>
+      <App />
+    </GoogleOAuthProvider>
   </StrictMode>,
-  </GoogleOAuthProvider>
 )

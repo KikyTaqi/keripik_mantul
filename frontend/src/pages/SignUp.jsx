@@ -19,7 +19,14 @@ const Signup = () => {
         try {
             const response = await axios.post(URL_SIGNUP+'/google', { token: credential });
             console.log(response.data);
-            navigate('/signin');
+            localStorage.setItem('userToken', res.data.token);
+            localStorage.setItem('userEmail', res.data.email);
+            localStorage.setItem('userRole', res.data.role);
+            if (res.data.role !== "Admin") {
+                navigate("/");
+            } else {
+                navigate("/dashboard");
+            }
         } catch (error) {
             console.error(error);
         }
