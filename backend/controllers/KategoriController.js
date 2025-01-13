@@ -13,6 +13,10 @@ exports.getKategori = async (req, res) => {
 exports.createKategori = async (req, res) => {
     try {
         console.log('req.body:', req.body);
+        const kategori = new Kategori({
+                    name_kategori: req.name,
+                    ...req.body,
+                });
         await kategori.save();
         res.status(201).json(kategori);
     } catch (err) {

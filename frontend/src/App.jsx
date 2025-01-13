@@ -16,6 +16,7 @@ import AddProduct from "./pages/dashboard/ProductCreate";
 import Checkout from "./pages/Checkout";
 import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 import Kategori from "./pages/dashboard/Kategori";
+import AddKategori from "./pages/dashboard/KategoriCreate";
 
 // Auth
 import Login from "./pages/Login";
@@ -94,6 +95,8 @@ const App = () => {
                         <Route path="/products/create" element={<AddProduct />} />
                         <Route path="/products/:id" element={<UpdateProduct />} />
                         <Route path="/kategori" element={<Kategori />} />
+                        <Route path="/kategori/create" element={<AddKategori />} />
+                        <Route path="/kategori/:id" element={<Kategori />} />
                       </Routes>
                     </Content>
                   </div>
