@@ -8,7 +8,7 @@ import People from "../../assets/People.svg";
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState([]); 
     const [productsCount, setProductsCount] = useState(0);
     const [usersCount, setUsersCount] = useState(0);
     const [ordersCount, setOrdersCount] = useState(0);
