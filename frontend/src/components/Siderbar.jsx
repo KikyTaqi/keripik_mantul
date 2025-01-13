@@ -5,18 +5,19 @@ import logo from "../assets/logo_keripik.png";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+
   const checkLogin = async () => {
     const userToken = localStorage.removeItem('userToken');
     const userEmail = localStorage.removeItem('userEmail');
     const userRole = localStorage.removeItem('userRole');
 
     if(userToken == null || userEmail == null || userRole == null){
-      // console.log("lah kok ke run");
       navigate('/signin');
     }
-
   }
+
   const location = useLocation(); // Mendapatkan rute saat ini
+
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: "fa-regular fa-message" },
     { name: "Pesanan", path: "/dashboard/pesanan", icon: "fa-solid fa-bag-shopping" },
@@ -27,8 +28,6 @@ const Sidebar = () => {
     { name: "Customer", path: "/dashboard/customer", icon: "fa-solid fa-users" },
     { name: "Log Out", path: "/signin", icon: "fa-solid fa-arrow-right-from-bracket" },
   ];
-
-  
 
   return (
     <div className="w-64 bg-white shadow-lg h-full flex flex-col rounded-br-lg">
@@ -45,23 +44,25 @@ const Sidebar = () => {
       <nav className="flex-1 px-4">
         <ul className="space-y-2 mb-6">
           {menuItems.map((item, index) => {
-            const isActive = location.pathname === item.path; // Periksa apakah rute saat ini aktif
+            const isDashboardActive = item.path === "/dashboard" && location.pathname === "/dashboard";
+            const isActive = item.path !== "/dashboard" && location.pathname.startsWith(item.path);
+
             return (
-              <li key={index}  className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
+              <li key={index} className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
                 <Link
                   to={item.path}
                   onClick={(e) => {
-                    if (item.name == "Log Out") {
+                    if (item.name === "Log Out") {
                       checkLogin();
                     }
                   }}
                   className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 hover:bg-orange-100 rounded-lg ${
-                    isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
+                    isDashboardActive || isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
                   }`}
                 >
                   <div className="flex">
                     <div className="flex-none w-7">
-                        <i className={item.icon}></i>
+                      <i className={item.icon}></i>
                     </div>
                     <div className="flex-1">
                       <span>{item.name}</span>

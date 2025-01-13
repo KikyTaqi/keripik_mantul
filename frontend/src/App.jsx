@@ -33,7 +33,32 @@ const App = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={
+            <Layout style={{backgroundColor: "white"}}>
+                  
+              {/* Main Content */}
+              <Layout style={{ padding: '0', minHeight: '20vh', backgroundColor: "white" }}>
+                <div className="flex">
+                  <div className="flex-1">
+                    <Header />
+                    <Content
+                      style={{
+                        margin: '16px', 
+                        background: '#fff',
+                        minHeight: '200px',
+                      }}
+                    >
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                      </Routes>
+                    </Content>
+                  </div>
+                </div>
+                
+              </Layout>
+              <Footer />
+            </Layout>
+          } />
         <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
