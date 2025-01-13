@@ -71,7 +71,6 @@ const App = () => {
                     </Content>
                   </div>
                 </div>
-              {/* Sidebar */}
                 
               </Layout>
               <Footer />

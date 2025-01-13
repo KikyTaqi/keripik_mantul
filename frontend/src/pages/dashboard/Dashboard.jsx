@@ -39,53 +39,56 @@ const Dashboard = () => {
     };
 
     return (
-    <div>
-        <div className="pt-5 px-5" style={{ background: "linear-gradient(to bottom, #F2E8C6 60%, white 40%)"}}>
-        <div className="gap-1 justify-around flex mb-5">
-    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center" style={{ width: "25vh", height: "100px" }}>
-        <div className="flex-1 text-center">
-            <h1 className="font-bold text-start text-3xl ml-2" style={{ color: "#800000" }}>100</h1>
-            <h4 className="ml-2">Pesanan Masuk</h4>
-        </div>
-        <div className="flex-1">
-            <img src={Online} alt="" className="mx-auto" />
-        </div>
-    </div>
-    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center" style={{ width: "25vh", height: "100px" }}>
-        <div className="flex-1 text-center">
-            <h3 className="font-bold text-start text-3xl ml-2" style={{ color: "#800000" }}>{productsCount}</h3>
-            <h4>Total Produk</h4>
-        </div>
-        <div className="flex-1">
-            <img src={Product} alt="" className="mx-auto" />
-        </div>
-    </div>
-    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center" style={{ width: "25vh", height: "100px" }}>
-        <div className="flex-1 text-center">
-            <h3 className="font-bold text-start text-3xl ml-2" style={{ color: "#800000" }}>100</h3>
-            <h4>Total Ulasan</h4>
-        </div>
-        <div className="flex-1">
-            <img src={Ulasan} alt="" className="mx-auto" />
-        </div>
-    </div>
-    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center" style={{ width: "25vh", height: "100px" }}>
-        <div className="flex-1 text-center">
-            <h3 className="font-bold text-start text-3xl ml-2" style={{ color: "#800000" }}>{usersCount}</h3>
-            <h4 className="ml-2">Total Customer</h4>
-        </div>
-        <div className="flex-1">
-            <img src={People} alt="" className="mx-auto" />
-        </div>
-    </div>
-</div>
-
-        </div>
+        <div>
+            <div className="pt-5 px-5" style={{ background: "linear-gradient(to bottom, #F2E8C6 60%, white 40%)" }}>
+                <div className="gap-1 justify-around flex mb-5">
+                    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
+                        <div className="flex-1 text-center">
+                            <h1 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>100</h1>
+                            <h4 className="ml-2">Pesanan Masuk</h4>
+                        </div>
+                        <div className="flex-1">
+                            <img src={Online} alt="" className="mx-auto" />
+                        </div>
+                    </div>
+    
+                    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
+                        <div className="flex-1 text-center">
+                            <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{productsCount}</h3>
+                            <h4>Total Produk</h4>
+                        </div>
+                        <div className="flex-1">
+                            <img src={Product} alt="" className="mx-auto" />
+                        </div>
+                    </div>
+    
+                    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
+                        <div className="flex-1 text-center">
+                            <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>100</h3>
+                            <h4>Total Ulasan</h4>
+                        </div>
+                        <div className="flex-1">
+                            <img src={Ulasan} alt="" className="mx-auto" />
+                        </div>
+                    </div>
+    
+                    <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
+                        <div className="flex-1 text-center">
+                            <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{usersCount}</h3>
+                            <h4 className="ml-2">Total Customer</h4>
+                        </div>
+                        <div className="flex-1">
+                            <img src={People} alt="" className="mx-auto" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Table title="Produk Terlaris" headers={["NO", "Nama Produk", "Stok", "Harga"]} data={products} />
                 <Table title="Pesanan Terbaru" headers={["NO", "Customer", "Produk", "Total Harga", "Tanggal Pesanan"]} data={orders} />
             </div>
-    </div>
+        </div>
     );
 };
 
