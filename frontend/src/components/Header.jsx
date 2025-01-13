@@ -10,10 +10,7 @@ const Header = () => {
         const userEmail = localStorage.getItem('userEmail');
         const userRole = localStorage.getItem('userRole');
 
-        console.log("HRHRHR: "+userToken + userEmail + userRole);
-
         if (userToken == null || userEmail == null || userRole == null) {
-            console.log("HEHEHEHE: " + userToken + userEmail + userRole);
             navigate('/signin');
         }
     };

@@ -59,13 +59,26 @@ exports.signInGoogle = async (req, res) => {
 
       // Cek atau buat user di database
       let user = await User.findOne({ email: payload.email });
+      let userToken = null;
       if (!user) {
-          user = new User({
-              email: payload.email,
-              name: payload.name,
-              role: 'User', // Default role
-          });
-          await user.save();
+        console.log(user);
+        user = new User({
+            email,
+            role: 'User',
+            googleAuth: true, // Tandai akun sebagai akun Google
+            isRegistered: true
+        });
+        await user.save();
+        userToken = generateToken(user._id);
+      }else if(user){
+        user.email = user.email;
+        user.role = user.role;
+        user.googleAuth = true;
+        user.isRegistered = true;
+        await user.save();
+        userToken = generateToken(user._id);
+      }else{
+        return res.status(401).json({ message: 'Something went wrong' });
       }
 
       res.status(200).json({
@@ -73,7 +86,7 @@ exports.signInGoogle = async (req, res) => {
           _id: user._id,
           role: user.role,
           email: user.email,
-          token: generateToken(user._id),
+          token: userToken,
       });
   } catch (err) {
       console.error('Error verifying Google token:', err);
@@ -206,17 +219,30 @@ exports.signUpGoogle = async (req, res) => {
 
         // Cari pengguna di database atau buat pengguna baru
         let user = await User.findOne({ email });
+        let userToken = null;
         if (!user) {
-            user = new User({
-                name,
-                email,
-                googleAuth: true, // Tandai akun sebagai akun Google
-                isRegistered: true
-            });
-            await user.save();
+          console.log(user);
+          user = new User({
+              name,
+              email,
+              role: 'User',
+              googleAuth: true, // Tandai akun sebagai akun Google
+              isRegistered: true
+          });
+          await user.save();
+          userToken = generateToken(user._id);
+        }else if(user){
+          user.email = user.email;
+          user.role = user.role;
+          user.googleAuth = true;
+          user.isRegistered = true;
+          await user.save();
+          userToken = generateToken(user._id);
+        }else{
+          return res.status(401).json({ message: 'Something went wrong' });
         }
 
-        res.status(200).json({ message: 'Google Sign-In Successful', user });
+        res.status(200).json({ message: 'Google Sign-In Successful', user, userToken });
     } catch (error) {
         console.error(error);
         res.status(400).json({ message: 'Invalid Google Token' });

@@ -11,7 +11,7 @@ const Sidebar = () => {
     const userRole = localStorage.removeItem('userRole');
 
     if(userToken == null || userEmail == null || userRole == null){
-      console.log("lah kok ke run");
+      // console.log("lah kok ke run");
       navigate('/signin');
     }
 

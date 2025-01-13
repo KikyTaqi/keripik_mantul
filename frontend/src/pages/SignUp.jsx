@@ -19,14 +19,17 @@ const Signup = () => {
         try {
             const response = await axios.post(URL_SIGNUP+'/google', { token: credential });
             console.log(response.data);
-            localStorage.setItem('userToken', res.data.token);
-            localStorage.setItem('userEmail', res.data.email);
-            localStorage.setItem('userRole', res.data.role);
-            if (res.data.role !== "Admin") {
-                navigate("/");
-            } else {
-                navigate("/dashboard");
+            if(response.data.userToken != null){
+                localStorage.setItem('userToken', response.data.user.token);
+                localStorage.setItem('userEmail', response.data.user.email);
+                localStorage.setItem('userRole', response.data.user.role);
+                if (response.data.user.role !== "Admin") {
+                    navigate("/");
+                } else {
+                    navigate("/dashboard");
+                }
             }
+            throw new Error("Failed to login");
         } catch (error) {
             console.error(error);
         }
