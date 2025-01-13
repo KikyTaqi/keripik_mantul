@@ -1,8 +1,25 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { FaSearch, FaUserCircle } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkLogin = () => {
+        const userToken = localStorage.getItem('userToken');
+        const userEmail = localStorage.getItem('userEmail');
+        const userRole = localStorage.getItem('userRole');
+
+        console.log("HRHRHR: "+userToken + userEmail + userRole);
+
+        if (userToken == null || userEmail == null || userRole == null) {
+            console.log("HEHEHEHE: " + userToken + userEmail + userRole);
+            navigate('/signin');
+        }
+    };
+    checkLogin();
+}, [navigate]);
+
   const location = useLocation(); // Mendapatkan rute saat ini
 
   const menuItems = [

@@ -36,7 +36,6 @@ exports.signIn = async (req, res) => {
         //berikan token
         res.json({
             _id: user._id,
-            name: user.name,
             role: user.role,
             email: user.email,
             token: generateToken(user._id),
@@ -72,7 +71,6 @@ exports.signInGoogle = async (req, res) => {
       res.status(200).json({
           message: 'Login successful',
           _id: user._id,
-          name: user.name,
           role: user.role,
           email: user.email,
           token: generateToken(user._id),

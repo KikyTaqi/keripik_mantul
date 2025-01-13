@@ -19,6 +19,15 @@ function Login() {
 
         try {
             const res = await axios.post(URL_SIGNIN+'/google', { token: credential });
+            console.log("Res log google: "+res.data.role);
+            localStorage.setItem('userToken', res.data.token);
+            localStorage.setItem('userEmail', res.data.email);
+            localStorage.setItem('userRole', res.data.role);
+
+            const userToken = localStorage.getItem('userToken');
+            const userEmail = localStorage.getItem('userEmail');
+            const userRole = localStorage.getItem('userRole');
+            console.log("HMHMHM: "+userToken + userEmail + userRole);
             if (res.data.role !== "Admin") {
                 navigate("/");
             } else {
@@ -70,6 +79,9 @@ function Login() {
             .post(URL_SIGNIN, data)
             .then((res) => {
                 console.log("res", res);
+                localStorage.setItem('userToken', res.data.token);
+                localStorage.setItem('userEmail', res.data.email);
+                localStorage.setItem('userRole', res.data.role);
                 if (res.data.role !== "Admin") {
                     navigate("/");
                 } else {
