@@ -15,27 +15,20 @@ const AddKategori = () => {
     // fn -> submit form
     const handleSubmit = async (values) => {
         setLoading(true);
-
-        console.log('values', values);
-        const data = new FormData();
-        data.append("nama_kategori", values.nama_kategori);
-        console.log('data: ', data);
-        console.log('FormData entries:');
-        for (let pair of data.entries()) {
-            console.log(`${pair[0]}:`, pair[1]);
-        }
-
         try {
-            await axios.post(URL_KATEGORI, data);
+            await axios.post(URL_KATEGORI, {
+                nama_kategori: values.nama_kategori
+            });
             message.success('Kategori added successfully!');
             form.resetFields();
             navigate('/dashboard/kategori');
         } catch (error) {
-            message.error("Failed to add product!")
+            console.error("Error:", error.response?.data || error.message);
+            message.error("Failed to add kategori!");
         } finally {
             setLoading(false);
         }
-    };
+    };    
 
     return (
         <div>
