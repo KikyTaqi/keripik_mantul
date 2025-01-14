@@ -5,6 +5,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Name is required!'],
     },
+    description: {
+        type: String,
+        required: [true, 'Description is required!']
+    },
     stok: {
         type: Number,
         required: [true, 'Stok is required!'],
@@ -12,6 +16,10 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         required: [true, 'Price is required!'],
+    },
+    category_id: {
+        type: String,
+        required: [true, 'Category is required!'],
     },
     thumbnail: {
         type: String,
