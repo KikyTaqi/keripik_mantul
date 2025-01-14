@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Image, ConfigProvider, message } from 'antd';
+import { Table, Button, Image, ConfigProvider, message, Popconfirm  } from 'antd';
 import axios from 'axios';
 import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
 import { Link } from 'react-router-dom';
@@ -95,14 +95,21 @@ const Product = () => {
                             <FaPencil />
                         </Button>
                     </Link>
-                    <Button
-                        type="secondary"
-                        className="border-2 border-red-800 hover:border-red-600 hover:text-red-700"
-                        loading={loading}
-                        onClick={() => handleDelete(record?._id)}
+                    <Popconfirm
+                        title="Hapus produk?"
+                        description="Apakah kamu yakin ingin menghapus produk ini?"
+                        onConfirm={() => handleDelete(record?._id)}
+                        okText="Iya"
+                        cancelText="Batal"
                     >
-                        <FaRegTrashCan />
-                    </Button>
+                        <Button
+                            type="secondary"
+                            className="border-2 border-red-800 hover:border-red-600 hover:text-red-700"
+                        >
+                            <FaRegTrashCan />
+                        </Button>
+                    </Popconfirm>
+                    
                 </>
             ),
         },

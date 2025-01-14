@@ -29,3 +29,9 @@
   .custom-pagination .ant-pagination-item-active {
     border-bottom: solid #800000 2px !important;
   }
+
+  .calistoga-regular {
+    font-family: "Calistoga", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
