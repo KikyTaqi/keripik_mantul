@@ -113,7 +113,7 @@ const AddProduct = () => {
                             (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
                         }
                         options={kategori.map((item) => ({
-                            label: item.nama_kategori, // Sesuaikan dengan data API
+                            label: item.nama_kategori,
                             value: item._id,
                         }))}
                     />
