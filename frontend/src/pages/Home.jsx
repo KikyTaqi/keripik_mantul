@@ -44,10 +44,10 @@ const Home = () => {
                         ngemil terbaik yang tak terlupakan.
                     </p>
                 </div>
-                <img src={jumbotron_home} alt="" />
+                <img src={jumbotron_home} alt="" style={{ width: '100vw' }} />
             </div>
             <Title level={2}>Product List</Title>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} style={{ margin: '0 1rem' }}>
                 {products.map((product) => (
                     <Col span={8} key={product.id}>
                         <Card
