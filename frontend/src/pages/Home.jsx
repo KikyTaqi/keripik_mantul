@@ -4,6 +4,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
+import jumbotron_home from "../assets/jumbotron_home.jpg";
 
 const { Title } = Typography;
 
@@ -30,7 +31,21 @@ const Home = () => {
     };
 
     return (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '0' }}>
+            <div style={{width: '100%', height: '100%', padding: '0', position: 'relative'}}>
+                <div style={{position: 'absolute', top: '10rem', left: '15rem'}}>
+                    <p style={{ color: 'black', fontSize: '2rem'}}>
+                        Rasakan Kelezatan <br />
+                        <span style={{color: '#800000'}}>Keripik Mantul !</span>
+                    </p>
+                    <p style={{ color: 'black', fontSize: '1.1rem', margin: '0'}}>
+                        Dibuat dari bahan berkualitas, <br />
+                        Keripik Mantul memberikan pengalaman <br />
+                        ngemil terbaik yang tak terlupakan.
+                    </p>
+                </div>
+                <img src={jumbotron_home} alt="" />
+            </div>
             <Title level={2}>Product List</Title>
             <Row gutter={[16, 16]}>
                 {products.map((product) => (

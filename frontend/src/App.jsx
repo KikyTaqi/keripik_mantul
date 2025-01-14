@@ -45,7 +45,7 @@ const App = () => {
                     <Header />
                     <Content
                       style={{
-                        margin: '16px', 
+                        // margin: '16px', 
                         background: '#fff',
                         minHeight: '200px',
                       }}
