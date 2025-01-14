@@ -40,6 +40,7 @@ exports.deleteKategori = async (req, res) => {
 exports.updateKategori = async (req, res) => {
     try {
         const { id } = req.params;
+        const { nama } = req.body;
 
         //cari produk by id
         let kategori = await Kategori.findById(id);
@@ -48,8 +49,11 @@ exports.updateKategori = async (req, res) => {
             return res.status(404).json({message: 'Kategori not found!'})
         }
         //simpan pembaruan ke database
+        const updateKategori = {
+            ...req.body,
+        }
+        kategori = await Kategori.findByIdAndUpdate(id, updateKategori, {new: true});
         console.error("findKategori2: "+kategori);
-        kategori = await Kategori.findByIdAndUpdate(id, {new: true});
         res.status(200).json(kategori);
     } catch (err) {
         res.status(400).json({message: err.message});
