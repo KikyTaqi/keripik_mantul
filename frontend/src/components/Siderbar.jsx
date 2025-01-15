@@ -23,7 +23,7 @@ const Sidebar = () => {
     { name: "Pesanan", path: "/dashboard/pesanan", icon: "fa-solid fa-bag-shopping" },
     { name: "Produk", path: "/dashboard/products", icon: "fa-solid fa-box-open" },
     { name: "Kategori", path: "/dashboard/kategori", icon: "fa-solid fa-icons" },
-    { name: "Ongkos Kirim", path: "/dashboard/ongkos-kirim", icon: "fa-solid fa-truck-fast" },
+    { name: "Ongkos Kirim", path: "/dashboard/ongkir", icon: "fa-solid fa-truck-fast" },
     { name: "Ulasan", path: "/dashboard/ulasan", icon: "fa-regular fa-comment-dots" },
     { name: "Customer", path: "/dashboard/customer", icon: "fa-solid fa-users" },
     { name: "Log Out", path: "/signin", icon: "fa-solid fa-arrow-right-from-bracket" },
