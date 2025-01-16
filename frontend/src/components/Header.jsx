@@ -1,5 +1,5 @@
 import { React, useEffect } from "react";
-import { FaSearch, FaUserCircle } from "react-icons/fa";
+import { FaSearch, FaUserCircle, FaCartPlus } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo_keripik.png";
 
@@ -68,10 +68,38 @@ const Header = () => {
     );
   } else {
     // Jika path bukan "/dashboard"
+
+    const menuItems = [
+      { name: "Home", path: "/" },
+      { name: "Produk", path: "/products" },
+      { name: "About", path: "/about" },
+    ];
+    const activeMenu = menuItems.find((item) => {
+      if (item.path === "/dashboard") {
+        return location.pathname === item.path;
+      }
+      return location.pathname.startsWith(item.path);
+    });
     return (
-      <div className="flex items-center justify-between px-8 py-4 bg-white border-b-red-800 border border-b-2">
+      <div className="flex items-center justify-between ps-24 pe-10 py-4 bg-white border-b-red-800 border border-b-2">
         <img src={logo} className="h-12" alt="logo" />
         
+        <div className="flex justify-evenly w-full">
+          {menuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`font-semibold text-red-800 hover:text-red-600 mx-4 ${
+                location.pathname === item.path ? "border-b-2 border-red-800" : ""
+              }`}
+              style={{
+                fontSize: "1rem",
+              }}
+            >
+              {item.name}
+            </Link>
+          ))}
+        </div>
 
         <div className="flex items-center">
           {/* Search Bar */}
@@ -79,13 +107,15 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search here..."
-              className="focus:outline-none w-100 font-semibold text-red-800 placeholder-red-800"
+              className="focus:outline-none w-[439px] font-semibold text-red-800 placeholder-red-800"
             />
             <FaSearch className="text-red-800 ml-10" />
           </div>
 
+          {/* Cart Icon */}
+          <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
           {/* User Icon */}
-          <FaUserCircle className="text-red-800 text-3xl object-right" />
+          <FaUserCircle className="text-red-800 text-3xl object-right ms-10" />
         </div>
       </div>
     );

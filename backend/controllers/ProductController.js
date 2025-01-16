@@ -70,6 +70,7 @@ exports.deleteProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        let result = false
 
         //cari produk by id
         let product = await Product.findById(id);
@@ -86,7 +87,7 @@ exports.updateProduct = async (req, res) => {
             await cloudinary.uploader.destroy(product.cloudinaryId);
             
             //Unggah gambar baru
-            result = await cloudinary.uploader.upload(req.file.path)
+            result = await cloudinary.uploader.upload(req.file.path);
         }
 
         const updatedProduct = {

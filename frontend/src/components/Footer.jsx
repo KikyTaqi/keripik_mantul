@@ -41,7 +41,7 @@ const Footer = () => {
         {/* Categories */}
         <div className="text-center md:text-left">
           <h2 className="font-bold text-lg mb-4">Kategori</h2>
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             <li>Keripik Singkong</li>
             <li>Keripik Talas</li>
             <li>Keripik Pisang</li>

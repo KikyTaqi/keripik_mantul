@@ -177,7 +177,6 @@ const UpdateProduct = () => {
                     label="Thumbnail"
                     valuePropName="fileList"
                     getValueFromEvent={({ fileList }) => fileList}
-                    rules={[{ required: false }]}
                 >
                     <Upload
                         listType="picture"
