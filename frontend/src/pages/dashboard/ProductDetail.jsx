@@ -2,22 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Image, ConfigProvider, message } from 'antd';
 import axios from 'axios';
 import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '../../style.css';
 import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
-const Product = () => {
+const DetailProduct = () => {
     const [Products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const params = useParams();
+    const { id } = params;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
+                console.log("ID", id);
                 const [productResponse, categoryResponse] = await Promise.all([
-                    axios.get(URL_PRODUCT),
+                    axios.patch(`${URL_PRODUCT}/${id}`),
                     axios.get(URL_KATEGORI)
                 ]);
 
@@ -48,13 +50,6 @@ const Product = () => {
             dataIndex: 'name',
             key: 'name',
             align: "center",
-            onCell: (record) => {
-                return {
-                    onClick: () => {
-                        navigate(`/dashboard/products/detail/${record?._id}`);
-                    },
-                };
-            }
         },
         {
             title: 'Stok',
@@ -88,52 +83,7 @@ const Product = () => {
             ),
             align: "center",
         },
-        {
-            title: 'Aksi',
-            key: 'action',
-            width: "15%",
-            align: "center",
-            render: (_, record) => (
-                <>
-                    <Link to={`/dashboard/products/${record?._id}`}>
-                        <Button
-                            type="secondary"
-                            className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2"
-                        >
-                            <FaPencil />
-                        </Button>
-                    </Link>
-                    <Button
-                        type="secondary"
-                        className="border-2 border-red-800 hover:border-red-600 hover:text-red-700"
-                        loading={loading}
-                        onClick={() => handleDelete(record?._id)}
-                    >
-                        <FaRegTrashCan />
-                    </Button>
-                </>
-            ),
-        },
     ];
-
-    // Handle delete produk
-    const handleDelete = async (id) => {
-        setLoading(true);
-        try {
-            await axios.delete(`${URL_PRODUCT}/${id}`);
-            message.success("Produk berhasil dihapus!");
-            setProducts((prev) => prev.filter((product) => product._id !== id));
-        } catch (err) {
-            message.error("Gagal menghapus produk!");
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleEdit = async(id) => {
-        navigate(`/dashboard/products/${id}`);
-    }
 
     return (
         <ConfigProvider
@@ -153,18 +103,6 @@ const Product = () => {
             <div>
                 <div className="flex justify-between">
                     <h1 className="font-bold mt-1">Daftar Produk Untuk Dikelola</h1>
-                    
-                    <div className="flex">
-                        <Link to={'/dashboard/products/create'}>
-                            <Button
-                                type="secondary"
-                                className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-6 py-4 justify-items-center text-base"
-                            >
-                                <FaCirclePlus />
-                                <span className="mb-1">Tambah Produk</span>
-                            </Button>
-                        </Link>
-                    </div>
                 </div>
                 
                 <Table
@@ -185,4 +123,4 @@ const Product = () => {
     );
 };
 
-export default Product;
+export default DetailProduct;

@@ -22,7 +22,7 @@ exports.getDetailProduct = async (req, res) => {
         }
         res.json(product);
     } catch (err) {
-        console.error(error);
+        // console.error(error);
         res.status(500).json({message: 'Server error!'})
     }
 };
