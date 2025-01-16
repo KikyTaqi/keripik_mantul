@@ -80,7 +80,7 @@ const UpdateProduct = () => {
             data.append("thumbnail", product.thumbnail);
         }
     
-        console.log("Data upload: ", data);
+        console.log("Data upload: ", data.get("name"));
     
         try {
             await axios.patch(`${URL_PRODUCT}/${id}`, data);

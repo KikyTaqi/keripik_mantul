@@ -99,6 +99,7 @@ exports.updateProduct = async (req, res) => {
         
         //simpan pembaruan ke database
         console.error("findProduct2: "+product);
+        console.log("findProduct2222: "+product);
         product = await Product.findByIdAndUpdate(id, updatedProduct, {new: true});
         res.status(200).json(product);
     } catch (err) {

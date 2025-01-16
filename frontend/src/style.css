@@ -31,7 +31,13 @@
   }
 
   .calistoga-regular {
-    font-family: "Calistoga", serif;
+    font-family: "Calistoga";
     font-weight: 400;
     font-style: normal;
+  }
+
+  .category-div{
+    border: 3px solid #800000;
+    border-radius: 20px;
+    background-color: white;
   }
