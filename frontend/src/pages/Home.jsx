@@ -5,6 +5,7 @@ import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
 import jumbotron_home from "../assets/jumbotron_home.jpg";
+import '../style.css';
 
 const { Title } = Typography;
 
@@ -44,10 +45,10 @@ const Home = () => {
                         ngemil terbaik yang tak terlupakan.
                     </p>
                 </div>
-                <img src={jumbotron_home} alt="" style={{ width: '100vw' }} />
+                <img src={jumbotron_home} alt="" />
             </div>
             <Title level={2}>Product List</Title>
-            <Row gutter={[16, 16]} style={{ margin: '0 1rem' }}>
+            <Row gutter={[16, 16]}>
                 {products.map((product) => (
                     <Col span={8} key={product.id}>
                         <Card
