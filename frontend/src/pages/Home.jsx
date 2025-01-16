@@ -45,7 +45,7 @@ const Home = () => {
                         ngemil terbaik yang tak terlupakan.
                     </p>
                 </div>
-                <img draggable="false" src={jumbotron_home} alt="" />
+                <img src={jumbotron_home} alt="" />
             </div>
             <Title level={2}>Product List</Title>
             <Row gutter={[16, 16]}>

@@ -18,9 +18,9 @@ const UpdateKategori = () => {
         axios
             .get(`${URL_KATEGORI}/${id}`)
             .then((res) => {
-                console.log(res);
+                console.log("Res data: "+res.data.nama_kategori);
                 setKategori(res.data);
-                form.setFieldValue({
+                form.setFieldsValue({
                     nama_kategori: res.data.nama_kategori,
                 });
             })
@@ -54,7 +54,6 @@ const UpdateKategori = () => {
 
     return (
         <div>
-            <h1>Edit Product</h1>
             <Form
                 form={form}
                 layout="vertical"
@@ -65,7 +64,7 @@ const UpdateKategori = () => {
             >
                 <Form.Item
                     name='nama_kategori'
-                    label='Product Name'
+                    label='Nama Kategori'
                     rules={[{ required: true, message: 'Please input product name!' }]}
                 >
                     <Input placeholder="Enter product name" />

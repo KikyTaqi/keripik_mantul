@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Email is required'],
             unique: true,
         },
+        no_telp: {
+            type: String,
+            unique: true,
+        },
         role: {
             type: String,
             default: "User",

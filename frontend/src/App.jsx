@@ -18,6 +18,9 @@ import UpdateProduct from "./pages/dashboard/ProductUpdate2";
 import Kategori from "./pages/dashboard/Kategori";
 import AddKategori from "./pages/dashboard/KategoriCreate";
 import UpdateKategori from "./pages/dashboard/KategoriUpdate";
+import Ongkir from "./pages/dashboard/Ongkir";
+import AddOngkir from "./pages/dashboard/OngkirCreate";
+import UpdateOngkir from "./pages/dashboard/OngkirUpdate";
 
 // Auth
 import Login from "./pages/Login";
@@ -26,6 +29,9 @@ import EmailConfirm from "./pages/passwordReset/EmailConfirm";
 import ResetCode from "./pages/passwordReset/ResetCode";
 import ChangePassword from "./pages/passwordReset/ChangePassword";
 import ConfirmAccount from "./pages/ConfirmAccount";
+
+// Customers
+import Customer from "./pages/dashboard/Customer";
 
 const { Content } = Layout;
 
@@ -98,6 +104,10 @@ const App = () => {
                         <Route path="/kategori" element={<Kategori />} />
                         <Route path="/kategori/create" element={<AddKategori />} />
                         <Route path="/kategori/:id" element={<UpdateKategori />} />
+                        <Route path="/ongkir" element={<Ongkir />} />
+                        <Route path="/ongkir/create" element={<AddOngkir />} />
+                        <Route path="/ongkir/:id" element={<UpdateOngkir />} />
+                        <Route path="/customer" element={<Customer />} />
                       </Routes>
                     </Content>
                   </div>

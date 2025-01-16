@@ -31,7 +31,7 @@ const Header = () => {
       { name: "Pesanan", path: "/dashboard/pesanan" },
       { name: "Produk", path: "/dashboard/products" },
       { name: "Kategori", path: "/dashboard/kategori" },
-      { name: "Ongkos Kirim", path: "/dashboard/ongkos-kirim" },
+      { name: "Ongkos Kirim", path: "/dashboard/ongkir" },
       { name: "Ulasan", path: "/dashboard/ulasan" },
       { name: "Customer", path: "/dashboard/customer" },
     ];

@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Table, Button, Image, ConfigProvider, message } from 'antd';
+import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
+import { Link } from 'react-router-dom';
+import '../../style.css';
+import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 import axios from "axios";
 import Online from "../../assets/OnlineShopping.svg";
 import Product from "../../assets/Product.svg";
@@ -12,11 +17,14 @@ const Dashboard = () => {
     const [productsCount, setProductsCount] = useState(0);
     const [usersCount, setUsersCount] = useState(0);
     const [ordersCount, setOrdersCount] = useState(0);
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchProducts();
         fetchOrders();
         fetchUser();
+        fetchData();
     }, []);
 
     const fetchProducts = async () => {
@@ -38,7 +46,78 @@ const Dashboard = () => {
         setOrders(response.data);
     };
 
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const [productResponse, categoryResponse] = await Promise.all([
+                axios.get(URL_PRODUCT),
+                axios.get(URL_KATEGORI)
+            ]);
+
+            setProducts(productResponse.data);
+            setCategories(categoryResponse.data);
+        } catch (err) {
+            message.error("Gagal memuat data!");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const columns = [
+            {
+                title: "NO",
+                key: "no",
+                align: "center",
+                width: "5px",
+                render: (_, __, index) => index + 1, // row numbering
+            },
+            {
+                title: 'Nama Produk',
+                dataIndex: 'name',
+                key: 'name',
+                align: "center",
+            },
+            {
+                title: 'Stok',
+                dataIndex: 'stok',
+                key: 'stok',
+                align: "center",
+            },
+            {
+                title: 'Harga',
+                dataIndex: 'price',
+                key: 'price',
+                align: "center",
+                render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
+            },
+            {
+                title: 'Kategori',
+                dataIndex: 'category_id',
+                key: 'category_id',
+                align: "center",
+                render: (categoryId) => {
+                    const category = categories.find((cat) => String(cat._id) === String(categoryId));
+                    return category ? category.nama_kategori : "Tidak Diketahui";
+                },
+            },        
+        ];
+
     return (
+        <ConfigProvider
+            theme={{
+            token: {
+            // Primary color untuk seluruh aplikasi
+            },
+            components: {
+            Table: {
+            headerBg: "#F2E8C6",
+            headerBorderRadius: 0,
+            borderColor: "#B9B9B9",
+            },
+            },
+            }}
+        >
         <div>
             <div className="pt-5 px-5" style={{ background: "linear-gradient(to bottom, #F2E8C6 60%, white 40%)" }}>
                 <div className="gap-1 justify-around flex mb-5">
@@ -83,38 +162,23 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-    
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Table title="Produk Terlaris" headers={["NO", "Nama Produk", "Stok", "Harga"]} data={products} />
-                <Table title="Pesanan Terbaru" headers={["NO", "Customer", "Produk", "Total Harga", "Tanggal Pesanan"]} data={orders} />
-            </div>
+                <h1 className="font-bold">Produk Terlaris</h1>
+                <Table
+                    dataSource={products}
+                    columns={columns}
+                    loading={loading}
+                    bordered
+                    className="mt-4"
+                    pagination={{ 
+                    pageSize: 4, 
+                    showSizeChanger: false,
+                    className: 'custom-pagination',
+                    }}
+                    rowKey={(record) => record._id}
+                />
         </div>
+        </ConfigProvider>
     );
 };
-
-const Table = ({ title, headers, data }) => (
-    <div style={{ width: "48%", backgroundColor: "#fff", padding: "20px", borderRadius: "10px" }}>
-        <h3 className="font-bold mb-5">{title}</h3>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-                <tr>
-                    {headers.map((header) => (
-                        <th style={{ border: "1px solid #ddd", background: "#F2E8C6", padding: "8px" }} key={header}>{header}</th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody>
-                {data.map((item, index) => (
-                    <tr key={index}>
-                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{index + 1}</td>
-                        {Object.values(item).map((cell, idx) => (
-                            <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    </div>
-);
 
 export default Dashboard;
