@@ -11,6 +11,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 
 // Product
 import Home from "./pages/Home";
+import HomeProduct from "./pages/HomeProduct";
 import Product from "./pages/dashboard/Product";
 import DetailProduct from "./pages/dashboard/ProductDetail";
 import AddProduct from "./pages/dashboard/ProductCreate";
@@ -42,7 +43,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={
+        <Route path="/*" element={
             <Layout style={{backgroundColor: "white"}}>
                   
               {/* Main Content */}
@@ -59,6 +60,7 @@ const App = () => {
                     >
                       <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/products" element={<HomeProduct />} />
                       </Routes>
                     </Content>
                   </div>
