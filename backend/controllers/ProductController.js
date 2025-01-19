@@ -87,7 +87,7 @@ exports.updateProduct = async (req, res) => {
             await cloudinary.uploader.destroy(product.cloudinaryId);
             
             //Unggah gambar baru
-            result = await cloudinary.uploader.upload(req.file.path)
+            result = await cloudinary.uploader.upload(req.file.path);
         }
 
         const updatedProduct = {

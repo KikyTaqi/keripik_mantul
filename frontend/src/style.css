@@ -41,3 +41,14 @@
     border-radius: 20px;
     background-color: white;
   }
+  .category-div:hover{
+    cursor: pointer;
+  }
+  .category-icon{
+    width: 200px;
+    height: 200px;
+  }
+  .category-balung{
+    margin-top: auto;
+    margin-bottom: auto;
+  }
