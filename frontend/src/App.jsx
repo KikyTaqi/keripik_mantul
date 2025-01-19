@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 // Product
 import Home from "./pages/Home";
 import HomeProduct from "./pages/HomeProduct";
+import About from "./pages/About";
 import Product from "./pages/dashboard/Product";
 import DetailProduct from "./pages/dashboard/ProductDetail";
 import AddProduct from "./pages/dashboard/ProductCreate";
@@ -61,6 +62,7 @@ const App = () => {
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/products" element={<HomeProduct />} />
+                        <Route path="/about" element={<About />} />
                       </Routes>
                     </Content>
                   </div>
