@@ -91,12 +91,6 @@ const Header = () => {
       { name: "Produk", path: "/products" },
       { name: "About", path: "/about" },
     ];
-    const activeMenu = menuItems.find((item) => {
-      if (item.path === "/dashboard") {
-        return location.pathname === item.path;
-      }
-      return location.pathname.startsWith(item.path);
-    });
     return (
       <div className="flex items-center justify-between ps-24 pe-10 py-4 bg-white border-b-red-800 border border-b-2">
         <img src={logo} className="h-12" alt="logo" />
