@@ -4,7 +4,7 @@ import axios from 'axios';
 import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../style.css';
-import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
+import { FaCirclePlus, FaHandPointer, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
 const Product = () => {
     const [Products, setProducts] = useState([]);
@@ -50,6 +50,7 @@ const Product = () => {
             align: "center",
             onCell: (record) => {
                 return {
+                    onMouseOver: FaHandPointer,
                     onClick: () => {
                         navigate(`/dashboard/products/detail/${record?._id}`);
                     },
