@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Upload, message, Select } from "antd";
+import { Form, Input, Button, Upload, message, Select, ConfigProvider } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { URL_PRODUCT, URL_KATEGORI } from "../../utils/Endpoint";
@@ -60,6 +60,14 @@ const AddProduct = () => {
     const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
     return (
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#800000',
+                }
+            }}
+        >
+
         <div className="border border-stone-300 py-4 px-8">
             <Form
                 form={form}
@@ -121,7 +129,7 @@ const AddProduct = () => {
 
                 <Form.Item
                     name="thumbnail"
-                    label="Thumbnail"
+                    label="Gambar"
                     valuePropName="fileList"
                     getValueFromEvent={({ fileList }) => fileList}
                     rules={[{ required: true, message: "Mohon pilih gambar produk!" }]}
@@ -144,6 +152,7 @@ const AddProduct = () => {
                 </Form.Item>
             </Form>
         </div>
+        </ConfigProvider>
     );
 };
 

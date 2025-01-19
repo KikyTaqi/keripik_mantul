@@ -96,7 +96,7 @@ const Product = () => {
             align: "center",
             render: (_, record) => (
                 <>
-                    <Link to={`/dashboard/products/${record?._id}`}>
+                    <Link to={`/dashboard/products/edit/${record?._id}`}>
                         <Button
                             type="secondary"
                             className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2"
@@ -108,6 +108,17 @@ const Product = () => {
                         title="Hapus produk?"
                         description="Apakah kamu yakin ingin menghapus produk ini?"
                         onConfirm={() => handleDelete(record?._id)}
+                        okButtonProps={{ 
+                            style: {
+                                backgroundColor: "#800000",
+                            }
+                         }}
+                         cancelButtonProps={{
+                            style: {
+                                borderColor: "#800000",
+                                color: "#800000",
+                            }
+                         }}
                         okText="Iya"
                         cancelText="Batal"
                     >

@@ -42,7 +42,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={
+        <Route path="/*" element={
             <Layout style={{backgroundColor: "white"}}>
                   
               {/* Main Content */}
@@ -101,11 +101,11 @@ const App = () => {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/products" element={<Product />} />
                         <Route path="/products/create" element={<AddProduct />} />
-                        <Route path="/products/:id" element={<UpdateProduct />} />
+                        <Route path="/products/edit/:id" element={<UpdateProduct />} />
                         <Route path="/products/detail/:id" element={<DetailProduct />} />
                         <Route path="/kategori" element={<Kategori />} />
                         <Route path="/kategori/create" element={<AddKategori />} />
-                        <Route path="/kategori/:id" element={<UpdateKategori />} />
+                        <Route path="/kategori/edit/:id" element={<UpdateKategori />} />
                         <Route path="/ongkir" element={<Ongkir />} />
                         <Route path="/ongkir/create" element={<AddOngkir />} />
                         <Route path="/ongkir/:id" element={<UpdateOngkir />} />

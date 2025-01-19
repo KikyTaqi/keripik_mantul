@@ -1,6 +1,7 @@
 import { React, useEffect } from "react";
 import { FaSearch, FaUserCircle, FaCartPlus } from "react-icons/fa";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, matchPath } from "react-router-dom";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import logo from "../assets/logo_keripik.png";
 
 const Header = () => {
@@ -30,25 +31,41 @@ const Header = () => {
       { name: "Dashboard", path: "/dashboard" },
       { name: "Pesanan", path: "/dashboard/pesanan" },
       { name: "Produk", path: "/dashboard/products" },
+      { name: "Tambah Produk", path: "/dashboard/products/create", back: true },
+      { name: "Edit Produk", path: "/dashboard/products/edit/:id", back: true },
+      { name: "Detail Produk", path: "/dashboard/products/detail/:id", back: true },
       { name: "Kategori", path: "/dashboard/kategori" },
+      { name: "Tambah Kategori", path: "/dashboard/kategori/create", back: true },
+      { name: "Edit Kategori", path: "/dashboard/kategori/edit/:id", back: true },
       { name: "Ongkos Kirim", path: "/dashboard/ongkir" },
       { name: "Ulasan", path: "/dashboard/ulasan" },
       { name: "Customer", path: "/dashboard/customer" },
     ];
 
     const activeMenu = menuItems.find((item) => {
-      if (item.path === "/dashboard") {
-        return location.pathname === item.path;
-      }
-      return location.pathname.startsWith(item.path);
+      // Gunakan matchPath untuk mencocokkan rute dinamis seperti /dashboard/products/edit/:id
+      const match = matchPath(item.path, location.pathname);
+      return match !== null;
     });
+
+    const handleBack = () => {
+      navigate(-1); 
+    };
 
     return (
       <div className="flex items-center justify-between border-b-red-800 border border-b-4 px-8 py-4 bg-white">
         {/* Title */}
-        <h1 className="text-2xl font-semibold" style={{ color: "#800000" }}>
-          {activeMenu ? activeMenu.name : "Dashboard"}
-        </h1>
+        <div className="flex">
+            {activeMenu && activeMenu.back && (
+              <button onClick={handleBack} className="text-4xl text-red-800 me-4">
+                <IoArrowBackCircleOutline />
+              </button>
+            )}
+
+            <h1 className="text-2xl font-semibold" style={{ color: "#800000" }}>
+              {activeMenu ? activeMenu.name : "Dashboard"}
+            </h1>
+        </div>
 
         <div className="flex items-center">
           {/* Search Bar */}
@@ -106,7 +123,7 @@ const Header = () => {
           <div className="flex items-center border-solid border rounded-lg ms-5 me-4 px-4 py-2 border-red-800">
             <input
               type="text"
-              placeholder="Search here..."
+              placeholder="Cari..."
               className="focus:outline-none w-[439px] font-semibold text-red-800 placeholder-red-800"
             />
             <FaSearch className="text-red-800 ml-10" />

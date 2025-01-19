@@ -76,7 +76,7 @@ const Table = ({ title, headers, data, onEdit, onDelete }) => (
                             <td style={{ border: "1px solid #ddd", padding: "8px" }} key={idx}>{cell}</td>
                         ))}
                         <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                        <Link to={`/dashboard/kategori/${item?._id}`}>
+                        <Link to={`/dashboard/kategori/edit/${item?._id}`}>
                         <Button type="secondary" className="border-2 border-red-800 hover:border-red-600 hover:text-red-700 me-2">
                             <FaPencil />
                         </Button>
