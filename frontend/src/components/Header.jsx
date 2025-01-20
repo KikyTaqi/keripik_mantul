@@ -2,6 +2,8 @@ import { React, useEffect } from "react";
 import { FaSearch, FaUserCircle, FaCartPlus } from "react-icons/fa";
 import { Link, useNavigate, useLocation, matchPath } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { FiLogOut } from "react-icons/fi";
+import { Dropdown, Menu, Space } from 'antd';
 import logo from "../assets/logo_keripik.png";
 
 const Header = () => {
@@ -19,6 +21,12 @@ const Header = () => {
     };
     checkLogin();
   }, [navigate]);
+
+  const removeLogin = async () => {
+    const userToken = localStorage.removeItem('userToken');
+    const userEmail = localStorage.removeItem('userEmail');
+    const userRole = localStorage.removeItem('userRole');
+  }
 
   const location = useLocation(); // Mendapatkan rute saat ini
 
@@ -52,6 +60,7 @@ const Header = () => {
       navigate(-1); 
     };
 
+
     return (
       <div className="flex items-center justify-between border-b-red-800 border border-b-4 px-8 py-4 bg-white">
         {/* Title */}
@@ -80,11 +89,39 @@ const Header = () => {
 
           {/* User Icon */}
           <FaUserCircle className="text-red-800 text-3xl object-right" />
+
+
         </div>
       </div>
     );
   } else {
     // Jika path bukan "/dashboard"
+
+    const items = [
+      {
+        key: '1',
+        label: (
+          <Link to='/about'>
+            Profile Saya
+          </Link>
+        ),
+        icon: <FaUserCircle />,
+      },
+      {
+        key: '2',
+        label: (
+          <Link 
+          to='/signin'
+          onClick={(e) => {
+            removeLogin();
+          }}
+          >
+            Logout
+          </Link>
+        ),
+        icon: <FiLogOut />,
+      },
+    ];
 
     const menuItems = [
       { name: "Home", path: "/" },
@@ -93,7 +130,7 @@ const Header = () => {
     ];
     return (
       <div className="flex items-center justify-between ps-24 pe-10 py-4 bg-white border-b-red-800 border border-b-2">
-        <img src={logo} className="h-12" alt="logo" />
+        <img src={logo} className="h-12" alt="logo" onClick={() => {navigate('/')}} />
         
         <div className="flex justify-evenly w-full">
           {menuItems.map((item) => (
@@ -124,9 +161,44 @@ const Header = () => {
           </div>
 
           {/* Cart Icon */}
-          <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
+          <Dropdown
+            menu={{
+              items,
+            }}
+            overlayStyle={{
+              width: '200px',
+              boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01);',
+              borderRadius: '30%'
+            }}
+            placement="bottomRight"
+            arrow
+            trigger={['hover']}
+          >
+              <Link to="/about">
+                <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
+              </Link>
+          </Dropdown>
           {/* User Icon */}
-          <FaUserCircle className="text-red-800 text-3xl object-right ms-10" />
+          <Dropdown
+            menu={{
+              items,
+            }}
+            overlayStyle={{
+              width: '200px',
+              boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01);',
+              borderRadius: '30%'
+            }}
+            placement="bottomRight"
+            arrow
+            trigger={['hover']}
+          >
+              <Link to="/about">
+                <FaUserCircle className="text-red-800 text-3xl object-right ms-10" />
+              </Link>
+          </Dropdown>
+          
         </div>
       </div>
     );
