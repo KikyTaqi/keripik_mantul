@@ -38,8 +38,7 @@ function ResetCode() {
                     // localStorage.setItem("passToken", res?.data.token);
                     // console.log("resToken:"+ res?.data.token);
                     // localStorage.setItem("email", email);
-                    const remaningTime =
-                        new Date(res.sendTime).getTime() - new Date().getTime();
+                    const remaningTime = new Date(res.sendTime).getTime() - new Date().getTime();
             
                     if (remaningTime > 0) {
                         setOtpTime(remaningTime);

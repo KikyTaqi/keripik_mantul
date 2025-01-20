@@ -307,7 +307,7 @@ Tim Keripik Mantul`
   };
   
   await transporter.sendMail(mailOptions);
-  res.status(200).json({ message: 'OTP sent to your email',token});
+  res.status(200).json({ message: 'OTP sent to your email',token}); 
 };
 
 exports.verifyOtp = async (req, res, next) => {
