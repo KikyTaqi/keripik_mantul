@@ -142,7 +142,7 @@ const Home = () => {
                                                 marginBottom: '3rem',
                                             }}
                                             title={product.name}
-                                            description={`Rp ${product.price}`}
+                                            description={`Rp ${product.price?.toLocaleString('id-ID')}`}
                                         />
                                         
                                         <div className="flex justify-between items-center">
@@ -202,7 +202,7 @@ const Home = () => {
                                                 marginTop: 'auto'
                                             }}
                                             title={product.name}
-                                            description={`Rp ${product.price}`}
+                                            description={`Rp ${product.price?.toLocaleString('id-ID')}`}
                                         />
                                         <Button
                                             type="primary"
