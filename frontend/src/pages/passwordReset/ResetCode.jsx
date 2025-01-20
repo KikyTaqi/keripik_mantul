@@ -162,7 +162,7 @@ function ResetCode() {
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/password/reset">Kembali ke login</a>
+                            <a href="/signin">Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

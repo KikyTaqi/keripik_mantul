@@ -51,7 +51,7 @@ const Signup = () => {
             localStorage.setItem("passToken", res?.data.token);
             console.log("resToken:"+ res?.data.token);
             localStorage.setItem("email", email);
-            navigate("/password/reset/code");
+            navigate("/signup/confirm");
             setLoading(false);
         })
         .catch((err) => {

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client("853769351673-tv8qth8b3g3of3r046nni0obf0hklcpg.apps.googleusercontent.com");
+const client = new OAuth2Client(process.env.GMAIL_CLIENT_ID);
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -59,19 +59,22 @@ exports.signInGoogle = async (req, res) => {
 
       // Cek atau buat user di database
       let email = payload.email;
+      let name = payload.name;
       let user = await User.findOne({ email: email });
       let userToken = null;
       if (!user) {
         console.log(user);
         user = new User({
-            email,
-            role: 'User',
-            googleAuth: true, // Tandai akun sebagai akun Google
-            isRegistered: true
+          name,
+          email,
+          role: 'User',
+          googleAuth: true, // Tandai akun sebagai akun Google
+          isRegistered: true
         });
         await user.save();
         userToken = generateToken(user._id);
       }else if(user){
+        user.name = name;
         user.email = user.email;
         user.role = user.role;
         user.googleAuth = true;
@@ -175,6 +178,30 @@ exports.confirmAccount = async (req, res) => {
   console.log(otp);
   const token = crypto.randomBytes(32).toString('hex');
 
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain) {
+    return res.status(400).json({ message: `Email tidak valid!` });
+  }
+
+  const timeNow = new Date().getTime();
+  let dataToHash = `${localPart}${timeNow}`;
+  let fullHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+  let shortHash = fullHash.substring(0, 9);
+
+  let checkHash;
+  let counter = 0;
+
+  do {
+    checkHash = await User.findOne({ name: shortHash });
+    if (checkHash) {
+      counter++;
+      dataToHash = `${localPart}${timeNow}${counter}`;
+      fullHash = crypto.createHash('sha256').update(dataToHash).digest('hex');
+      shortHash = fullHash.substring(0, 9);
+    }
+  } while (checkHash);
+
+  user.name = shortHash;
   user.otp.otp = otp;
   user.otp.sendTime = new Date().getTime() +9999*60*1000;
   user.otp.token = token;
@@ -233,6 +260,7 @@ exports.signUpGoogle = async (req, res) => {
           await user.save();
           userToken = generateToken(user._id);
         }else if(user){
+          user.name = name;
           user.email = user.email;
           user.role = user.role;
           user.googleAuth = true;
