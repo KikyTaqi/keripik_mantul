@@ -4,7 +4,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
-import jumbotron_home from "../assets/jumbotron_home.jpg";
+import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import balung from "../assets/k-balung-kuwuk.jpg";
 import pisang from "../assets/k-pisang.jpg";
 import talas from "../assets/k-talas.jpg";
@@ -48,71 +48,11 @@ const HomeProduct = () => {
     };
 
     return (
-        <div style={{ padding: '0' }}>
-            <div style={{width: '100%', height: '100%', padding: '0', position: 'relative'}}>
-                <div style={{position: 'absolute', top: '10rem', left: '15rem'}}>
-                    <p className="calistoga-regular" style={{ color: 'black', margin: '0 0 12px 0', fontSize: '2rem', lineHeight: 1.2}}>
-                        Rasakan Kelezatan <br />
-                        <span style={{color: '#800000'}}>Keripik Mantul !</span>
-                    </p>
-                    <p style={{ color: 'black', fontSize: '1.1rem', margin: '0 0 20px 0', lineHeight: 1.2    }}>
-                        Dibuat dari bahan berkualitas, <br />
-                        Keripik Mantul memberikan pengalaman <br />
-                        ngemil terbaik yang tak terlupakan.
-                    </p>
-                    <Link to="#" onClick={() => {
-                        const targetElement = document.getElementById('product-list');
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }}>
-                        <Button
-                            type="secondary"
-                            className="border-0 border-red-800 hover:border-red-600 hover:text-red-700"
-                            style={{
-                                backgroundColor: '#800000',
-                                color: 'white',
-                                borderRadius: '20px',
-                                padding: '0px 15px 3px 15px',
-                                height: '45px',
-                                fontSize: '1.2rem',
-                                fontWeight: '500'
-                            }}
-                        >
-                            Beli Sekarang
-                        </Button>
-                    </Link>
-                </div>
-                <img src={jumbotron_home} alt="" draggable='false'/>
+        <div style={{ padding: '0', position:'relative' }}>
+            <div style={{width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent'}}>
+                <img src={jumbotron_produk} alt="" draggable='false' style={{zIndex:'0', position: 'absolute'}}/>
             </div>
-            <div className="py-9 px-10">
-                <div className="flex justify-center flex-col mb-11">
-                    <Title level={2} style={{alignSelf: 'start'}}>Kategori</Title>
-                    <div className="px-6 py-8 bg-[#F2E8C6] flex justify-center" style={{borderRadius: '20px', width: 'fit-content', alignSelf: 'center', minHeight: '100'}}>
-                        <div className="category-div mx-3 flex flex-col" style={{width: '450px', minHeight: '100'}} >
-                            <Title level={2} className="text-center mt-5">Keripik Singkong</Title>
-                            <img src={singkong} alt="" className="mt-9" style={{alignSelf: 'center', width:'364px', height: '275px'}}/>
-                        </div>
-                        <div className="flex flex-col mx-3">
-                            <div className="flex justify-between p-0" style={{gap: '20px', marginBottom: '19px'}}>
-                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}}>
-                                    <Title level={2} className="text-center mt-5">Keripik Talas</Title>
-                                    <img src={talas} alt="" className="" style={{alignSelf: 'center', width:'166px', height: '141px'}}/>
-                                </div>
-                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}}>
-                                    <Title level={2} className="text-center mt-5">Keripik Pisang</Title>
-                                    <img src={pisang} alt="" className="" style={{alignSelf: 'center', width:'160px', height: '135px'}}/>
-                                </div>
-                            </div>
-                            <div className="flex justify-between">
-                                <div className="category-div flex gap-5" style={{width: '100%', height: '206px'}}>
-                                    <img src={balung} alt="" className="ms-9" style={{alignSelf: 'center', width:'154px', height: '180px'}}/>
-                                    <Title level={2} className="text-center" style={{marginBottom: 'auto', marginTop:'auto'}}>Keripik Balung Kuwuk</Title>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div className="py-9 px-10 bg-white relative" style={{zIndex: '5', borderRadius: '80px 80px 0 0'}}>
                 <section id="product-list" className="mb-11">
                     <Title level={2}>Produk Terlaris</Title>
                     <div className="bg-[#F2E8C6] p-5">
