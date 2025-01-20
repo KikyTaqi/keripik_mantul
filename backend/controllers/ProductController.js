@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 //mendapatkan semua produk
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().sort({ _id: -1 });;
         res.status(200).json(products); 
     } catch (err) {
         res.status(500).json({message: err.message})

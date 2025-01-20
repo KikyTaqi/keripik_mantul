@@ -2,4 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Lexend+Exa:wght@100..900&family=Noto+Sans+TC:wght@100..900&display=swap'); */
+
+img{
+    -webkit-user-drag: none;
+}

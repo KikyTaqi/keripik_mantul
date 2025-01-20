@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Upload, message, Select, Image } from "antd";
+import { Form, Input, Button, Upload, message, Select, Image, ConfigProvider } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
 import axios from "axios";
 import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
@@ -65,6 +65,8 @@ const UpdateProduct = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (values) => {
+        setLoading(true);
+
         const data = new FormData();
         data.append('name', values.name);
         data.append('price', values.price);
@@ -100,6 +102,14 @@ const UpdateProduct = () => {
     const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
     return (
+        <ConfigProvider 
+            theme={{
+                token: {
+                    colorPrimary: '#800000',
+                }
+            }}
+        >
+
         <div className="border border-stone-300 py-4 px-8">
             <Form
                 form={form}
@@ -196,6 +206,7 @@ const UpdateProduct = () => {
                 </Form.Item>
             </Form>
         </div>
+        </ConfigProvider>
     );
 };
 

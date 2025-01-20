@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 // Product
 import Home from "./pages/Home";
 import HomeProduct from "./pages/HomeProduct";
+import About from "./pages/About";
 import Product from "./pages/dashboard/Product";
 import DetailProduct from "./pages/dashboard/ProductDetail";
 import AddProduct from "./pages/dashboard/ProductCreate";
@@ -61,6 +62,7 @@ const App = () => {
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/products" element={<HomeProduct />} />
+                        <Route path="/about" element={<About />} />
                       </Routes>
                     </Content>
                   </div>
@@ -103,11 +105,11 @@ const App = () => {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/products" element={<Product />} />
                         <Route path="/products/create" element={<AddProduct />} />
-                        <Route path="/products/:id" element={<UpdateProduct />} />
+                        <Route path="/products/edit/:id" element={<UpdateProduct />} />
                         <Route path="/products/detail/:id" element={<DetailProduct />} />
                         <Route path="/kategori" element={<Kategori />} />
                         <Route path="/kategori/create" element={<AddKategori />} />
-                        <Route path="/kategori/:id" element={<UpdateKategori />} />
+                        <Route path="/kategori/edit/:id" element={<UpdateKategori />} />
                         <Route path="/ongkir" element={<Ongkir />} />
                         <Route path="/ongkir/create" element={<AddOngkir />} />
                         <Route path="/ongkir/:id" element={<UpdateOngkir />} />

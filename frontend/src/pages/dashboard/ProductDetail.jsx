@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Image, ConfigProvider, message } from 'antd';
+import { Image, message } from 'antd';
 import axios from 'axios';
 import { URL_PRODUCT, URL_KATEGORI } from '../../utils/Endpoint';
 import { Link, useParams } from 'react-router-dom';
 import '../../style.css';
-import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
 const DetailProduct = () => {
     const [Products, setProducts] = useState([]);
@@ -36,91 +35,63 @@ const DetailProduct = () => {
         fetchData();
     }, []);
 
-    // Kolom untuk tabel
-    const columns = [
-        {
-            title: "NO",
-            key: "no",
-            align: "center",
-            width: "5px",
-            render: (_, __, index) => index + 1, // row numbering
-        },
-        {
-            title: 'Nama Produk',
-            dataIndex: 'name',
-            key: 'name',
-            align: "center",
-        },
-        {
-            title: 'Stok',
-            dataIndex: 'stok',
-            key: 'stok',
-            align: "center",
-        },
-        {
-            title: 'Harga',
-            dataIndex: 'price',
-            key: 'price',
-            align: "center",
-            render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
-        },
-        {
-            title: 'Kategori',
-            dataIndex: 'category_id',
-            key: 'category_id',
-            align: "center",
-            render: (categoryId) => {
-                const category = categories.find((cat) => String(cat._id) === String(categoryId));
-                return category ? category.nama_kategori : "Tidak Diketahui";
-            },
-        },        
-        {
-            title: "Gambar",
-            dataIndex: "thumbnail",
-            key: "thumbnail",
-            render: (_, record) => (
-                <Image src={record?.thumbnail} width={100} loading="lazy" />
-            ),
-            align: "center",
-        },
-    ];
+    const kategori = (categoryId) => {
+        const category = categories.find((cat) => String(cat._id) === String(categoryId));
+        return category ? category.nama_kategori : "Tidak Diketahui";
+    }
 
     return (
-        <ConfigProvider
-            theme={{
-                token: {
-                     // Primary color untuk seluruh aplikasi
-                },
-                components: {
-                    Table: {
-                        headerBg: "#F2E8C6",
-                        headerBorderRadius: 0,
-                        borderColor: "#B9B9B9",
-                    },
-                },
-            }}
-        >
-            <div>
-                <div className="flex justify-between">
-                    <h1 className="font-bold mt-1">Daftar Produk Untuk Dikelola</h1>
+        <div className="border border-stone-300 py-4 px-8">
+            <div className="px-36 mx-10 flex justify-center items-stretch h-full">
+                
+                <div className="flex-none">
+                    <div className="p-4 rounded-lg border h-full">
+                        <Image
+                            src={Products.thumbnail}
+                            style={{ height: '20vh', objectFit: 'cover' }}
+                            alt="Foto produk"
+                            loading="lazy"
+                        />
+                    </div>
                 </div>
                 
-                <Table
-                    dataSource={Products}
-                    columns={columns}
-                    loading={loading}
-                    bordered
-                    className="mt-4"
-                    pagination={{ 
-                        pageSize: 4, 
-                        showSizeChanger: false,
-                        className: 'custom-pagination',
-                    }}
-                    rowKey={(record) => record._id}
-                />
+                <div className="flex-1 ms-5">
+                    <table className="min-w-full border border-separate rounded-md divide-y divide-x">
+                        <tbody>
+                            <tr className="grid grid-cols-3 border-b divide-x">
+                                <td className="text-base p-2">Nama Produk</td>
+                                <td className="text-base p-2 col-span-2">{Products.name}</td>
+                            </tr>
+                            <tr className="grid grid-cols-3 border-b divide-x">
+                                <td className="text-base p-2">Stok</td>
+                                <td className="text-base p-2 col-span-2">{Products.stok}</td>
+                            </tr>
+                            <tr className="grid grid-cols-3 border-b divide-x">
+                                <td className="text-base p-2">Harga</td>
+                                <td className="text-base p-2 col-span-2">
+                                    Rp {Products.price?.toLocaleString('id-ID')}
+                                </td>
+                            </tr>
+                            <tr className="grid grid-cols-3 divide-x">
+                                <td className="text-base p-2">Kategori</td>
+                                <td className="text-base p-2 col-span-2">
+                                    {kategori(Products.category_id)}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </ConfigProvider>
+            <div className="mt-5">
+                <h1 className="text-base font-medium mb-5">Deskripsi</h1>
+                <p>
+                    {Products.description}
+                </p>
+            </div>
+        </div>
     );
+    
+    
 };
 
 export default DetailProduct;
