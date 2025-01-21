@@ -101,7 +101,7 @@ const Header = () => {
       {
         key: '1',
         label: (
-          <Link to='/about'>
+          <Link to='/profile'>
             Profile Saya
           </Link>
         ),
@@ -194,7 +194,7 @@ const Header = () => {
             arrow
             trigger={['hover']}
           >
-              <Link to="/about">
+              <Link to="/profile">
                 <FaUserCircle className="text-red-800 text-3xl object-right ms-10" />
               </Link>
           </Dropdown>

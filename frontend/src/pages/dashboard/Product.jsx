@@ -50,7 +50,7 @@ const Product = () => {
             align: "center",
             onCell: (record) => {
                 return {
-                    onMouseOver: FaHandPointer,
+                    style: { cursor: 'pointer' },
                     onClick: () => {
                         navigate(`/dashboard/products/detail/${record?._id}`);
                     },
