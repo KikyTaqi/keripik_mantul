@@ -82,12 +82,22 @@ const DetailProduct = () => {
                     </table>
                 </div>
             </div>
-            <div className="mt-5">
+            <div className="mt-5" style={{ height: '100vh' }}>
                 <h1 className="text-base font-medium mb-5">Deskripsi</h1>
-                <p>
-                    {Products.description}
-                </p>
+                <textarea 
+                    style={{
+                        width: '100%',
+                        height: '90%',
+                        resize: 'none', // Opsional: untuk mencegah textarea diubah ukurannya
+                        boxSizing: 'border-box',
+                        backgroundColor: 'white'
+                    }}
+                    value={Products.description}
+                    readOnly
+                    disabled
+                />
             </div>
+
         </div>
     );
     

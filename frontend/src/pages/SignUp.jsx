@@ -4,6 +4,7 @@ import axios from "axios";
 import { URL_SIGNUP } from '../utils/Endpoint'; // Update ke endpoint signup
 import { useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 const Signup = () => {
     const [form] = Form.useForm();
@@ -12,6 +13,20 @@ const Signup = () => {
 
     const navigate = useNavigate(); // Hook untuk navigasi
 
+    function getUserFromToken(localToken) {
+        const token = localToken; // Ambil token dari localStorage
+        if (!token) return null; // Jika token tidak ada
+    
+        try {
+            const decoded = jwtDecode(token); // Decode token
+            console.log("Decoded payload:", decoded);
+            return decoded; // Kembalikan payload token
+        } catch (err) {
+            console.error("Invalid token", err);
+            return null; // Jika token tidak valid
+        }
+    }
+
     // fn -> submit form
     const handleGoogleSuccess = async (credentialResponse) => {
         const { credential } = credentialResponse;
@@ -19,11 +34,15 @@ const Signup = () => {
         try {
             const response = await axios.post(URL_SIGNUP+'/google', { token: credential });
             console.log(response.data);
-            if(response.data.userToken != null){
-                localStorage.setItem('userToken', response.data.user.token);
-                localStorage.setItem('userEmail', response.data.user.email);
-                localStorage.setItem('userRole', response.data.user.role);
-                if (response.data.user.role !== "Admin") {
+            if(response.data.token != null){
+                localStorage.setItem('userToken', response.data.token);
+                const localToken = localStorage.getItem('userToken');
+    
+                const token = getUserFromToken(localToken);
+                console.log("UserToken:", localStorage.getItem("userToken"));
+                console.log("Token:", token);
+                
+                if (token.role != "Admin") { 
                     navigate("/");
                 } else {
                     navigate("/dashboard");
@@ -51,7 +70,7 @@ const Signup = () => {
             localStorage.setItem("passToken", res?.data.token);
             console.log("resToken:"+ res?.data.token);
             localStorage.setItem("email", email);
-            navigate("/password/reset/code");
+            navigate("/signup/confirm");
             setLoading(false);
         })
         .catch((err) => {

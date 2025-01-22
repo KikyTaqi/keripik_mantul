@@ -5,6 +5,7 @@ import { GoogleOAuthProvider,GoogleLogin, useGoogleLogin } from '@react-oauth/go
 import axios from 'axios';
 import { URL_SIGNIN, URL_SIGNUP } from "../utils/Endpoint";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
     const [form] = Form.useForm();
@@ -14,19 +15,33 @@ function Login() {
 
     const navigate = useNavigate();
 
+    function getUserFromToken(localToken) {
+        const token = localToken; // Ambil token dari localStorage
+        if (!token) return null; // Jika token tidak ada
+    
+        try {
+            const decoded = jwtDecode(token); // Decode token
+            console.log("Decoded payload:", decoded);
+            return decoded; // Kembalikan payload token
+        } catch (err) {
+            console.error("Invalid token", err);
+            return null; // Jika token tidak valid
+        }
+    }
+
     const handleGoogleSuccess = async (credentialResponse) => {
         const { credential } = credentialResponse;
 
         try {
             const res = await axios.post(URL_SIGNIN+'/google', { token: credential });
             localStorage.setItem('userToken', res.data.token);
-            localStorage.setItem('userEmail', res.data.email);
-            localStorage.setItem('userRole', res.data.role);
+            const localToken = localStorage.getItem('userToken');
 
-            const userToken = localStorage.getItem('userToken');
-            const userEmail = localStorage.getItem('userEmail');
-            const userRole = localStorage.getItem('userRole');
-            if (res.data.role !== "Admin") {
+            const token = getUserFromToken(localToken);
+            console.log("UserToken:", localStorage.getItem("userToken"));
+            console.log("Token:", token);
+            
+            if (token.role != "Admin") { 
                 navigate("/");
             } else {
                 navigate("/dashboard");
@@ -73,9 +88,13 @@ function Login() {
             .post(URL_SIGNIN, data)
             .then((res) => {
                 localStorage.setItem('userToken', res.data.token);
-                localStorage.setItem('userEmail', res.data.email);
-                localStorage.setItem('userRole', res.data.role);
-                if (res.data.role !== "Admin") {
+                const localToken = localStorage.getItem('userToken');
+    
+                const token = getUserFromToken(localToken);
+                console.log("UserToken:", localStorage.getItem("userToken"));
+                console.log("Token:", token);
+                
+                if (token.role != "Admin") { 
                     navigate("/");
                 } else {
                     navigate("/dashboard");

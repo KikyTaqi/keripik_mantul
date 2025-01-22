@@ -13,7 +13,6 @@ function EmailConfirm() {
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
-        event.preventDefault();
         setLoading(true);
         const data = {
             email: values.email,
@@ -24,8 +23,6 @@ function EmailConfirm() {
             .then((res) => {
                 console.log("res", res);
                 localStorage.setItem("passToken", res?.data.token);
-                console.log("resToken:"+ res?.data.token);
-                localStorage.setItem("email", email);
                 navigate("/password/reset/code");
                 setLoading(false);
             })
@@ -34,7 +31,7 @@ function EmailConfirm() {
                 if (err.response) {
                     setErrMsg(err.response.data.message); // Jika response ada
                 } else {
-                    setErrMsg("Terjadi kesalahan jaringan. Silakan coba lagi."); // Jika response tidak ada
+                    setErrMsg("Terjadi kesalahan jaringan. Silakasssn coba lagi."); // Jika response tidak ada
                 }
                 setLoading(false);
             });
@@ -86,7 +83,7 @@ function EmailConfirm() {
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/signin">Kembali ke login</a>
+                            <a onClick={() => {navigate(-1)}}>Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

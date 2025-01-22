@@ -17,6 +17,16 @@ exports.getCustomers = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+exports.getProfile = async (req, res) => {
+    const {email} = req.body;
+    try {
+        const users = await User.find({'email': email});
+        console.log(users);
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 exports.createUser = async (req, res) => {
     try {

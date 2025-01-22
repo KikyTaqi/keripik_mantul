@@ -74,7 +74,6 @@ function ConfirmAccount() {
     };
 
     const handleSubmit = (event) => {
-        event.preventDefault();
         const finalOtp = otp1 + otp2 + otp3 + otp4;
         setLoading(true);
         const data = {

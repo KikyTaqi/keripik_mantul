@@ -6,9 +6,10 @@
 # Update
 
 - npm i tailwindcss react-icons
+npm install @react-oauth/google
 
 !Update Terbaru!
-npm install @react-oauth/google
+npm install jwt-decode
 
 # Install TailwindCSS
 

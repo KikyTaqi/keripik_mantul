@@ -38,8 +38,7 @@ function ResetCode() {
                     // localStorage.setItem("passToken", res?.data.token);
                     // console.log("resToken:"+ res?.data.token);
                     // localStorage.setItem("email", email);
-                    const remaningTime =
-                        new Date(res.sendTime).getTime() - new Date().getTime();
+                    const remaningTime = new Date(res.sendTime).getTime() - new Date().getTime();
             
                     if (remaningTime > 0) {
                         setOtpTime(remaningTime);
@@ -163,7 +162,7 @@ function ResetCode() {
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/password/reset">Kembali ke login</a>
+                            <a href="/signin">Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

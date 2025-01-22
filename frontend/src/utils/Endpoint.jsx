@@ -10,3 +10,4 @@ export const URL_TRANSACTION = `${BASEURL}/api/transactions`
 export const URL_KATEGORI = `${BASEURL}/api/kategori`
 export const URL_ONGKIR = `${BASEURL}/api/ongkir`
 export const URL_USER = `${BASEURL}/api/users`
+export const URL_PROFILE = `${BASEURL}/api/users/profile`

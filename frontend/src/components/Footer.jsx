@@ -61,8 +61,9 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="border-t border-gray-400 mt-8 pt-4 text-center">
-        <p>© 2024 Keripik Mantul. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Keripik Mantul. All rights reserved.</p>
       </div>
+
     </div>
   );
 };

@@ -7,9 +7,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const checkLogin = async () => {
-    const userToken = localStorage.removeItem('userToken');
-    const userEmail = localStorage.removeItem('userEmail');
-    const userRole = localStorage.removeItem('userRole');
+    const userToken = localStorage.clear();
 
     if(userToken == null || userEmail == null || userRole == null){
       navigate('/signin');
