@@ -53,12 +53,11 @@ const HomeProduct = () => {
             <div style={{width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent'}}>
                 <img src={jumbotron_produk} alt="" draggable='false' style={{zIndex:'0', position: 'absolute'}}/>
             </div>
-            <div className="py-9 px-10 bg-white relative" style={{zIndex: '5', borderRadius: '80px 80px 0 0'}}>
-                <div className="flex text-center w-full justify-evenly">
+            <div className="py-5 bg-white relative" style={{zIndex: '5', borderRadius: '80px 80px 0 0'}}>
+                <div className="flex text-center w-full justify-evenly pb-5 text-2xl" style={{borderBottom:"2px solid #7B281D"}}>
                     <a href="" className="text-[#7B281D] hover:text-red-600 font-bold">Produk</a>
                     <a href="" className="text-[#7B281D] hover:text-red-600 font-bold">Kategori</a>
                 </div>
-                <hr />
                 <div className="bg-white p-5">
                     <Row gutter={[13, 13]}>
                         {productsTerlaris.map((product) => (

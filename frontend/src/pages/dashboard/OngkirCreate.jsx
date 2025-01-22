@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Upload, message, Select } from "antd";
+import { Form, Input, Button, message, Select, ConfigProvider } from "antd";
 import axios from "axios";
 import { URL_ONGKIR } from '../../utils/Endpoint';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,14 @@ const AddOngkir = () => {
     };    
 
     return (
-        <div>
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#800000',
+                }
+            }}
+        >
+        <div className="border border-stone-300 py-4 px-8">
             <Form 
                 form={form}
                 layout="vertical"
@@ -64,13 +71,14 @@ const AddOngkir = () => {
                     <Input placeholder="Masukkan ongkos kirim" />
                 </Form.Item>
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={loading}>
+                <Form.Item className="flex justify-end">
+                    <Button type="primary" htmlType="submit" loading={loading} className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-6 py-4 justify-items-center text-base">
                         Add Ongkir
                     </Button>
                 </Form.Item>
             </Form>
         </div>
+        </ConfigProvider>
     );
 };
 
