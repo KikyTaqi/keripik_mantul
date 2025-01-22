@@ -83,7 +83,7 @@ function EmailConfirm() {
                             </Button>
                         </Form.Item>
                         <div className="justify-center flex">
-                            <a href="/signin">Kembali ke login</a>
+                            <a onClick={() => {navigate(-1)}}>Kembali ke login</a>
                         </div>
                     </Form>
                 </div>

@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from "react";
+import { Button, Image, ConfigProvider, message  } from 'antd';
+import { HiPencilSquare } from "react-icons/hi2";
+import axios from 'axios';
+import { URL_USER } from '../../utils/Endpoint';
+import { Link, useNavigate } from 'react-router-dom';
+import '../../style.css';
+
+const Profile = () => {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const [userResponse] = await Promise.all([
+                    axios.get(URL_USER)
+                ]);
+
+                setUsers(userResponse.data);
+            } catch (err) {
+                message.error("Gagal memuat data!");
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    
+
+    return (
+        <ConfigProvider
+            theme={{
+                token: {
+                     // Primary color untuk seluruh aplikasi
+                },
+                components: {
+                    Table: {
+                        headerBg: "#F2E8C6",
+                        headerBorderRadius: 0,
+                        borderColor: "#B9B9B9",
+                    },
+                },
+            }}
+        >
+            <div className="border p-2 border-[#F2E8C6]">
+                <div className="bg-[#F2E8C6] rounded-md text-center p-1 text-black">
+                    <h1 className="font-bold text-lg">Profil Saya</h1>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                    <div className="flex justify-center mb-16 py-16">
+                        <div className="flex items-stretch">
+                            <table className="table-auto">
+                                <tbody>
+                                    <tr className="text-lg">
+                                        <td className="font-medium text-right">Nama</td>
+                                        <td className="font-medium">:</td>
+                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                    </tr>
+                                    <tr className="text-lg">
+                                        <td className="font-medium text-right">Email</td>
+                                        <td className="font-medium">:</td>
+                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                    </tr>
+                                    <tr className="text-lg">
+                                        <td className="font-medium text-right">Nomor Telepon</td>
+                                        <td className="font-medium">:</td>
+                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                    </tr>
+                                    <tr className="text-lg">
+                                        <td className="font-medium text-right">Tanggal Lahir</td>
+                                        <td className="font-medium">:</td>
+                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                    </tr>
+                                    <tr className="text-lg">
+                                        <td className="font-medium text-right">Jenis Kelamin</td>
+                                        <td className="font-medium">:</td>
+                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="mt-12 mx-16 mb-28 p-12">
+                            <div className="border p-3 border-[#F2E8C6]">
+                                <Image 
+                                    src="https://res.cloudinary.com/drlckqgew/image/upload/v1737338748/mfpcyton3edmwxk48qeb.gif"
+                                    alt="Foto Profile"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: '100%',
+                                        padding: '2rem',
+                                        objectFit: 'contain',
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex justify-end pe-7 mb-5">
+                    <Link to={'/profile/edit'}>
+                        <Button
+                            type="secondary"
+                            className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl h-6 py-4 justify-items-center text-base w-28"
+                        >
+                            <HiPencilSquare />
+                            <span className=" ms-1 mb-1">Edit</span>
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+        </ConfigProvider>
+    );
+};
+
+export default Profile;

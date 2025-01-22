@@ -4,6 +4,7 @@ import { Layout, Button } from "antd";
 
 // Components
 import Sidebar from "./components/Siderbar";
+import ProfileSidebar from "./pages/user_profile/ProfileSidebar";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
@@ -25,6 +26,7 @@ import UpdateKategori from "./pages/dashboard/KategoriUpdate";
 import Ongkir from "./pages/dashboard/Ongkir";
 import AddOngkir from "./pages/dashboard/OngkirCreate";
 import UpdateOngkir from "./pages/dashboard/OngkirUpdate";
+import UserProfile from "./pages/user_profile/Profile";
 
 // Auth
 import Login from "./pages/Login";
@@ -64,6 +66,35 @@ const App = () => {
                         <Route path="/" element={<Home />} />
                         <Route path="/products" element={<HomeProduct />} />
                         <Route path="/about" element={<About />} />
+                        <Route path="/profile/*" element={
+                              <Layout style={{backgroundColor: "white"}}>
+              
+                                {/* Main Content */}
+                                <Layout style={{ padding: '0', minHeight: '20vh', backgroundColor: "white" }}>
+                                  
+                                  <div className="flex">
+                                    <div className="flex-none ms-4 me-1 mt-4 w-14">
+                                      <ProfileSidebar/>
+                                    </div>
+                                    <div className="flex-1">
+                                      <Content
+                                        style={{
+                                          margin: '16px', 
+                                          background: '#fff',
+                                          minHeight: '200px',
+                                        }}
+                                      >
+                                        <Routes>
+                                          <Route path="/" element={<UserProfile />} />
+                                          <Route path="/products" element={<Product />} />
+                                        </Routes>
+                                      </Content>
+                                    </div>
+                                  </div>
+                                  
+                                </Layout>
+                              </Layout>
+                          } />
                       </Routes>
                     </Content>
                   </div>
