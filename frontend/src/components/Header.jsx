@@ -29,29 +29,14 @@ const Header = () => {
   
   useEffect(() => {
     const checkLogin = () => {
+      setIsCheck(false);
+      if (userToken != null) {
         setIsCheck(true);
-        if (userToken == null) {
-          setIsCheck(false);
-        }
+      }
     };
     checkLogin();
   }, [navigate]);
 
-  const removeLogin = async () => {
-    const userToken = localStorage.removeItem('userToken');
-  }
-
-  const checkAdmin = () => {
-    if(isCheck){
-      const userRole = tokenVerified.role;
-      if(userRole != 'Admin'){
-        navigate('/');
-      }
-    }
-  }
-  
-  
-  const userEmail = tokenVerified.email;
   const location = useLocation(); // Mendapatkan rute saat ini
 
   // Cek apakah path saat ini adalah "/dashboard" atau sub-pathnya
@@ -59,7 +44,7 @@ const Header = () => {
 
   if (isDashboardPath) {
     // Jika path adalah "/dashboard" atau sub-path lainnya
-    {checkAdmin()}
+    
     const menuItems = [
       { name: "Dashboard", path: "/dashboard" },
       { name: "Pesanan", path: "/dashboard/pesanan" },
@@ -89,7 +74,7 @@ const Header = () => {
 
     const handleProfile = () => {
       const btn = document.getElementById('profileButton');
-      console.log(btn);
+      // console.log(btn);
       btn.addEventListener('click', () => {
         if(isCheck){
           const userEmail = tokenVerified.email;
@@ -118,12 +103,15 @@ const Header = () => {
 
         <div className="flex items-center" id="profileButton" onClick={handleProfile}>
           {/* User Icon */}
-          <FaUserCircle className="text-red-800 text-3xl object-right hover:cursor-pointer"/>
+          <FaUserCircle className={`text-red-800 text-3xl object-right hover:cursor-pointer  ${location.pathname == "/dashboard/profile" ? "border-b-2 border-red-800" : ""}`}/>
         </div>
       </div>
     );
   } else {
     // Jika path bukan "/dashboard"
+    const removeLogin = async () => {
+      const userToken = localStorage.removeItem('userToken');
+    }
 
     const items = [
       {
@@ -223,7 +211,7 @@ const Header = () => {
             trigger={['hover']}
           >
               <Link to="/profile">
-                <FaUserCircle className="text-red-800 text-3xl object-right ms-10" />
+                <FaUserCircle className={`text-red-800 text-3xl object-right ms-10 ${location.pathname == "/profile" ? "border-b-2 border-red-800" : ""}`} />
               </Link>
           </Dropdown>
           

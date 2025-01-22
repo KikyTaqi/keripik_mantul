@@ -5,6 +5,7 @@ import axios from 'axios';
 import { URL_USER } from '../../utils/Endpoint';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../style.css';
+import {jwtDecode} from "jwt-decode";
 
 const Profile = () => {
     const [users, setUsers] = useState([]);
@@ -14,18 +15,15 @@ const Profile = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true);
-                const [userResponse] = await Promise.all([
-                    axios.get(URL_USER)
-                ]);
-
-                setUsers(userResponse.data);
-            } catch (err) {
-                message.error("Gagal memuat data!");
-                console.error(err);
-            } finally {
+                const token = localStorage.getItem("userToken");
+                const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+                const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
+                setUsers(response.data);
+              } catch (error) {
+                console.error("Error fetching profile:", error);
+              } finally {
                 setLoading(false);
-            }
+              }
         };
 
         fetchData();
@@ -48,7 +46,8 @@ const Profile = () => {
                 },
             }}
         >
-            <div className="border p-2 border-[#F2E8C6]">
+        {users.map((data, index) => (
+            <div className="border p-2 border-[#F2E8C6]" key={index}>
                 <div className="bg-[#F2E8C6] rounded-md text-center p-1 text-black">
                     <h1 className="font-bold text-lg">Profil Saya</h1>
                 </div>
@@ -61,27 +60,27 @@ const Profile = () => {
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Nama</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.name || "(Nama tidak tersedia)"}</td>
                                     </tr>
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Email</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.email || "(Email tidak tersedia)"}</td>
                                     </tr>
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Nomor Telepon</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.no_telp || "(Nomor telepon tidak tersedia)"}</td>
                                     </tr>
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Tanggal Lahir</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.tgl_lahir || "(Tanggal lahir tidak tersedia)"}</td>
                                     </tr>
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Jenis Kelamin</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">123456789</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.gender || "(Jenis kelamin tidak tersedia)"}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -117,6 +116,7 @@ const Profile = () => {
                     </Link>
                 </div>
             </div>
+        ))}
         </ConfigProvider>
     );
 };
