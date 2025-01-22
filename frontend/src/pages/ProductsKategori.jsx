@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
+import { Card, Col, Row, Button, Typography, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { FaRegHeart } from "react-icons/fa"
 import axios from "axios";
@@ -15,7 +15,7 @@ import '../style.css';
 
 const { Title } = Typography;
 
-const HomeProduct = () => {
+const ProductsKategori = () => {
     const [products, setProducts] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -64,24 +64,8 @@ const HomeProduct = () => {
                 </div>
                 <div className="bg-white p-5">
                     <Row gutter={[13, 13]}>
-                        {loading
-                        ? Array.from({ length: 5 }).map((_, index) => ( // Placeholder Skeleton
-                            <Col span={5} key={index} style={{flex: '0 0 19.7%'}}>
-                            <Card
-                                style={{
-                                height: '436px',
-                                minHeight: '436px',
-                                padding: 10,
-                                }}
-                                hoverable
-                            >
-                                <Skeleton.Image style={{ width: '18vw', height: '250px', marginBottom: '10px'}} />
-                                <Skeleton active paragraph={{ rows: 2 }} />
-                            </Card>
-                            </Col>
-                            ))
-                        : productsTerlaris.map((product) => (
-                            <Col span={5} key={product._id} style={{flex: '0 0 19.7%'}}>
+                        {productsTerlaris.map((product) => (
+                            <Col span={6} key={product._id}>
                                 <Card
                                     style={{
                                         height: '436px',
@@ -143,4 +127,4 @@ const HomeProduct = () => {
     );
 };
 
-export default HomeProduct;
+export default ProductsKategori;

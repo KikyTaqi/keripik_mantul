@@ -169,11 +169,7 @@ const Dashboard = () => {
                         loading={loading}
                         bordered
                         className="mt-4"
-                        pagination={{ 
-                            pageSize: 4, 
-                            showSizeChanger: false,
-                            className: 'custom-pagination',
-                        }}
+                        pagination={false}
                         rowKey={(record) => record._id}
                     />
             </div>

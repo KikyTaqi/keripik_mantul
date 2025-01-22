@@ -129,7 +129,7 @@ const Home = () => {
                                     }}
                                     hoverable
                                 >
-                                    <Skeleton.Image style={{ width: '100%', height: '250px' }} />
+                                    <Skeleton.Image style={{ width: '16vw', height: '250px' }} />
                                     <Skeleton active paragraph={{ rows: 2 }} />
                                 </Card>
                                 </Col>
