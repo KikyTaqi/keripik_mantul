@@ -7,7 +7,8 @@ export default {
     "./src/pages/*.jsx", 
     "./src/pages/dashboard/*.jsx", 
     "./src/pages/passwordChange/*.jsx", 
-    "./src/pages/About.jsx"
+    "./src/pages/About.jsx",
+    "./src/pages/dashboard/ProfileAdmin/*.jsx",
   ],
   theme: {
     extend: {},

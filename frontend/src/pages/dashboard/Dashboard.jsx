@@ -54,7 +54,7 @@ const Dashboard = () => {
                 axios.get(URL_KATEGORI)
             ]);
 
-            setProducts(productResponse.data);
+            setProducts(productResponse.data.slice(0, 5));
             setCategories(categoryResponse.data);
         } catch (err) {
             message.error("Gagal memuat data!");
@@ -169,11 +169,14 @@ const Dashboard = () => {
                     loading={loading}
                     bordered
                     className="mt-4"
-                    pagination={{ 
-                    pageSize: 4, 
-                    showSizeChanger: false,
-                    className: 'custom-pagination',
-                    }}
+                    pagination=
+                    {
+                        { 
+                            pageSize: 4, 
+                            showSizeChanger: false,
+                            className: 'custom-pagination',
+                        }
+                    }
                     rowKey={(record) => record._id}
                 />
         </div>

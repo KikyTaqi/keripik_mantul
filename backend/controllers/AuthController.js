@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GMAIL_CLIENT_ID);
+const secretkey = process.env.JWT_SECRET;
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -23,7 +24,7 @@ exports.signIn = async (req, res) => {
         const userIsReg = await User.findOne({ email: email, isRegistered: true });
         if (!user) {
             return res.status(401).json({message: 'User not registered'});
-        }else {
+        }else{
           console.error(user.password+" "+password);
           if (user.password !== password){
             return res.status(401).json({message: 'Email or password did not match'});
@@ -33,15 +34,20 @@ exports.signIn = async (req, res) => {
           return res.status(401).json({message: 'You need to confirm your account', reg: true});
         }
 
-        //berikan token
-        res.json({
-            _id: user._id,
-            role: user.role,
-            email: user.email,
-            token: generateToken(user._id),
+        const userPayload = {
+          _id: user._id,
+          role: user.role,
+          email: user.email,
+        }
+  
+        const userToken = jwt.sign(userPayload, secretkey, { expiresIn: '1h' });
+  
+        res.status(200).json({
+            message: 'Login successful',
+            token: userToken,
         });
     }catch (err) {
-        res.status(500).json({message: res});
+        res.status(500).json({message: 'Something went wrong'});
     }
 };
 
@@ -61,7 +67,7 @@ exports.signInGoogle = async (req, res) => {
       let email = payload.email;
       let name = payload.name;
       let user = await User.findOne({ email: email });
-      let userToken = null;
+      let tokenGenerate = null;
       if (!user) {
         console.log(user);
         user = new User({
@@ -72,7 +78,7 @@ exports.signInGoogle = async (req, res) => {
           isRegistered: true
         });
         await user.save();
-        userToken = generateToken(user._id);
+        tokenGenerate = generateToken(user._id);
       }else if(user){
         user.name = name;
         user.email = user.email;
@@ -80,16 +86,21 @@ exports.signInGoogle = async (req, res) => {
         user.googleAuth = true;
         user.isRegistered = true;
         await user.save();
-        userToken = generateToken(user._id);
+        tokenGenerate = generateToken(user._id);
       }else{
         return res.status(401).json({ message: 'Something went wrong' });
       }
 
+      const userPayload = {
+        _id: user._id,
+        role: user.role,
+        email: user.email,
+      }
+
+      const userToken = jwt.sign(userPayload, secretkey, { expiresIn: '1h' });
+
       res.status(200).json({
           message: 'Login successful',
-          _id: user._id,
-          role: user.role,
-          email: user.email,
           token: userToken,
       });
   } catch (err) {
@@ -247,7 +258,6 @@ exports.signUpGoogle = async (req, res) => {
 
         // Cari pengguna di database atau buat pengguna baru
         let user = await User.findOne({ email });
-        let userToken = null;
         if (!user) {
           console.log(user);
           user = new User({
@@ -258,7 +268,6 @@ exports.signUpGoogle = async (req, res) => {
               isRegistered: true
           });
           await user.save();
-          userToken = generateToken(user._id);
         }else if(user){
           user.name = name;
           user.email = user.email;
@@ -266,12 +275,22 @@ exports.signUpGoogle = async (req, res) => {
           user.googleAuth = true;
           user.isRegistered = true;
           await user.save();
-          userToken = generateToken(user._id);
         }else{
           return res.status(401).json({ message: 'Something went wrong' });
         }
 
-        res.status(200).json({ message: 'Google Sign-In Successful', user, userToken });
+        const userPayload = {
+          _id: user._id,
+          role: user.role,
+          email: user.email,
+        }
+  
+        const userToken = jwt.sign(userPayload, secretkey, { expiresIn: '1h' });
+  
+        res.status(200).json({
+            message: 'Login successful',
+            token: userToken,
+        });
     } catch (error) {
         console.error(error);
         res.status(400).json({ message: 'Invalid Google Token' });
