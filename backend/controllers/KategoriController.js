@@ -4,7 +4,7 @@ const Ongkir = require('../models/Ongkir');
 //mendapatkan semua produk
 exports.getKategori = async (req, res) => {
     try {
-        const kategori = await Kategori.find();
+        const kategori = await Kategori.find().sort({ _id: -1 });
         res.status(200).json(kategori); 
     } catch (err) {
         res.status(500).json({message: err.message})
@@ -82,7 +82,7 @@ exports.updateKategori = async (req, res) => {
 // ONGKRIR
 exports.getOngkir = async (req, res) => {
     try {
-        const ongkir = await Ongkir.find();
+        const ongkir = await Ongkir.find().sort({ _id: -1 });
         res.status(200).json(ongkir); 
     } catch (err) {
         res.status(500).json({message: err.message})
