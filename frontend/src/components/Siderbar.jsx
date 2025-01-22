@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
 import logo from "../assets/logo_keripik.png";
@@ -6,10 +6,18 @@ import logo from "../assets/logo_keripik.png";
 const Sidebar = () => {
   const navigate = useNavigate();
 
-  const checkLogin = async () => {
+  useEffect(() => {
+    const userToken = localStorage.getItem('userToken');
+
+    if(userToken == null){
+      navigate('/signin');
+    }
+  }, []);
+
+  const logout = () => {
     const userToken = localStorage.clear();
 
-    if(userToken == null || userEmail == null || userRole == null){
+    if(userToken == null){
       navigate('/signin');
     }
   }
@@ -49,11 +57,9 @@ const Sidebar = () => {
               <li key={index} className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
                 <Link
                   to={item.path}
-                  onClick={(e) => {
-                    if (item.name === "Log Out") {
-                      checkLogin();
-                    }
-                  }}
+                  onClick={
+                    item.path === "/signin" ? logout : null
+                  }
                   className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 hover:bg-orange-100 rounded-lg ${
                     isDashboardActive || isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
                   }`}
