@@ -29,10 +29,10 @@ const Header = () => {
   
   useEffect(() => {
     const checkLogin = () => {
+      if (userToken != null) {
         setIsCheck(true);
-        if (userToken == null) {
-          setIsCheck(false);
-        }
+      }
+      setIsCheck(false);
     };
     checkLogin();
   }, [navigate]);
@@ -47,11 +47,12 @@ const Header = () => {
       if(userRole != 'Admin'){
         navigate('/');
       }
+    }else{
+      navigate('/signin');
     }
   }
   
   
-  const userEmail = tokenVerified.email;
   const location = useLocation(); // Mendapatkan rute saat ini
 
   // Cek apakah path saat ini adalah "/dashboard" atau sub-pathnya
