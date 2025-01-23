@@ -15,6 +15,7 @@ import DashboardProfile from "./pages/dashboard/ProfileAdmin/DashboardProfile";
 import Home from "./pages/Home";
 import HomeProduct from "./pages/HomeProduct";
 import ProductsKategori from "./pages/ProductsKategori";
+import PilihKategori from "./pages/PilihKategori";
 import About from "./pages/About";
 import Product from "./pages/dashboard/Product";
 import DetailProduct from "./pages/dashboard/ProductDetail";
@@ -67,6 +68,7 @@ const App = () => {
                         <Route path="/" element={<Home />} />
                         <Route path="/products" element={<HomeProduct />} />
                         <Route path="/products/kategori" element={<ProductsKategori />} />
+                        <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/profile/*" element={
                               <Layout style={{backgroundColor: "white"}}>

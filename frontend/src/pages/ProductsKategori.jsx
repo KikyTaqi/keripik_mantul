@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { Card, Col, Row, Button, Typography, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { FaRegHeart } from "react-icons/fa"
+import { FaRegHeart, FaAngleRight } from "react-icons/fa"
 import axios from "axios";
-import { URL_PRODUCT } from "../utils/Endpoint";
+import { URL_KATEGORI } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import balung from "../assets/k-balung-kuwuk.jpg";
@@ -12,26 +12,25 @@ import talas from "../assets/k-talas.jpg";
 import singkong from "../assets/k-singkong.jpg";
 import keripik3 from "../assets/3-keripik.jpg";
 import '../style.css';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
 const ProductsKategori = () => {
-    const [products, setProducts] = useState([]);
-    const [productsTerlaris, setProductsTerlaris] = useState([]);
+    const [kategoris, setKategoris] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     // Fetch data produk saat load page
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [productResponse, productsResponse] = await Promise.all([
-                    axios.get(URL_PRODUCT),
-                    axios.get(URL_PRODUCT)
+                const [kategoriResponse] = await Promise.all([
+                    axios.get(URL_KATEGORI)
                 ]);
 
-                setProducts(productResponse.data);
-                setProductsTerlaris(productsResponse.data);
+                setKategoris(kategoriResponse.data);
             } catch (err) {
                 message.error("Gagal memuat data!");
                 console.error(err);
@@ -62,65 +61,15 @@ const ProductsKategori = () => {
                 location.pathname === "/products/kategori" ? "border-b-2 border-red-800" : ""
               }`}>Kategori</Link>
                 </div>
-                <div className="bg-white p-5">
-                    <Row gutter={[13, 13]}>
-                        {productsTerlaris.map((product) => (
-                            <Col span={6} key={product._id}>
-                                <Card
-                                    style={{
-                                        height: '436px',
-                                        minHeight: '436px',
-                                        padding: 10,
-                                    }}
-                                    hoverable
-                                    cover={
-                                        <img alt={product.name} className="border border-[#F2E8C6] p-2" src={product.thumbnail} style={{
-                                            minHeight: '250px',
-                                            maxHeight: '250px',
-                                            overflowY: 'hidden',
-                                            marginBottom: 'auto',
-                                            objectFit: 'cover',
-                                        }}/>
-                                    }>
-                                    <Card.Meta
-                                        style={{
-                                            marginTop: 'auto',
-                                            marginBottom: '3rem',
-                                        }}
-                                        title={product.name}
-                                        description={`Rp ${product.price}`}
-                                    />
-                                    
-                                    <div className="flex justify-between items-center">
-                                        <p>0 Terjual</p>
-                                        
-                                        <div className="flex flex-row-reverse">
-                                        <Link to={`/checkout/${product._id}`}>
-                                            <Button
-                                                type="primary"
-                                                icon={<ShoppingCartOutlined />}
-                                                className="bottom-0 ms-2 text-base"
-                                                // onClick={() => handleAddToCart(product)}
-                                            >
-                                            </Button>
-                                        </Link>
-                                        <Link to={`/`}>
-                                            <Button
-                                                type="primary"
-                                                danger
-                                                icon={<FaRegHeart />}
-                                                className="bottom-0 text-base"
-                                                // onClick={() => handleAddToCart(product)}
-                                            >
-                                            </Button>
-                                        </Link>
-                                        </div>
-                                    </div>
-                                    
-                                </Card>
-                            </Col>
+                <div className="bg-white pt-10 px-52">
+                        {kategoris.map((data) => (
+                            <div className="flex flex-col" key={data._id} onClick={() => navigate(`/products/kategori/${data._id}`)}>
+                                <div className="border border-black px-7 py-3 my-1 font-semibold w-full rounded-md flex justify-between hover:bg-gray-100 hover:border-gray-500 cursor-pointer"> 
+                                <p>{data.nama_kategori}</p>
+                                <FaAngleRight className="mt-1"/>
+                                </div>
+                            </div>
                         ))}
-                    </Row>
                 </div>
             </div>
         </div>
