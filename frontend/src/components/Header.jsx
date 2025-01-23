@@ -184,7 +184,7 @@ const Header = () => {
             overlayStyle={{
               width: '200px',
               boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01);',
+              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
               borderRadius: '30%'
             }}
             placement="bottomRight"
@@ -203,7 +203,7 @@ const Header = () => {
             overlayStyle={{
               width: '200px',
               boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01);',
+              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
               borderRadius: '30%'
             }}
             placement="bottomRight"
