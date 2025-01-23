@@ -6,6 +6,7 @@ import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
+import { useParams } from 'react-router-dom';
 import balung from "../assets/k-balung-kuwuk.jpg";
 import pisang from "../assets/k-pisang.jpg";
 import talas from "../assets/k-talas.jpg";
@@ -15,10 +16,11 @@ import '../style.css';
 
 const { Title } = Typography;
 
-const HomeProduct = () => {
+const PilihKategori = () => {
     const [products, setProducts] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { category_id } = useParams();
 
     // Fetch data produk saat load page
     useEffect(() => {
@@ -48,6 +50,10 @@ const HomeProduct = () => {
         message.success(`${product.title} added to cart!`);
     };
 
+    const filteredProducts = products.filter(
+        (product) => product.category_id === category_id
+    );
+
     return (
         <div style={{ padding: '0', position:'relative' }}>
             <div style={{width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent'}}>
@@ -59,7 +65,7 @@ const HomeProduct = () => {
                 location.pathname === "/products" ? "border-b-2 border-red-800" : ""
               }`}>Produk</Link>
                     <Link to="/products/kategori" className={`text-[#7B281D] hover:text-red-600 font-bold ${
-                location.pathname === "/products/kategori" ? "border-b-2 border-red-800" : ""
+                2 === 2 ? "border-b-2 border-red-800" : ""
               }`}>Kategori</Link>
                 </div>
                 <div className="bg-white p-5">
@@ -80,7 +86,7 @@ const HomeProduct = () => {
                             </Card>
                             </Col>
                             ))
-                        : productsTerlaris.map((product) => (
+                        : filteredProducts.map((product) => (
                             <Col span={5} key={product._id} style={{flex: '0 0 20%', maxWidth: '20%'}}>
                                 <Card
                                     style={{
@@ -103,8 +109,9 @@ const HomeProduct = () => {
                                             marginTop: 'auto',
                                             marginBottom: '3rem',
                                         }}
-                                        title={product.category_id}
+                                        title={product.name}
                                         description={`Rp ${product.price}`}
+
                                     />
                                     
                                     <div className="flex justify-between items-center">
@@ -140,4 +147,4 @@ const HomeProduct = () => {
     );
 };
 
-export default HomeProduct;
+export default PilihKategori;
