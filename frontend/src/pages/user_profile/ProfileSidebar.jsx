@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
 import { FaTruckFast } from "react-icons/fa6";
@@ -6,14 +6,31 @@ import { LuMapPin } from "react-icons/lu";
 import { FaRegHeart } from "react-icons/fa";
 import { TbLockPassword } from "react-icons/tb";
 import { MdLogout } from "react-icons/md";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode";
+import {URL_USER} from "../../utils/Endpoint";
 
 const ProfileSidebar = () => {
   const navigate = useNavigate();
+  const [profile, setProfile] = useState([]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("userToken");
+      const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+      const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
+      setProfile(response.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
 
   const checkLogin = async () => {
     const userToken = localStorage.removeItem('userToken');
-    const userEmail = localStorage.removeItem('userEmail');
-    const userRole = localStorage.removeItem('userRole');
 
     if(userToken == null || userEmail == null || userRole == null){
       navigate('/signin');
@@ -32,8 +49,10 @@ const ProfileSidebar = () => {
   ];
 
   return (
-    <div className="bg-white shadow-lg h-full flex flex-col border rounded-lg" style={{ width: '19rem' }}>
-
+    <>
+    {profile.map((data, index) => (
+    
+    <div className="bg-white shadow-lg h-full flex flex-col border rounded-lg" style={{ width: '19rem' }} key={index}>
       {/* Menu Items */}
       <nav className="flex-1 p-4">
         <h1 className="font-bold text-base mb-5">Akun Saya</h1>
@@ -59,8 +78,8 @@ const ProfileSidebar = () => {
                   />
                 </div>
                 <div className="flex-1 me-3 py-6" style={{ maxWidth: '100px'}}>
-                  <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="font-medium">123456789</p>
-                  <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>123456789@gmail.com</p>
+                  <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="font-medium">{data.name || "(Kosong)"}</p>
+                  <p style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{data.email || "(Email tidak tersedia)"}</p>
                 </div>
               </div>
               <RightOutlined />
@@ -100,6 +119,8 @@ const ProfileSidebar = () => {
         </ul>
       </nav>
     </div>
+    ))}
+    </>
   );
 };
 

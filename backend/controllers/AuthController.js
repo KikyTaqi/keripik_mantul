@@ -80,7 +80,9 @@ exports.signInGoogle = async (req, res) => {
         await user.save();
         tokenGenerate = generateToken(user._id);
       }else if(user){
-        user.name = name;
+        if(user.name == null || user.name == ""){
+          user.name = name;
+        }
         user.email = user.email;
         user.role = user.role;
         user.googleAuth = true;
@@ -221,29 +223,6 @@ exports.confirmAccount = async (req, res) => {
   res.status(200).json({ message: 'Sending OTP to your email', user});
 };
 
-exports.signUp = async (req, res) => {
-    console.log('req', req.body);
-
-        // Buat pengguna baru
-        const newUser = new User({
-            email,
-            password,
-            role: role || 'User', // Atur default role jika tidak diberikan
-        });
-
-        // Simpan pengguna ke database
-        await newUser.save();
-
-        // Berikan token
-        res.status(201).json({
-            _id: newUser._id,
-            role: newUser.role,
-            email: newUser.email,
-            token: generateToken(newUser._id),
-        });
-    
-};
-
 exports.signUpGoogle = async (req, res) => {
   const { token } = req.body;
     try {
@@ -269,7 +248,9 @@ exports.signUpGoogle = async (req, res) => {
           });
           await user.save();
         }else if(user){
-          user.name = name;
+          if(user.name == null || user.name == ""){
+            user.name = name;
+          }
           user.email = user.email;
           user.role = user.role;
           user.googleAuth = true;

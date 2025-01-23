@@ -59,6 +59,8 @@ const Header = () => {
       { name: "Ulasan", path: "/dashboard/ulasan" },
       { name: "Customer", path: "/dashboard/customer" },
       { name: "Profil", path: "/dashboard/profile" },
+      { name: "Edit Profil", path: "/dashboard/profile/edit", back: true },
+      { name: "Change Password", path: "/dashboard/profile/edit/password", back: true },
     ];
 
     const activeMenu = menuItems.find((item) => {

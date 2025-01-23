@@ -162,16 +162,32 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                    <h1 className="font-bold">Produk Terlaris</h1>
-                    <Table
-                        dataSource={products}
-                        columns={columns}
-                        loading={loading}
-                        bordered
-                        className="mt-4"
-                        pagination={false}
-                        rowKey={(record) => record._id}
-                    />
+                <div className="flex gap-5">
+                    <div className="">
+                        <h1 className="font-bold">Produk Terlaris</h1>
+                        <Table
+                            dataSource={products}
+                            columns={columns}
+                            loading={loading}
+                            bordered
+                            className="mt-4"
+                            pagination={false}
+                            rowKey={(record) => record._id}
+                        />
+                    </div>
+                    <div className="">
+                        <h1 className="font-bold">Produk Terlaris</h1>
+                        <Table
+                            dataSource={products}
+                            columns={columns}
+                            loading={loading}
+                            bordered
+                            className="mt-4"
+                            pagination={false}
+                            rowKey={(record) => record._id}
+                        />
+                    </div>
+                </div>
             </div>
         </ConfigProvider>
     );

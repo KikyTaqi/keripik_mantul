@@ -66,7 +66,7 @@ const HomeProduct = () => {
                     <Row gutter={[13, 13]}>
                         {loading
                         ? Array.from({ length: 5 }).map((_, index) => ( // Placeholder Skeleton
-                            <Col span={5} key={index} style={{flex: '0 0 19.7%'}}>
+                            <Col span={5} key={index} style={{flex: '0 0 20%', maxWidth: '20%'}}>
                             <Card
                                 style={{
                                 height: '436px',
@@ -75,13 +75,13 @@ const HomeProduct = () => {
                                 }}
                                 hoverable
                             >
-                                <Skeleton.Image style={{ width: '18vw', height: '250px', marginBottom: '10px'}} />
+                                <Skeleton.Image style={{ width: '100%', height: '250px', marginBottom: '10px'}} />
                                 <Skeleton active paragraph={{ rows: 2 }} />
                             </Card>
                             </Col>
                             ))
                         : productsTerlaris.map((product) => (
-                            <Col span={5} key={product._id} style={{flex: '0 0 19.7%'}}>
+                            <Col span={5} key={product._id} style={{flex: '0 0 20%', maxWidth: '20%'}}>
                                 <Card
                                     style={{
                                         height: '436px',

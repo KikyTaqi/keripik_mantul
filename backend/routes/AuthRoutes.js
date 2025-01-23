@@ -13,7 +13,6 @@ const { sendConfirmAccount } = require("../controllers/AuthController");
 
 router.post('/signin', signIn);
 router.post('/signin/google', signInGoogle);
-router.post('/signup', signUp);
 router.post('/signup/confirm', confirmAccount);
 router.post('/signup/confirm/send', sendConfirmAccount);
 router.post('/signup/google', signUpGoogle);

@@ -10,6 +10,8 @@ import Header from "./components/Header";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 import DashboardProfile from "./pages/dashboard/ProfileAdmin/DashboardProfile";
+import DashboardEditProfile from "./pages/dashboard/ProfileAdmin/DashboardEditProfile";
+import DashboardChangePassword from "./pages/dashboard/ProfileAdmin/DashboardChangePassword";
 
 // Product
 import Home from "./pages/Home";
@@ -138,6 +140,8 @@ const App = () => {
                       <Routes>
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/profile" element={<DashboardProfile />} />
+                        <Route path="/profile/edit" element={<DashboardEditProfile />} />
+                        <Route path="/profile/edit/password" element={<DashboardChangePassword />} />
                         <Route path="/products" element={<Product />} />
                         <Route path="/products/create" element={<AddProduct />} />
                         <Route path="/products/edit/:id" element={<UpdateProduct />} />

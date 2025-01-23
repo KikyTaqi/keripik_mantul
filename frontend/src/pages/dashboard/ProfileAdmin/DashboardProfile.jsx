@@ -47,12 +47,12 @@ const DashboardProfile = () => {
             </div>
         </div>
         <div className="flex justify-end gap-4 w-full mt-7">
-            <Link to="/ubah-password">
+            <Link to="/dashboard/profile/edit/password">
                 <Button type="secondary" className="bg-red-800 text-white px-4 pb-1 rounded-[30px] hover:bg-red-700">
                 Ubah Password
                 </Button>
             </Link>
-            <Link to="/edit-profile">
+            <Link to="/dashboard/profile/edit">
                 <Button type="secondary" className="bg-red-800 text-white px-4 pb-1 rounded-[30px] hover:bg-red-700">
                 Edit Profile
                 </Button>

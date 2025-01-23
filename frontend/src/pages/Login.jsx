@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Input, Button, Form, Alert, Checkbox, Space } from "antd";
+import { Input, Button, Form, Alert, Checkbox, Space, ConfigProvider } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider,GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -120,6 +120,13 @@ function Login() {
 
     return (
         <>
+            <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#800000',
+                }
+            }}
+            >
             {errMsg !== "" && (
                 <div style={{ padding: "20px" }}>
                     <Alert message={errMsg} type="error" />
@@ -196,9 +203,10 @@ function Login() {
                                 onError={handleGoogleFailure}
                             />
                         </div>
-                    </GoogleOAuthProvider>
+                    </GoogleOAuthProvider> 
                 </div>
             </div>
+        </ConfigProvider>
         </>
     );
 };
