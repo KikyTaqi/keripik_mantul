@@ -3,7 +3,7 @@ import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { FaRegHeart } from "react-icons/fa"
 import axios from "axios";
-import { URL_PRODUCT } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_KATEGORI } from "../utils/Endpoint";
 import { Link } from "react-router-dom";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import { useParams } from 'react-router-dom';
@@ -18,7 +18,7 @@ const { Title } = Typography;
 
 const PilihKategori = () => {
     const [products, setProducts] = useState([]);
-    const [productsTerlaris, setProductsTerlaris] = useState([]);
+    const [kategori, setKategori] = useState({});
     const [loading, setLoading] = useState(false);
     const { category_id } = useParams();
 
@@ -27,13 +27,13 @@ const PilihKategori = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [productResponse, productsResponse] = await Promise.all([
+                const [productResponse, kategori] = await Promise.all([
                     axios.get(URL_PRODUCT),
-                    axios.get(URL_PRODUCT)
+                    axios.get(`${URL_KATEGORI}/${category_id}`)
                 ]);
 
                 setProducts(productResponse.data);
-                setProductsTerlaris(productsResponse.data);
+                setKategori(kategori.data);
             } catch (err) {
                 message.error("Gagal memuat data!");
                 console.error(err);
@@ -69,6 +69,7 @@ const PilihKategori = () => {
               }`}>Kategori</Link>
                 </div>
                 <div className="bg-white p-5">
+                    <p className="mb-2 font-semibold">Kategori: <span className="text-[#7B281D]">{kategori.nama_kategori}</span></p>
                     <Row gutter={[13, 13]}>
                         {loading
                         ? Array.from({ length: 5 }).map((_, index) => ( // Placeholder Skeleton
@@ -110,7 +111,7 @@ const PilihKategori = () => {
                                             marginBottom: '3rem',
                                         }}
                                         title={product.name}
-                                        description={`Rp ${product.price}`}
+                                        description={`Rp ${product.price.toLocaleString('id-ID')}`}
 
                                     />
                                     

@@ -104,7 +104,7 @@ const HomeProduct = () => {
                                             marginBottom: '3rem',
                                         }}
                                         title={product.category_id}
-                                        description={`Rp ${product.price}`}
+                                        description={`Rp ${product.price.toLocaleString('id-ID')}`}
                                     />
                                     
                                     <div className="flex justify-between items-center">
