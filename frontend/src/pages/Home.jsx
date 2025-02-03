@@ -4,7 +4,7 @@ import { ShoppingCartOutlined } from '@ant-design/icons';
 import { FaRegHeart } from "react-icons/fa"
 import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import jumbotron_home from "../assets/jumbotron_home.jpg";
 import balung from "../assets/k-balung-kuwuk.jpg";
 import pisang from "../assets/k-pisang.jpg";
@@ -19,6 +19,7 @@ const Home = () => {
     const [products, setProducts] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     // Fetch data produk saat load page
     useEffect(() => {
@@ -47,6 +48,10 @@ const Home = () => {
     const HandleAddToCart = (product) => {
         message.success(`${product.title} added to cart!`);
     };
+
+    const HandleDetailProduct = (product) => {
+        navigate(`/product/${product._id}`)
+    }
 
     return (
         <div style={{ padding: '0' }}>
@@ -143,6 +148,7 @@ const Home = () => {
                                     padding: 10,
                                     }}
                                     hoverable
+                                    onClick={HandleDetailProduct()}
                                     cover={
                                     <img
                                         alt={product.name}
