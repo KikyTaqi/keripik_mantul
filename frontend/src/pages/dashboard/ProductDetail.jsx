@@ -82,12 +82,12 @@ const DetailProduct = () => {
                     </table>
                 </div>
             </div>
-            <div className="mt-5" style={{ height: '100%' }}>
+            <div className="mt-5" style={{ height: '100vh' }}>
                 <h1 className="text-base font-medium mb-5">Deskripsi</h1>
                 <textarea 
                     style={{
                         width: '100%',
-                        height: 'full',
+                        height: '90%',
                         resize: 'none', // Opsional: untuk mencegah textarea diubah ukurannya
                         boxSizing: 'border-box',
                         backgroundColor: 'white'
