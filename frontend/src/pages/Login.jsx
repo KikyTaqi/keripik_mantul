@@ -21,7 +21,6 @@ function Login() {
     
         try {
             const decoded = jwtDecode(token); // Decode token
-            console.log("Decoded payload:", decoded);
             return decoded; // Kembalikan payload token
         } catch (err) {
             console.error("Invalid token", err);
@@ -38,8 +37,6 @@ function Login() {
             const localToken = localStorage.getItem('userToken');
 
             const token = getUserFromToken(localToken);
-            console.log("UserToken:", localStorage.getItem("userToken"));
-            console.log("Token:", token);
             
             if (token.role != "Admin") { 
                 navigate("/");

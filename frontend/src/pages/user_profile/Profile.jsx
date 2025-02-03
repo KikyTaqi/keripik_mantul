@@ -20,7 +20,8 @@ const Profile = () => {
                 const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
                 setUsers(response.data);
               } catch (error) {
-                console.error("Error fetching profile:", error);
+                console.error("Error fetching profile");
+                navigate("/signin");
               } finally {
                 setLoading(false);
               }

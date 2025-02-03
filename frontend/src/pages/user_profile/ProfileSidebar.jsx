@@ -42,7 +42,7 @@ const ProfileSidebar = () => {
 
   const menuItems = [
     { name: "Pesanan Saya", path: "/profile/w", icon: <FaTruckFast /> },
-    { name: "Alamat Tersimpan", path: "/profile/a", icon: <LuMapPin /> },
+    { name: "Alamat Tersimpan", path: "/profile/alamat", icon: <LuMapPin /> },
     { name: "Produk Favorit", path: "/profile/s", icon: <FaRegHeart /> },
     { name: "Ubah Password", path: "/profile/d", icon: <TbLockPassword /> },
     { name: "Log Out", path: "/profile/z", icon: <MdLogout /> },

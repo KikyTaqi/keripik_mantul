@@ -3,7 +3,7 @@ import { FaSearch, FaUserCircle, FaCartPlus } from "react-icons/fa";
 import { Link, useNavigate, useLocation, matchPath } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
-import { Dropdown, Menu, Space } from 'antd';
+import { Dropdown, Menu, Space, Button } from 'antd';
 import logo from "../assets/logo_keripik.png";
 import { jwtDecode } from "jwt-decode";
 
@@ -36,6 +36,19 @@ const Header = () => {
     };
     checkLogin();
   }, [navigate]);
+
+  function handleActiveLink(currentPath, path) {
+    let pathActive = "";
+    
+    if(path === "/products" && currentPath.startsWith(path)){
+      pathActive = "border-b-2 border-red-800";
+    }else if(currentPath === path){
+      pathActive = "border-b-2 border-red-800";
+    }
+
+    return pathActive; 
+  }
+
 
   const location = useLocation(); // Mendapatkan rute saat ini
 
@@ -80,10 +93,17 @@ const Header = () => {
       btn.addEventListener('click', () => {
         if(isCheck){
           const userEmail = tokenVerified.email;
+          const userRole = tokenVerified.role;
+          console.log("User Email: "+userEmail);
+          console.log("User Role: "+userRole);
           if(userEmail == null){
             navigate('/signin');
           }
-          navigate('/dashboard/profile');
+          if(userRole !== "Admin"){
+            navigate('/');
+          }else{
+            navigate('/dashboard/profile');
+          }
         }
       });
     }
@@ -156,7 +176,7 @@ const Header = () => {
               key={item.path}
               to={item.path}
               className={`font-semibold text-red-800 hover:text-red-600 mx-4 ${
-                location.pathname === item.path ? "border-b-2 border-red-800" : ""
+                handleActiveLink(location.pathname, item.path)
               }`}
               style={{
                 fontSize: "1rem",
@@ -178,44 +198,68 @@ const Header = () => {
             <FaSearch className="text-red-800 ml-10" />
           </div>
 
-          {/* Cart Icon */}
-          <Dropdown
-            menu={{
-              items,
-            }}
-            overlayStyle={{
-              width: '200px',
-              boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              borderRadius: '30%'
-            }}
-            placement="bottomRight"
-            arrow
-            trigger={['hover']}
-          >
-              <Link to="/about">
-                <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
-              </Link>
-          </Dropdown>
-          {/* User Icon */}
-          <Dropdown
-            menu={{
-              items,
-            }}
-            overlayStyle={{
-              width: '200px',
-              boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-              borderRadius: '30%'
-            }}
-            placement="bottomRight"
-            arrow
-            trigger={['hover']}
-          >
-              <Link to="/profile">
-                <FaUserCircle className={`text-red-800 text-3xl object-right ms-10 ${location.pathname == "/profile" ? "border-b-2 border-red-800" : ""}`} />
-              </Link>
-          </Dropdown>
+          {
+          isCheck ?
+            <>
+              <Dropdown
+              menu={{
+                items,
+              }}
+              overlayStyle={{
+                width: '200px',
+                boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+                WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+                borderRadius: '30%'
+              }}
+              placement="bottomRight"
+              arrow
+              trigger={['hover']}
+              >
+                <Link to="/about">
+                  <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
+                </Link>
+              </Dropdown>
+              <Dropdown
+              menu={{
+                items,
+              }}
+              overlayStyle={{
+                width: '200px',
+                boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+                WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
+                borderRadius: '30%'
+              }}
+              placement="bottomRight"
+              arrow
+              trigger={['hover']}
+              >
+                <Link to="/profile">
+                  <FaUserCircle className={`text-red-800 text-3xl object-right ms-10 ${location.pathname == "/profile" ? "border-b-2 border-red-800" : ""}`} />
+                </Link>
+              </Dropdown>
+            </>
+           : 
+           <>
+            <Link to="/signin">
+              <Button
+                  type="secondary"
+                  className="border-0 border-red-800 hover:border-red-600 hover:text-red-700"
+                  style={{
+                      backgroundColor: '#800000',
+                      color: 'white',
+                      borderRadius: '15px',
+                      padding: '0px 15px 3px 15px',
+                      height: '35px',
+                      fontSize: '1rem',
+                      fontWeight: '500'
+                  }}
+              >
+                  Login
+              </Button>
+            </Link>
+           </>
+           }
+          
           
         </div>
       </div>

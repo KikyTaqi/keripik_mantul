@@ -2,15 +2,32 @@ import {React, useEffect} from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
 import logo from "../assets/logo_keripik.png";
+import { jwtDecode } from "jwt-decode";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const userToken = localStorage.getItem('userToken');
+  const tokenVerified = getUserFromToken(userToken);
+  
+  function getUserFromToken(localToken) {
+      const token = localToken; // Ambil token dari localStorage
+      if (!token) return null; // Jika token tidak ada
+  
+      try {
+          const decoded = jwtDecode(token); // Decode token
+          return decoded; // Kembalikan payload token
+      } catch (err) {
+          console.error("Invalid token", err);
+          return null; // Jika token tidak valid
+      }
+  }
 
   useEffect(() => {
-    const userToken = localStorage.getItem('userToken');
-
     if(userToken == null){
       navigate('/signin');
+    }
+    if(tokenVerified.role != "Admin"){
+      navigate('/');
     }
   }, []);
 

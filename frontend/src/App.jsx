@@ -13,6 +13,9 @@ import DashboardProfile from "./pages/dashboard/ProfileAdmin/DashboardProfile";
 import DashboardEditProfile from "./pages/dashboard/ProfileAdmin/DashboardEditProfile";
 import DashboardChangePassword from "./pages/dashboard/ProfileAdmin/DashboardChangePassword";
 
+import UserProfile from "./pages/user_profile/Profile";
+import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
+
 // Product
 import Home from "./pages/Home";
 import HomeProduct from "./pages/HomeProduct";
@@ -30,7 +33,6 @@ import UpdateKategori from "./pages/dashboard/KategoriUpdate";
 import Ongkir from "./pages/dashboard/Ongkir";
 import AddOngkir from "./pages/dashboard/OngkirCreate";
 import UpdateOngkir from "./pages/dashboard/OngkirUpdate";
-import UserProfile from "./pages/user_profile/Profile";
 
 // Auth
 import Login from "./pages/Login";
@@ -93,6 +95,7 @@ const App = () => {
                                         <Routes>
                                           <Route path="/" element={<UserProfile />} />
                                           <Route path="/products" element={<Product />} />
+                                          <Route path="/alamat" element={<AlamatTersimpan />} />
                                         </Routes>
                                       </Content>
                                     </div>

@@ -103,7 +103,7 @@ const HomeProduct = () => {
                                             marginTop: 'auto',
                                             marginBottom: '3rem',
                                         }}
-                                        title={product.category_id}
+                                        title={product.name}
                                         description={`Rp ${product.price.toLocaleString('id-ID')}`}
                                     />
                                     
