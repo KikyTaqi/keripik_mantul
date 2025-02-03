@@ -4,7 +4,6 @@
 - npm i antd axios jsonwebtoken react-router-dom
 
 # Update
-
 - npm i tailwindcss react-icons
 npm install @react-oauth/google
 

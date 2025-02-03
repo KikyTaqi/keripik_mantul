@@ -1,9 +1,10 @@
+import { useCart } from "../context/CartContext";
 import React, {useState, useEffect} from "react";
 import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { FaRegHeart } from "react-icons/fa"
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT } from "../utils/Endpoint";
+import { URL_KATEGORI, URL_PRODUCT } from "../utils/Endpoint";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import jumbotron_home from "../assets/jumbotron_home.jpg";
 import balung from "../assets/k-balung-kuwuk.jpg";
@@ -17,8 +18,10 @@ const { Title } = Typography;
 
 const Home = () => {
     const [products, setProducts] = useState([]);
+    const [kategoris, setKategoris] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { cartItems, addToCart, removeFromCart } = useCart(); // Ambil data dari Context
     const navigate = useNavigate();
 
     // Fetch data produk saat load page
@@ -92,23 +95,23 @@ const Home = () => {
                 <div className="flex justify-center flex-col mb-11">
                     <Title level={2} style={{alignSelf: 'start'}}>Kategori</Title>
                     <div className="px-6 py-8 bg-[#F2E8C6] flex justify-center" style={{borderRadius: '20px', width: 'fit-content', alignSelf: 'center', minHeight: '100'}}>
-                        <div className="category-div mx-3 flex flex-col" style={{width: '450px', minHeight: '100'}} >
+                        <div className="category-div mx-3 flex flex-col" style={{width: '450px', minHeight: '100'}} onClick={() => navigate(`/products/kategori/${kategoris._id = '67852eb856e587c20d175b5b'}`)}>
                             <Title level={2} className="text-center mt-5">Keripik Singkong</Title>
                             <img src={singkong} alt="" className="mt-9" style={{alignSelf: 'center', width:'364px', height: '275px'}}/>
                         </div>
                         <div className="flex flex-col mx-3">
                             <div className="flex justify-between p-0" style={{gap: '20px', marginBottom: '19px'}}>
-                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}}>
+                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}} onClick={() => navigate(`/products/kategori/${kategoris._id = '6785c6534e50952ad679b8f3'}`)}>
                                     <Title level={2} className="text-center mt-5">Keripik Talas</Title>
                                     <img src={talas} alt="" className="" style={{alignSelf: 'center', width:'166px', height: '141px'}}/>
                                 </div>
-                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}}>
+                                <div className="category-div flex flex-col" style={{width: '284px', height: '225px'}} onClick={() => navigate(`/products/kategori/${kategoris._id = '67889e81b1dd2d368622821c'}`)}>
                                     <Title level={2} className="text-center mt-5">Keripik Pisang</Title>
                                     <img src={pisang} alt="" className="" style={{alignSelf: 'center', width:'160px', height: '135px'}}/>
                                 </div>
                             </div>
                             <div className="flex justify-between">
-                                <div className="category-div flex gap-5" style={{width: '100%', height: '206px'}}>
+                                <div className="category-div flex gap-5" style={{width: '100%', height: '206px'}} onClick={() => navigate(`/products/kategori/${kategoris._id = '67a024703b0840f608c6ae50'}`)}>
                                     <img src={balung} alt="" className="ms-9" style={{alignSelf: 'center', width:'154px', height: '180px'}}/>
                                     <Title level={2} className="text-center" style={{marginBottom: 'auto', marginTop:'auto'}}>Keripik Balung Kuwuk</Title>
                                 </div>
@@ -118,6 +121,82 @@ const Home = () => {
                 </div>
                 <section id="product-list" className="mb-11">
                     <Title level={2}>Produk Terlaris</Title>
+                    <div className="bg-[#F2E8C6] p-5">
+                        <Row gutter={[13, 13]}>
+                        {loading
+                            ? Array.from({ length: 4 }).map((_, index) => ( // Placeholder Skeleton
+                                <Col span={6} key={index}>
+                                <Card
+                                    style={{
+                                    height: '436px',
+                                    minHeight: '436px',
+                                    padding: 10,
+                                    }}
+                                    hoverable
+                                >
+                                    <Skeleton.Image style={{ width: '16vw', height: '250px' }} />
+                                    <Skeleton active paragraph={{ rows: 2 }} />
+                                </Card>
+                                </Col>
+                            ))
+                            : productsTerlaris.slice(0, 4).map((product) => {
+                                // Cek apakah produk sudah ada di keranjang
+                                const isInCart = cartItems.some((item) => item.id === product._id);
+                        
+                                return (
+                                    <Col span={6} key={product._id}>
+                                        <Card
+                                            style={{ height: "436px", padding: 10 }}
+                                            hoverable
+                                            onClick={() => navigate(`/product/${product._id}`)}
+                                            cover={
+                                                <img
+                                                    alt={product.name}
+                                                    className="border border-[#F2E8C6] p-2"
+                                                    src={product.thumbnail}
+                                                    style={{ minHeight: "250px", objectFit: "cover" }}
+                                                />
+                                            }
+                                        >
+                                            <Card.Meta
+                                                title={product.name}
+                                                description={`Rp ${product.price?.toLocaleString("id-ID")}`}
+                                            />
+                                            <div className="flex justify-between items-center mt-3">
+                                                <p>0 Terjual</p>
+                                                <Button
+                                                    type="secondary"
+                                                    icon={
+                                                        <ShoppingCartOutlined
+                                                            style={{ fontSize: "24px", color: isInCart ? "red" : "black" }}
+                                                        />
+                                                    }
+                                                    className="border-none text-base hover:text-red-700"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (isInCart) {
+                                                            removeFromCart(product._id);
+                                                        } else {
+                                                            addToCart({
+                                                                id: product._id,
+                                                                name: product.name,
+                                                                price: product.price,
+                                                                thumbnail: product.thumbnail,
+                                                            });
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </Card>
+                                    </Col>
+                                );
+                            })
+                        }                                           
+                        </Row>
+                    </div>
+                </section>
+                <section id="product-list" className="mb-11">
+                    <Title level={2}>Direkomendasikan</Title>
                     <div className="bg-[#F2E8C6] p-5">
                         <Row gutter={[13, 13]}>
                         {loading
@@ -174,63 +253,21 @@ const Home = () => {
                                     <div className="flex flex-row-reverse">
                                         <Link to={`/checkout/${product._id}`}>
                                         <Button
-                                            type="primary"
-                                            icon={<ShoppingCartOutlined />}
-                                            className="bottom-0 ms-2 text-base"
+                                        type="secondary"
+                                            icon={<ShoppingCartOutlined style={{fontSize: '24px'}}/>}
+                                            className="bottom-0 border-none ms-0 text-base hover:text-red-700"
                                         ></Button>
                                         </Link>
                                         <Link to={`/`}>
                                         <Button
-                                            type="primary"
-                                            danger
-                                            icon={<FaRegHeart />}
-                                            className="bottom-0 text-base"
+                                        type="secondary"
+                                            icon={<FaRegHeart style={{fontSize: '20px'}}/>}
+                                            className="bottom-0 border-none text-base hover:text-red-700"
                                         ></Button>
                                         </Link>
                                     </div>
                                     </div>
                                 </Card>
-                                </Col>
-                            ))}
-                        </Row>
-                    </div>
-                </section>
-                <section className="mb-11">
-                    <Title level={2}>Direkomendasikan</Title>
-                    <div className="bg-[#F2E8C6] p-5">
-                        <Row gutter={[13, 13]}>
-                            {productsTerlaris.slice(0, 4).map((product) => (
-                                <Col span={6} key={product._id}>
-                                    <Card
-                                        style={{
-                                            height: '436px',
-                                            minHeight: '436px',
-                                        }}
-                                        hoverable
-                                        cover={
-                                            <img alt={product.name} src={product.thumbnail} style={{
-                                                maxHeight: '250px',
-                                                overflowY: 'hidden',
-                                                marginBottom: 'auto',
-                                                objectFit: 'cover',
-                                            }}/>
-                                        }>
-                                        <Card.Meta
-                                            style={{
-                                                marginTop: 'auto'
-                                            }}
-                                            title={product.name}
-                                            description={`Rp ${product.price?.toLocaleString('id-ID')}`}
-                                        />
-                                        <Button
-                                            type="primary"
-                                            icon={<ShoppingCartOutlined />}
-                                            style={{ marginTop: "10px" }}
-                                            // onClick={() => handleAddToCart(product)}
-                                        >
-                                        <Link to={`/checkout/${product._id}`}>Checkout Now</Link>
-                                        </Button>
-                                    </Card>
                                 </Col>
                             ))}
                         </Row>

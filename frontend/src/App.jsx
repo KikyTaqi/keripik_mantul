@@ -16,8 +16,10 @@ import DashboardChangePassword from "./pages/dashboard/ProfileAdmin/DashboardCha
 import UserProfile from "./pages/user_profile/Profile";
 import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
 
+
 // Product
 import Home from "./pages/Home";
+import Cart from "./pages/Cart";
 import HomeProduct from "./pages/HomeProduct";
 import UserDetailProduct from "./pages/DetailProduct";
 import ProductsKategori from "./pages/ProductsKategori";
@@ -76,6 +78,7 @@ const App = () => {
                         <Route path="/products/kategori" element={<ProductsKategori />} />
                         <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
                         <Route path="/about" element={<About />} />
+                        <Route path="/cart" element={<Cart />} />
                         <Route path="/profile/*" element={
                               <Layout style={{backgroundColor: "white"}}>
               
