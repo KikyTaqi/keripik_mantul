@@ -145,7 +145,7 @@ const Home = () => {
                                     padding: 10,
                                     }}
                                     hoverable
-                                    onClick={() => navigate(`/product/${product._id}`)}
+                                    onClick={() => navigate(`/products/${product._id}`)}
                                     cover={
                                     <img
                                         alt={product.name}
@@ -177,6 +177,7 @@ const Home = () => {
                                             type="primary"
                                             icon={<ShoppingCartOutlined />}
                                             className="bottom-0 ms-2 text-base"
+                                            onClick={(e) => e.stopPropagation()}
                                         ></Button>
                                         </Link>
                                         <Link to={`/`}>
@@ -185,6 +186,7 @@ const Home = () => {
                                             danger
                                             icon={<FaRegHeart />}
                                             className="bottom-0 text-base"
+                                            onClick={(e) => e.stopPropagation()}
                                         ></Button>
                                         </Link>
                                     </div>
