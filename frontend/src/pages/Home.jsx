@@ -49,9 +49,6 @@ const Home = () => {
         message.success(`${product.title} added to cart!`);
     };
 
-    const HandleDetailProduct = (product) => {
-        navigate(`/product/${product._id}`)
-    }
 
     return (
         <div style={{ padding: '0' }}>
