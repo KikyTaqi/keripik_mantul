@@ -215,7 +215,7 @@ const Header = () => {
               arrow
               trigger={['hover']}
               >
-                <Link to="/about">
+                <Link to="/cart">
                   <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
                 </Link>
               </Dropdown>
