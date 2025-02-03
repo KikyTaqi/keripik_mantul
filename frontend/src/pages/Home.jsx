@@ -148,7 +148,7 @@ const Home = () => {
                                         <Card
                                             style={{ height: "436px", padding: 10 }}
                                             hoverable
-                                            onClick={() => navigate(`/product/${product._id}`)}
+                                            onClick={() => navigate(`/products/${product._id}`)}
                                             cover={
                                                 <img
                                                     alt={product.name}
