@@ -87,10 +87,10 @@ const HomeProduct = () => {
                         <p>0 Terjual</p>
                         <div className="flex flex-row-reverse">
                           <Link to={`/checkout/${product._id}`}>
-                            <Button icon={<ShoppingCartOutlined />} className="bottom-0 ms-2 text-base border-none" />
+                            <Button icon={<ShoppingCartOutlined style={{fontSize: '24px'}}/>} className="bottom-0 ms-0 text-base border-none" />
                           </Link>
                           <Link to={`/`}>
-                            <Button icon={<FaRegHeart />} className="bottom-0 text-base border-none" />
+                            <Button icon={<FaRegHeart style={{fontSize: '20px'}}/>} className="bottom-0 text-base border-none" />
                           </Link>
                         </div>
                       </div>

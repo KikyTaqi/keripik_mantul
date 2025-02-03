@@ -148,7 +148,7 @@ const Home = () => {
                                     padding: 10,
                                     }}
                                     hoverable
-                                    onClick={HandleDetailProduct()}
+                                    onClick={() => navigate(`/product/${product._id}`)}
                                     cover={
                                     <img
                                         alt={product.name}
