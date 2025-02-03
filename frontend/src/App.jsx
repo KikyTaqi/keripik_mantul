@@ -19,6 +19,7 @@ import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
 // Product
 import Home from "./pages/Home";
 import HomeProduct from "./pages/HomeProduct";
+import UserDetailProduct from "./pages/DetailProduct";
 import ProductsKategori from "./pages/ProductsKategori";
 import PilihKategori from "./pages/PilihKategori";
 import About from "./pages/About";
@@ -71,6 +72,7 @@ const App = () => {
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/products" element={<HomeProduct />} />
+                        <Route path="/products/:id" element={<UserDetailProduct />} />
                         <Route path="/products/kategori" element={<ProductsKategori />} />
                         <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
                         <Route path="/about" element={<About />} />
