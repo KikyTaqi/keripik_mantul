@@ -49,9 +49,6 @@ const Home = () => {
         message.success(`${product.title} added to cart!`);
     };
 
-    const HandleDetailProduct = (product) => {
-        navigate(`/product/${product._id}`)
-    }
 
     return (
         <div style={{ padding: '0' }}>
@@ -148,7 +145,7 @@ const Home = () => {
                                     padding: 10,
                                     }}
                                     hoverable
-                                    onClick={HandleDetailProduct()}
+                                    onClick={() => navigate(`/product/${product._id}`)}
                                     cover={
                                     <img
                                         alt={product.name}
