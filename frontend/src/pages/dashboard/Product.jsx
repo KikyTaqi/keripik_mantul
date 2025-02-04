@@ -39,10 +39,9 @@ const Product = () => {
         {
             title: "NO",
             key: "no",
-            dataIndex: "_id",
             align: "center",
             width: "5px",
-            // render: (_, __, index) => index + 1, // row numbering
+            render: (_, __, index) => index + 1, // row numbering
         },
         {
             title: 'Nama Produk',
