@@ -1,3 +1,6 @@
+<p align="center">
+  <img alt="logo" src="/frontend/public/logo_keripik.png">
+</p>
 # Keripik Mantul 🍟
 
 Keripik Mantul adalah platform e-commerce berbasis **MERN Stack** yang memungkinkan pelanggan untuk membeli berbagai jenis keripik lezat secara online. Website ini memiliki fitur lengkap mulai dari manajemen produk, pembayaran, hingga pengiriman.
