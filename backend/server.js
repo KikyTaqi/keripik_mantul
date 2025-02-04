@@ -28,7 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/transactions', TransactionRoutes);
 app.use('/api/kategori', kategoriRoutes);
 app.use('/api/ongkir', ongkirRoutes);
-app.use("/api/cart", CartRoutes);
+app.use('/api/cart', CartRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))

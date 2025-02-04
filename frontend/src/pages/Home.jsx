@@ -67,9 +67,6 @@ const Home = () => {
                 thumbnail: productcart.thumbnail,
             });
             setCartItems(response.data); // Update state setelah ditambah
-            console.log("juj :"+response.data);
-            console.log("jujjujud :"+cartItems);
-            
         } catch (error) {
           console.error("Error adding to cart:", error);
         }

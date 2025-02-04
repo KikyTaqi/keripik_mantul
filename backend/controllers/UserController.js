@@ -21,7 +21,6 @@ exports.getProfile = async (req, res) => {
     const {email} = req.body;
     try {
         const users = await User.find({'email': email});
-        console.log(users);
         res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -60,7 +59,6 @@ exports.editProfile = async (req, res) => {
 
 exports.editProfilePassword = async (req, res) => {
     const id = req.body.id;
-    console.log("IDDD: "+id);
     try {
         let user = await User.findOne({'_id': id});
         if(!user){
@@ -72,7 +70,6 @@ exports.editProfilePassword = async (req, res) => {
             }
             user = await User.findByIdAndUpdate(id, updateUser, {new: true});
         }else{
-            console.log("USERRR: "+req.body.password);
             return res.status(400).json({ message: 'Password tidak sama!' });
         }
         return res.status(200).json({ message: 'Profile updated successfully!' });

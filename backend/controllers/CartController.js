@@ -1,17 +1,19 @@
 const Cart = require("../models/cart");
 
 // Ambil cart berdasarkan userId
-const getCart = async (req, res) => {
+exports.getCart = async (req, res) => {
+    const userId = req.params.id;
+    const cart = await Cart.findOne({ userId: userId });
+    // console.error("OWNHFSFNAHFEHFDFLAOWEDOP: "+cart) 
   try {
-    const cart = await Cart.findOne({ userId: req.params });
-    res.json(cart || { userId: req.params.userId, items: [] });
+    res.status(200).json(cart || { userId: req.params, items: [] });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
 
 // Tambah produk ke cart
-const addToCart = async (req, res) => {
+exports.addToCart = async (req, res) => {
     const { userId, productId, name, price, thumbnail } = req.body;
   
     try {
@@ -42,7 +44,7 @@ const addToCart = async (req, res) => {
   
 
 // Hapus produk dari cart
-const removeFromCart = async (req, res) => {
+exports.removeFromCart = async (req, res) => {
   const { userId, productId } = req.body;
   try {
     let cart = await Cart.findOne({ userId });
@@ -57,5 +59,3 @@ const removeFromCart = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
-
-module.exports = { getCart, addToCart, removeFromCart };

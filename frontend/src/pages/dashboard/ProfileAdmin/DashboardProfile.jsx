@@ -18,6 +18,8 @@ const DashboardProfile = () => {
       const token = localStorage.getItem("userToken");
       const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
       const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
+      console.log("COBAOBCOABCAP: "+response.data);
+      
       setProfile(response.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
