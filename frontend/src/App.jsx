@@ -78,6 +78,7 @@ const App = () => {
                         <Route path="/products/:id" element={<UserDetailProduct />} />
                         <Route path="/products/kategori" element={<ProductsKategori />} />
                         <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
+                        <Route path="/checkout/:id" element={<Checkout />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/profile/*" element={
@@ -120,7 +121,6 @@ const App = () => {
               <Footer />
             </Layout>
           } />
-        <Route path="/checkout/:id" element={<Checkout />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signup/confirm" element={<ConfirmAccount />} />
