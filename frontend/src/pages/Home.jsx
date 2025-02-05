@@ -213,7 +213,7 @@ const Home = () => {
                                                         <ShoppingCartOutlined
                                                             style={{ fontSize: "24px", color: isInCart ? "red" : "black", }}
                                                         />
-                                                    }
+                                                    }   
                                                     className="border-none text-base hover:text-red-700"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
