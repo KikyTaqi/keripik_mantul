@@ -87,34 +87,38 @@ const DetailProduct = () => {
             <div className="px-28 mt-4">
                 <div className="grid grid-cols-[auto_1fr] gap-x-10 mb-5">
                     <div className="w-auto">
-                        {loading ?
-                            (<Skeleton.Image style={{ width: "30vw", height: "50vh" }} />)
-                            :
-                            (<Image
+                        {loading ? (
+                            <Skeleton.Image style={{ width: "30vw", height: "50vh" }} />
+                        )
+                        :
+                        (
+                            <Image
                                 src={Products.thumbnail}
                                 style={{ height: "50vh", maxWidth: '30vw', objectFit: "cover" }}
                                 alt="Foto produk"
                                 loading="lazy"
                                 className="border p-3 rounded-md border-red-700"
-                            />)
+                            />
+                        )
                         }
                     </div>
                     <div className="py-5">
-                        {loading ?
-                            (<>
+                        {loading ? (
+                            <>
                                 <Skeleton.Input style={{ width: 200 }} active />
                                 <div className="mt-2 flex space-x-2">
                                     <Skeleton.Input style={{ width: 50 }} active />
                                 </div>
                                 <Skeleton.Input style={{ width: 120 }} active className="mt-3" />
-                            </>)
+                            </>
+                            )
                             :
                             (
                                 <>
                                     <h1 className="text-xl font-medium">{Products.name}</h1>
                                     <div className="flex items-center space-x-2">
                                         <span className="text-lg font-semibold">{Products.rating || "4.3"}</span>
-                                        <div className="flex">{renderStars(Products.rating || 4.3)}</div>
+                                        <div className="flex">{renderStars(Products.rating || 4.8)}</div>
                                         <span className="text-gray-500">{Products.reviews?.length || "100 Ulasan"}</span>
                                     </div>
                                     <h1 className="text-base font-medium">2,9RB terjual</h1>
