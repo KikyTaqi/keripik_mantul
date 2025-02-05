@@ -200,24 +200,9 @@ const Header = () => {
           {
           isCheck ?
             <>
-              <Dropdown
-              menu={{
-                items,
-              }}
-              overlayStyle={{
-                width: '200px',
-                boxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-                WebkitBoxShadow: '2px 4px 39px -10px rgba(0,0,0,0.01)',
-                borderRadius: '30%'
-              }}
-              placement="bottomRight"
-              arrow
-              trigger={['hover']}
-              >
-                <Link to="/cart">
+              <Link to="/cart">
                   <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
                 </Link>
-              </Dropdown>
               <Dropdown
               menu={{
                 items,
