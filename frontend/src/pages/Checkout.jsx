@@ -8,6 +8,7 @@ import {
     Row,
     Modal,
     Select,
+    Tag,
 } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
@@ -15,8 +16,6 @@ import { RightOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { URL_PRODUCT, URL_TRANSACTION } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
-
-const { Option } = Select;
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false);
@@ -71,14 +70,13 @@ const Checkout = () => {
         setOpen(true);
     }
 
-    const [selectedAlamat, setSelectedAlamat] = useState(null);
-
     const alamatList = [
         {
             id: 1,
             name: "Viola",
             phone: "+62 812-3456-7890",
             address: "Dusun Krajan RT.01/RW.06, Salamsari, Kec Boja, Kab Kendal, Jawa Tengah, ID, 51381",
+            main: true,
         },
         {
             id: 2,
@@ -112,13 +110,42 @@ const Checkout = () => {
         },
     ];
     
+    const [selectedAlamat, setSelectedAlamat] = useState(null);
+
+    useEffect(() => {
+        const defaultAlamat = alamatList.find(alamat => alamat.main);
+        if (defaultAlamat) {
+            setSelectedAlamat(defaultAlamat.id);
+        }
+    }, []);
+
+    
+
+     // Cari alamat yang memiliki "main: true"
+     const defaultAlamat = alamatList.find(alamat => alamat.main) || alamatList[0];
+ 
+     // State untuk alamat yang sudah dikonfirmasi
+     const [confirmedAlamat, setConfirmedAlamat] = useState(defaultAlamat.id);
+ 
+     // Fungsi untuk menangani konfirmasi alamat
+     const handleConfirmAlamat = () => {
+         setConfirmedAlamat(selectedAlamat); // Simpan alamat yang dipilih
+         setOpen(false); // Tutup modal
+     };
+ 
+     // Fungsi untuk menangani pembatalan pemilihan alamat
+     const handleCancelAlamat = () => {
+         setSelectedAlamat(confirmedAlamat); // Kembalikan ke alamat yang sudah dikonfirmasi
+         setOpen(false); // Tutup modal
+     };
+
     const [cart, setCart] = useState([
         { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
         { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
     ]);
     
     const [subtotal, setSubtotal] = useState(0);
-    const [shippingCost, setShippingCost] = useState(10000); // Biaya pengiriman
+    const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
     const [total, setTotal] = useState(0);    
 
     useEffect(() => {
@@ -145,8 +172,11 @@ const Checkout = () => {
                         <LuMapPin className="text-4xl" />
                         <div className="flex justify-between mx-3 w-full">
                             <div className="font-medium">
-                                <p>Viola (+62 812-3456-7890)</p>
-                                <p>Salamsari RT.01/RW.04, Salamsari, Boja, Kab Kendal, Jawa Tengah</p>
+                            <p>
+                                {alamatList.find(alamat => alamat.id === confirmedAlamat)?.name} 
+                                ({alamatList.find(alamat => alamat.id === confirmedAlamat)?.phone})
+                            </p>
+                            <p>{alamatList.find(alamat => alamat.id === confirmedAlamat)?.address}</p>
                             </div>
                             <RightOutlined className="text-lg" />
                         </div>
@@ -234,7 +264,7 @@ const Checkout = () => {
                             <Button
                                 type="secondary"
                                 className="bg-white text-red-800 border-3 border-red-800 font-semibold rounded-3xl w-full h-6 py-5 text-base"
-                                onClick={() => setOpen(false)}
+                                onClick={handleCancelAlamat}
                             >
                                 <span className="mb-1">Batal</span>
                             </Button>
@@ -243,6 +273,7 @@ const Checkout = () => {
                             <Button
                                 type="secondary"
                                 className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-5 text-base"
+                                onClick={handleConfirmAlamat}
                             >
                                 <span className="mb-1">Konfirmasi</span>
                             </Button>
@@ -285,6 +316,7 @@ const Checkout = () => {
                                     </div>
                                 </div>
                                 <p>{alamat.address}</p>
+                                {alamat.main === true ? (<Tag className="border border-red-800 text-red-800 bg-white mt-2">Utama</Tag>) : ("")}
                             </div>
                             <div className="flex justify-center items-center">
                                 <input 
