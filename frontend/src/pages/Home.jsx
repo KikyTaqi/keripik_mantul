@@ -2,7 +2,7 @@ import { useCart } from "../context/CartContext";
 import React, {useState, useEffect} from "react";
 import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { URL_KATEGORI, URL_PRODUCT, URL_CART, URL_USER } from "../utils/Endpoint";
 import { Link, Navigate, useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ const Home = () => {
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const [userId, setUserId] = useState("");
     const navigate = useNavigate();
 
     // Fetch data produk saat load page
@@ -31,13 +32,28 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [productResponse, productsResponse] = await Promise.all([
-                    axios.get(URL_PRODUCT)
-                    .then(response => setCartItems(response.data.items || []))
-                    .catch(error => console.error("Error fetching cart:", error)),
-                    axios.get(URL_PRODUCT)
+                
+                // Mengambil data profil dan produk secara bersamaan
+                const token = localStorage.getItem("userToken");
+                if (!token) return;
+    
+                const decoded = jwtDecode(token);
+                const profileResponse = await axios.post(`${URL_USER}/profile`, {
+                    email: decoded.email,
+                });
+    
+                const userId = profileResponse.data[0]._id;
+                setUserId(userId);
+    
+                // Mengambil data produk dan cart bersamaan
+                const [productResponse, cartResponse] = await Promise.all([
+                    axios.get(URL_PRODUCT),
+                    axios.get(`${URL_CART}/${userId}`)
                 ]);
-                setProductsTerlaris(productsResponse.data);
+                
+                setProductsTerlaris(productResponse.data);  // Mengatur produk terlaris
+                setCartItems(cartResponse.data.items || []);  // Mengatur cartItems
+    
             } catch (err) {
                 message.error("Gagal memuat data!");
                 console.error(err);
@@ -48,17 +64,11 @@ const Home = () => {
 
         fetchData();
     }, []);
-
-    // Fn -> add to cart
-    const HandleAddToCart = (product) => {
-        message.success(`${product.title} added to cart!`);
-    };
-
     
     const addToCart = async (productcart) => {
         try {
             const token = localStorage.getItem("userToken");
-            const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+            const decoded = jwtDecode(token);
             const response = await axios.post(`${URL_CART}/add`, {
                 userId: decoded._id,
                 productId: productcart._id,
@@ -66,34 +76,54 @@ const Home = () => {
                 price: productcart.price,
                 thumbnail: productcart.thumbnail,
             });
-            setCartItems(response.data); // Update state setelah ditambah
+            
+            console.log("Add to Cart Response:", response.data);
+            setCartItems(response.data.items || []);
         } catch (error) {
-          console.error("Error adding to cart:", error);
+            console.error("Error adding to cart:", error);
         }
     };
     
-    const removeFromCart = async () => {
+    
+    const removeFromCart = async (product) => {
         try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
             const response = await axios.post(`${URL_CART}/remove`, {
-                userId,
+                userId: decoded._id,
                 productId: product._id,
             });
-            setCartItems(response.data.items); // Update state setelah dihapus
+            setCartItems(response.data.items || []);  // Pastikan state diperbarui setelah penghapusan
+            message.warning(`${product.name} dihapus dari keranjang!`);
         } catch (error) {
             console.error("Error removing from cart:", error);
         }
     };
 
-    const handleAddToCart = (product) => {
-        // Cek apakah produk sudah ada di keranjang
-        const isInCart = Array.isArray(cartItems) && cartItems.some((item) => item.id === product._id);
-    
-        if (isInCart) {
-          removeFromCart(product);
-        } else {
-          addToCart(product);
+    const handleAddToCart = async (product) => {
+        if (!userId) {
+            message.error("Silakan login terlebih dahulu!");
+            console.log("blabala: " + userId);
+            return;
         }
-      };
+   
+        const isInCart = cartItems.some(
+            (item) => item.productId === product._id
+        );
+        console.log(isInCart);
+         // Debugging untuk memastikan kondisi ini bekerja dengan benar
+   
+        if (isInCart) {
+            await removeFromCart(product);
+        } else {
+            await addToCart(product);
+        }
+   
+        // Refresh cart setelah menambahkan atau menghapus item
+        const updatedCart = await axios.get(`${URL_CART}/${userId}`);
+        setCartItems(updatedCart.data.items || []);
+    };
+    
     
     return (
         <div style={{ padding: '0' }}>
@@ -182,9 +212,9 @@ const Home = () => {
                                 </Col>
                             ))
                             : productsTerlaris.slice(0, 4).map((product) => {
-                                const isInCart = Array.isArray(cartItems) && cartItems.some((item) => item.id === product._id);
+                                const isInCart = Array.isArray(cartItems) && cartItems.some(items => items.productId === product._id);
                                 return (
-                                    <Col span={6} key={product._id}>
+                                    <Col span={6} key={`${product._id}-${isInCart}`}>
                                         <Card
                                             style={{ height: "436px", padding: 10 }}
                                             hoverable
@@ -209,11 +239,7 @@ const Home = () => {
                                                 <p>0 Terjual</p>
                                                 <Button
                                                     type="secondary"
-                                                    icon={
-                                                        <ShoppingCartOutlined
-                                                            style={{ fontSize: "24px", color: isInCart ? "red" : "black", }}
-                                                        />
-                                                    }   
+                                                    icon={isInCart ? <FaShoppingCart style={{ color: "red" }} /> : <ShoppingCartOutlined />}
                                                     className="border-none text-base hover:text-red-700"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
