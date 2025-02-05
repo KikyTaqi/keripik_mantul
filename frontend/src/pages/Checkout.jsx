@@ -8,6 +8,7 @@ import {
     Row,
     Modal,
     Select,
+    Tag,
 } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
@@ -71,14 +72,13 @@ const Checkout = () => {
         setOpen(true);
     }
 
-    const [selectedAlamat, setSelectedAlamat] = useState(null);
-
     const alamatList = [
         {
             id: 1,
             name: "Viola",
             phone: "+62 812-3456-7890",
             address: "Dusun Krajan RT.01/RW.06, Salamsari, Kec Boja, Kab Kendal, Jawa Tengah, ID, 51381",
+            main: true,
         },
         {
             id: 2,
@@ -112,6 +112,15 @@ const Checkout = () => {
         },
     ];
     
+    const [selectedAlamat, setSelectedAlamat] = useState(null);
+
+    useEffect(() => {
+        const defaultAlamat = alamatList.find(alamat => alamat.main);
+        if (defaultAlamat) {
+            setSelectedAlamat(defaultAlamat.id);
+        }
+    }, []);
+
     const [cart, setCart] = useState([
         { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
         { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
@@ -285,6 +294,7 @@ const Checkout = () => {
                                     </div>
                                 </div>
                                 <p>{alamat.address}</p>
+                                {alamat.main === true ? (<Tag className="border border-red-800 text-red-800 bg-white mt-2">Utama</Tag>) : ("")}
                             </div>
                             <div className="flex justify-center items-center">
                                 <input 
