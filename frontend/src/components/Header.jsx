@@ -19,7 +19,6 @@ const Header = () => {
   
       try {
           const decoded = jwtDecode(token); // Decode token
-          console.log("Decoded payload:", decoded);
           return decoded; // Kembalikan payload token
       } catch (err) {
           console.error("Invalid token", err);

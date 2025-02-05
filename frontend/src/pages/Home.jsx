@@ -4,8 +4,9 @@ import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import axios from "axios";
-import { URL_KATEGORI, URL_PRODUCT } from "../utils/Endpoint";
+import { URL_KATEGORI, URL_PRODUCT, URL_CART, URL_USER } from "../utils/Endpoint";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 import jumbotron_home from "../assets/jumbotron_home.jpg";
 import balung from "../assets/k-balung-kuwuk.jpg";
 import pisang from "../assets/k-pisang.jpg";
@@ -18,10 +19,11 @@ const { Title } = Typography;
 
 const Home = () => {
     const [products, setProducts] = useState([]);
+    const [users, setUsers] = useState({});
     const [kategoris, setKategoris] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { cartItems, addToCart, removeFromCart } = useCart(); // Ambil data dari Context
+    const [cartItems, setCartItems] = useState([]);
     const navigate = useNavigate();
 
     // Fetch data produk saat load page
@@ -30,11 +32,11 @@ const Home = () => {
             try {
                 setLoading(true);
                 const [productResponse, productsResponse] = await Promise.all([
-                    axios.get(URL_PRODUCT),
+                    axios.get(URL_PRODUCT)
+                    .then(response => setCartItems(response.data.items || []))
+                    .catch(error => console.error("Error fetching cart:", error)),
                     axios.get(URL_PRODUCT)
                 ]);
-
-                setProducts(productResponse.data);
                 setProductsTerlaris(productsResponse.data);
             } catch (err) {
                 message.error("Gagal memuat data!");
@@ -52,7 +54,47 @@ const Home = () => {
         message.success(`${product.title} added to cart!`);
     };
 
+    
+    const addToCart = async (productcart) => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+            const response = await axios.post(`${URL_CART}/add`, {
+                userId: decoded._id,
+                productId: productcart._id,
+                name: productcart.name,
+                price: productcart.price,
+                thumbnail: productcart.thumbnail,
+            });
+            setCartItems(response.data); // Update state setelah ditambah
+        } catch (error) {
+          console.error("Error adding to cart:", error);
+        }
+    };
+    
+    const removeFromCart = async () => {
+        try {
+            const response = await axios.post(`${URL_CART}/remove`, {
+                userId,
+                productId: product._id,
+            });
+            setCartItems(response.data.items); // Update state setelah dihapus
+        } catch (error) {
+            console.error("Error removing from cart:", error);
+        }
+    };
 
+    const handleAddToCart = (product) => {
+        // Cek apakah produk sudah ada di keranjang
+        const isInCart = Array.isArray(cartItems) && cartItems.some((item) => item.id === product._id);
+    
+        if (isInCart) {
+          removeFromCart(product);
+        } else {
+          addToCart(product);
+        }
+      };
+    
     return (
         <div style={{ padding: '0' }}>
             <div style={{width: '100%', height: '100%', padding: '0', position: 'relative'}}>
@@ -140,9 +182,7 @@ const Home = () => {
                                 </Col>
                             ))
                             : productsTerlaris.slice(0, 4).map((product) => {
-                                // Cek apakah produk sudah ada di keranjang
-                                const isInCart = cartItems.some((item) => item.id === product._id);
-                        
+                                const isInCart = Array.isArray(cartItems) && cartItems.some((item) => item.id === product._id);
                                 return (
                                     <Col span={6} key={product._id}>
                                         <Card
@@ -171,22 +211,13 @@ const Home = () => {
                                                     type="secondary"
                                                     icon={
                                                         <ShoppingCartOutlined
-                                                            style={{ fontSize: "24px", color: isInCart ? "red" : "black" }}
+                                                            style={{ fontSize: "24px", color: isInCart ? "red" : "black", }}
                                                         />
                                                     }
                                                     className="border-none text-base hover:text-red-700"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        if (isInCart) {
-                                                            removeFromCart(product._id);
-                                                        } else {
-                                                            addToCart({
-                                                                id: product._id,
-                                                                name: product.name,
-                                                                price: product.price,
-                                                                thumbnail: product.thumbnail,
-                                                            });
-                                                        }
+                                                        handleAddToCart(product);
                                                     }}
                                                 />
                                             </div>
