@@ -14,8 +14,9 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { LuMapPin } from "react-icons/lu";
 import { RightOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { URL_PRODUCT, URL_TRANSACTION } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_TRANSACTION, URL_ALAMAT, URL_USER } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Checkout = () => {
     const [loading, setLoading] = useState(false);
@@ -26,6 +27,9 @@ const Checkout = () => {
     const { id } = params;
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const [alamat, setAlamat] = useState([{}]);
+    const [users, setUsers] = useState([]);
+    const [userId, setUserId] = useState("");
 
     const handleBack = () => {
         navigate(-1)
@@ -42,6 +46,25 @@ const Checkout = () => {
             .catch((err) => {
                 console.log("err", err.response);
             });
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("userToken");
+                const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+                const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
+                setUserId(response.data[0]._id);
+                setUsers(response.data);
+
+                axios.get(`${URL_ALAMAT}/${response.data[0]._id}`)
+                    .then(response => setAlamat(response.data.alamat || []))
+                    .catch(error => console.error("Error fetching cart:", error)); 
+            } catch (error) {
+                console.error("Error fetching profile");
+                navigate("/signin");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, []);
 
     const handleCheckout = (values) => {
@@ -113,19 +136,21 @@ const Checkout = () => {
     const [selectedAlamat, setSelectedAlamat] = useState(null);
 
     useEffect(() => {
-        const defaultAlamat = alamatList.find(alamat => alamat.main);
+        const defaultAlamat = alamat.find(al => al.utama);
         if (defaultAlamat) {
-            setSelectedAlamat(defaultAlamat.id);
+            setSelectedAlamat(defaultAlamat._id);
         }
     }, []);
 
     
 
      // Cari alamat yang memiliki "main: true"
-     const defaultAlamat = alamatList.find(alamat => alamat.main) || alamatList[0];
+     const defaultAlamats = alamat.find(al => al.utama) || alamat[0];
+
+    //  console.log("DEFAULT: "+defaultAlamats);
  
      // State untuk alamat yang sudah dikonfirmasi
-     const [confirmedAlamat, setConfirmedAlamat] = useState(defaultAlamat.id);
+     const [confirmedAlamat, setConfirmedAlamat] = useState(defaultAlamats._id);
  
      // Fungsi untuk menangani konfirmasi alamat
      const handleConfirmAlamat = () => {
@@ -173,10 +198,10 @@ const Checkout = () => {
                         <div className="flex justify-between mx-3 w-full">
                             <div className="font-medium">
                             <p>
-                                {alamatList.find(alamat => alamat.id === confirmedAlamat)?.name} 
-                                ({alamatList.find(alamat => alamat.id === confirmedAlamat)?.phone})
+                                {alamat.find(al => al._id === confirmedAlamat)?.nama} 
+                                ({alamat.find(al => al._id === confirmedAlamat)?.no_telp})
                             </p>
-                            <p>{alamatList.find(alamat => alamat.id === confirmedAlamat)?.address}</p>
+                            <p>{alamat.find(al => al._id === confirmedAlamat)?.kecamatan}</p>
                             </div>
                             <RightOutlined className="text-lg" />
                         </div>
@@ -298,31 +323,31 @@ const Checkout = () => {
                 }}
             >
                 <div className="p-3 py-5">
-                    {alamatList.map((alamat) => (
+                    {alamat.map((al) => (
                         <div 
-                            key={alamat.id} 
+                            key={al._id} 
                             className={`rounded-lg p-3 border ${
-                                selectedAlamat === alamat.id ? "border-red-800" : "border-stone-300"
+                                selectedAlamat === al._id ? "border-red-800" : "border-stone-300"
                             } grid grid-cols-5 mb-2 cursor-pointer`}
-                            onClick={() => setSelectedAlamat(alamat.id)}
+                            onClick={() => setSelectedAlamat(al._id)}
                         >
                             <div className="col-span-4">
                                 <div className="grid grid-cols-[auto_1fr] divide-x divide-gray-400 gap-3">
                                     <div className="text-base font-semibold">
-                                        <h1>{alamat.name}</h1>
+                                        <h1>{al.nama}</h1>
                                     </div>
                                     <div className="text-gray-400 ps-3 text-base font-medium">
-                                        <p>({alamat.phone})</p>
+                                        <p>({al.no_telp})</p>
                                     </div>
                                 </div>
-                                <p>{alamat.address}</p>
-                                {alamat.main === true ? (<Tag className="border border-red-800 text-red-800 bg-white mt-2">Utama</Tag>) : ("")}
+                                <p>{al.nama_jalan}, {al.kecamatan}</p>
+                                {al.utama === true ? (<Tag className="border border-red-800 text-red-800 bg-white mt-2">Utama</Tag>) : ("")}
                             </div>
                             <div className="flex justify-center items-center">
                                 <input 
                                     type="radio" 
-                                    checked={selectedAlamat === alamat.id} 
-                                    onChange={() => setSelectedAlamat(alamat.id)}
+                                    checked={selectedAlamat === al._id} 
+                                    onChange={() => setSelectedAlamat(al._id)}
                                     className="w-5 h-5 cursor-pointer accent-red-800"
                                 />
                             </div>
