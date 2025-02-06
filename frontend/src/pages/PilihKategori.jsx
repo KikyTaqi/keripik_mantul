@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, Col, Row, Button, Typography, message, Skeleton, Pagination } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT, URL_KATEGORI } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_KATEGORI, URL_CART, URL_USER } from "../utils/Endpoint";
 import { Link, useParams } from "react-router-dom";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
+import { jwtDecode } from "jwt-decode";
 import "../style.css";
 
 const { Title } = Typography;
@@ -14,6 +15,8 @@ const PilihKategori = () => {
     const [products, setProducts] = useState([]);
     const [kategori, setKategori] = useState({});
     const [loading, setLoading] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+    const [userId, setUserId] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 25;
     const { category_id } = useParams();
@@ -22,13 +25,27 @@ const PilihKategori = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [productResponse, kategoriResponse] = await Promise.all([
+
+                const token = localStorage.getItem("userToken");
+                if (!token) return;
+
+                const decoded = jwtDecode(token);
+                const profileResponse = await axios.post(`${URL_USER}/profile`, {
+                    email: decoded.email,
+                });
+
+                const userId = profileResponse.data[0]._id;
+                setUserId(userId);
+
+                const [productResponse, kategoriResponse, cartResponse] = await Promise.all([
                     axios.get(URL_PRODUCT),
-                    axios.get(`${URL_KATEGORI}/${category_id}`)
+                    axios.get(`${URL_KATEGORI}/${category_id}`),
+                    axios.get(`${URL_CART}/${userId}`)
                 ]);
 
                 setProducts(productResponse.data);
                 setKategori(kategoriResponse.data);
+                setCartItems(cartResponse.data.items || []);
             } catch (err) {
                 message.error("Gagal memuat data!");
                 console.error(err);
@@ -39,6 +56,65 @@ const PilihKategori = () => {
 
         fetchData();
     }, [category_id]);
+
+    const addToCart = async (productcart) => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
+            const response = await axios.post(`${URL_CART}/add`, {
+                userId: decoded._id,
+                productId: productcart._id,
+                name: productcart.name,
+                price: productcart.price,
+                thumbnail: productcart.thumbnail,
+            });
+            message.warning(`${productcart.name} berhasil ditambahkan ke keranjang!`);
+            console.log("Add to Cart Response:", response.data);
+            setCartItems(response.data.items || []);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    };
+
+
+    const removeFromCart = async (product) => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
+            const response = await axios.post(`${URL_CART}/remove`, {
+                userId: decoded._id,
+                productId: product._id,
+            });
+            setCartItems(response.data.items || []);  // Pastikan state diperbarui setelah penghapusan
+            message.warning(`${product.name} dihapus dari keranjang!`);
+        } catch (error) {
+            console.error("Error removing from cart:", error);
+        }
+    };
+
+    const handleAddToCart = async (product) => {
+        if (!userId) {
+            message.error("Silakan login terlebih dahulu!");
+            console.log("blabala: " + userId);
+            return;
+        }
+
+        const isInCart = cartItems.some(
+            (item) => item.productId === product._id
+        );
+        console.log(isInCart);
+        // Debugging untuk memastikan kondisi ini bekerja dengan benar
+
+        if (isInCart) {
+            await removeFromCart(product);
+        } else {
+            await addToCart(product);
+        }
+
+        // Refresh cart setelah menambahkan atau menghapus item
+        const updatedCart = await axios.get(`${URL_CART}/${userId}`);
+        setCartItems(updatedCart.data.items || []);
+    };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -52,17 +128,16 @@ const PilihKategori = () => {
 
     return (
         <div style={{ padding: '0', position: 'relative' }}>
-            <div style={{width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent'}}>
-                            <img src={jumbotron_produk} alt="" draggable='false' style={{zIndex:'0', position: 'absolute'}}/>
-                        </div>
-                        <div className="py-5 bg-white relative" style={{zIndex: '5', borderRadius: '80px 80px 0 0'}}>
-                            <div className="flex text-center w-full justify-evenly pb-5 text-2xl" style={{borderBottom:"2px solid #7B281D"}}>
-                                <Link to="/products" className={`text-[#7B281D] hover:text-red-600 font-bold ${
-                            location.pathname === "/products" ? "border-b-2 border-red-800" : ""
-                          }`}>Produk</Link>
-                                <Link to="/products/kategori" className={`text-[#7B281D] hover:text-red-600 font-bold border-b-2 border-red-800
+            <div style={{ width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent' }}>
+                <img src={jumbotron_produk} alt="" draggable='false' style={{ zIndex: '0', position: 'absolute' }} />
+            </div>
+            <div className="py-5 bg-white relative" style={{ zIndex: '5', borderRadius: '80px 80px 0 0' }}>
+                <div className="flex text-center w-full justify-evenly pb-5 text-2xl" style={{ borderBottom: "2px solid #7B281D" }}>
+                    <Link to="/products" className={`text-[#7B281D] hover:text-red-600 font-bold ${location.pathname === "/products" ? "border-b-2 border-red-800" : ""
+                        }`}>Produk</Link>
+                    <Link to="/products/kategori" className={`text-[#7B281D] hover:text-red-600 font-bold border-b-2 border-red-800
                           }`}>Kategori</Link>
-                        </div>
+                </div>
                 <div className="bg-white p-5">
                     <p className="mb-2 font-semibold">Kategori: <span className="text-[#7B281D]">{kategori.nama_kategori}</span></p>
                     <Row gutter={[13, 13]}>
@@ -75,37 +150,62 @@ const PilihKategori = () => {
                                     </Card>
                                 </Col>
                             ))
-                            : paginatedProducts.map((product) => (
-                                <Col span={5} key={product._id} style={{ flex: '0 0 20%', maxWidth: '20%' }}>
-                                    <Card
-                                        style={{ height: '436px', minHeight: '436px', padding: 10 }}
-                                        hoverable
-                                        cover={
-                                            <img alt={product.name} className="border border-[#F2E8C6] p-2" src={product.thumbnail} style={{
-                                                minHeight: '250px',
-                                                maxHeight: '250px',
-                                                objectFit: 'cover',
-                                            }} />
-                                        }>
-                                        <Card.Meta
-                                            style={{ marginTop: 'auto', marginBottom: '3rem' }}
-                                            title={product.name}
-                                            description={`Rp ${product.price.toLocaleString('id-ID')}`}
-                                        />
-                                        <div className="flex justify-between items-center">
-                                            <p>0 Terjual</p>
-                                            <div className="flex flex-row-reverse">
-                                                <Link to={`/checkout/${product._id}`}>
-                                                    <Button icon={<ShoppingCartOutlined />} className="bottom-0 ms-2 text-base border-none" />
-                                                </Link>
-                                                <Link to={`/`}>
-                                                    <Button icon={<FaRegHeart />} className="bottom-0 text-base border-none" />
-                                                </Link>
+                            : paginatedProducts.map((product) => {
+                                const isInCart = Array.isArray(cartItems) && cartItems.some(items => items.productId === product._id);
+                                return (
+                                    <Col span={5} key={`${product._id}-${isInCart}`} style={{ flex: '0 0 20%', maxWidth: '20%' }}>
+                                        <Card
+                                            style={{
+                                                height: '436px',
+                                                minHeight: '436px',
+                                                padding: 10,
+                                            }}
+                                            hoverable
+                                            onClick={() => {
+                                                navigate(`/products/${product._id}`);
+                                                window.scrollTo(0, 0);
+                                            }}
+                                            cover={
+                                                <img
+                                                    alt={product.name}
+                                                    className="border border-[#F2E8C6] p-2"
+                                                    src={product.thumbnail}
+                                                    style={{ minHeight: "250px", objectFit: "cover" }}
+                                                />
+                                            }
+                                        >
+                                            <Card.Meta
+                                                style={{
+                                                    marginTop: 'auto',
+                                                    marginBottom: '3rem',
+                                                }}
+                                                title={product.name}
+                                                description={`Rp ${product.price?.toLocaleString("id-ID")}`}
+                                            />
+                                            <div className="flex justify-between items-center">
+                                                <p>0 Terjual</p>
+                                                <div className="flex flex-row-reverse">
+                                                    <Button
+                                                        type="secondary"
+                                                        icon={isInCart ? <FaShoppingCart style={{ color: "red", fontSize: "20px" }} /> : <ShoppingCartOutlined style={{ fontSize: "23px" }} />}
+                                                        className="border-none text-base hover:text-red-700"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAddToCart(product);
+                                                        }}
+                                                    />
+                                                    <Button
+                                                        type="secondary"
+                                                        icon={<FaRegHeart style={{ fontSize: '20px' }} />}
+                                                        className="bottom-0 border-none text-base hover:text-red-700"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Card>
-                                </Col>
-                            ))}
+                                        </Card>
+                                    </Col>
+                                );
+                            })
+                        }
                     </Row>
                     <Pagination
                         current={currentPage}
