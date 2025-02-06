@@ -12,3 +12,4 @@ export const URL_ONGKIR = `${BASEURL}/api/ongkir`
 export const URL_USER = `${BASEURL}/api/users`
 export const URL_PROFILE = `${BASEURL}/api/users/profile`
 export const URL_CART = `${BASEURL}/api/cart`
+export const URL_ALAMAT = `${BASEURL}/api/alamat`

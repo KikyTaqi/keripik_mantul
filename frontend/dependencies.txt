@@ -3,9 +3,13 @@
 - cd frontend
 - npm i antd axios jsonwebtoken react-router-dom
 
-# Update
+# Update !!!!TERBARUUU!!!!
+- npm install tailwind-scrollbar-hide
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
 - npm i tailwindcss react-icons
-npm install @react-oauth/google
+- npm install @react-oauth/google
 
 !Update Terbaru!
 npm install jwt-decode

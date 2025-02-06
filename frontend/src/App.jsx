@@ -15,6 +15,7 @@ import DashboardChangePassword from "./pages/dashboard/ProfileAdmin/DashboardCha
 
 import UserProfile from "./pages/user_profile/Profile";
 import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
+import AddAlamat from "./pages/user_profile/AlamatCreate";
 
 
 // Product
@@ -102,6 +103,7 @@ const App = () => {
                                           <Route path="/" element={<UserProfile />} />
                                           <Route path="/products" element={<Product />} />
                                           <Route path="/alamat" element={<AlamatTersimpan />} />
+                                          <Route path="/alamat/add" element={<AddAlamat />} />
                                         </Routes>
                                       </Content>
                                     </div>
