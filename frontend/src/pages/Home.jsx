@@ -298,6 +298,7 @@ const Home = () => {
                                             style={{
                                                 height: '436px',
                                                 minHeight: '436px',
+                                                maxHeight: '436px',
                                                 padding: 10,
                                                 }}
                                                 hoverable
