@@ -200,8 +200,8 @@ const Header = () => {
           {
           isCheck ?
             <>
-              <Link to="/cart">
-                  <FaCartPlus className="text-red-800 text-3xl object-right ms-8" />
+                <Link to="/cart">
+                  <FaCartPlus className="text-red-800 text-3xl object-right ms-8"/>
                 </Link>
               <Dropdown
               menu={{

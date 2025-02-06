@@ -76,7 +76,7 @@ const Home = () => {
                 price: productcart.price,
                 thumbnail: productcart.thumbnail,
             });
-            
+            message.warning(`${productcart.name} berhasil ditambahkan ke keranjang!`);
             console.log("Add to Cart Response:", response.data);
             setCartItems(response.data.items || []);
         } catch (error) {
@@ -216,8 +216,12 @@ const Home = () => {
                                 return (
                                     <Col span={6} key={`${product._id}-${isInCart}`}>
                                         <Card
-                                            style={{ height: "436px", padding: 10 }}
-                                            hoverable
+                                            style={{
+                                                height: '436px',
+                                                minHeight: '436px',
+                                                padding: 10,
+                                                }}
+                                                hoverable
                                             onClick={() => {
                                                 navigate(`/products/${product._id}`);
                                                 window.scrollTo(0, 0);
@@ -232,20 +236,31 @@ const Home = () => {
                                             }
                                         >
                                             <Card.Meta
+                                            style={{
+                                                marginTop: 'auto',
+                                                marginBottom: '3rem',
+                                            }}
                                                 title={product.name}
                                                 description={`Rp ${product.price?.toLocaleString("id-ID")}`}
                                             />
-                                            <div className="flex justify-between items-center mt-3">
+                                            <div className="flex justify-between items-center">
                                                 <p>0 Terjual</p>
+                                                <div className="flex flex-row-reverse">
                                                 <Button
                                                     type="secondary"
-                                                    icon={isInCart ? <FaShoppingCart style={{ color: "red" }} /> : <ShoppingCartOutlined />}
+                                                    icon={isInCart ? <FaShoppingCart style={{ color: "red", fontSize: "20px" }} /> : <ShoppingCartOutlined style={{ fontSize: "23px" }}/>}
                                                     className="border-none text-base hover:text-red-700"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleAddToCart(product);
                                                     }}
                                                 />
+                                                <Button
+                                                    type="secondary"
+                                                    icon={<FaRegHeart style={{fontSize: '20px'}}/>}
+                                                    className="bottom-0 border-none text-base hover:text-red-700"
+                                                />
+                                                </div>
                                             </div>
                                         </Card>
                                     </Col>
@@ -275,64 +290,62 @@ const Home = () => {
                                 </Card>
                                 </Col>
                             ))
-                            : productsTerlaris.slice(0, 4).map((product) => (
-                                <Col span={6} key={product._id}>
-                                <Card
-                                    style={{
-                                    height: '436px',
-                                    minHeight: '436px',
-                                    padding: 10,
-                                    }}
-                                    hoverable
-                                    onClick={() => {
-                                        navigate(`/products/${product._id}`);
-                                        window.scrollTo(0, 0);
-                                    }} 
-                                    cover={
-                                    <img
-                                        alt={product.name}
-                                        className="border border-[#F2E8C6] p-2"
-                                        src={product.thumbnail}
-                                        style={{
-                                        minHeight: '250px',
-                                        maxHeight: '250px',
-                                        overflowY: 'hidden',
-                                        marginBottom: 'auto',
-                                        objectFit: 'cover',
-                                        }}
-                                    />
-                                    }
-                                >
-                                    <Card.Meta
-                                    style={{
-                                        marginTop: 'auto',
-                                        marginBottom: '3rem',
-                                    }}
-                                    title={product.name}
-                                    description={`Rp ${product.price?.toLocaleString('id-ID')}`}
-                                    />
-                                    <div className="flex justify-between items-center">
-                                    <p>0 Terjual</p>
-                                    <div className="flex flex-row-reverse">
-                                        <Link to={`/checkout/${product._id}`}>
-                                        <Button
-                                        type="secondary"
-                                            icon={<ShoppingCartOutlined style={{fontSize: '24px'}}/>}
-                                            className="bottom-0 border-none ms-0 text-base hover:text-red-700"
-                                        ></Button>
-                                        </Link>
-                                        <Link to={`/`}>
-                                        <Button
-                                        type="secondary"
-                                            icon={<FaRegHeart style={{fontSize: '20px'}}/>}
-                                            className="bottom-0 border-none text-base hover:text-red-700"
-                                        ></Button>
-                                        </Link>
-                                    </div>
-                                    </div>
-                                </Card>
-                                </Col>
-                            ))}
+                            : productsTerlaris.slice(0, 4).map((product) => {
+                                const isInCart = Array.isArray(cartItems) && cartItems.some(items => items.productId === product._id);
+                                return (
+                                    <Col span={6} key={`${product._id}-${isInCart}`}>
+                                        <Card
+                                            style={{
+                                                height: '436px',
+                                                minHeight: '436px',
+                                                padding: 10,
+                                                }}
+                                                hoverable
+                                            onClick={() => {
+                                                navigate(`/products/${product._id}`);
+                                                window.scrollTo(0, 0);
+                                            }}                                            
+                                            cover={
+                                                <img
+                                                    alt={product.name}
+                                                    className="border border-[#F2E8C6] p-2"
+                                                    src={product.thumbnail}
+                                                    style={{ minHeight: "250px", objectFit: "cover" }}
+                                                />
+                                            }
+                                        >
+                                            <Card.Meta
+                                            style={{
+                                                marginTop: 'auto',
+                                                marginBottom: '3rem',
+                                            }}
+                                                title={product.name}
+                                                description={`Rp ${product.price?.toLocaleString("id-ID")}`}
+                                            />
+                                            <div className="flex justify-between items-center">
+                                                <p>0 Terjual</p>
+                                                <div className="flex flex-row-reverse">
+                                                <Button
+                                                    type="secondary"
+                                                    icon={isInCart ? <FaShoppingCart style={{ color: "red", fontSize: "20px" }} /> : <ShoppingCartOutlined style={{ fontSize: "23px" }}/>}
+                                                    className="border-none text-base hover:text-red-700"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleAddToCart(product);
+                                                    }}
+                                                />
+                                                <Button
+                                                    type="secondary"
+                                                    icon={<FaRegHeart style={{fontSize: '20px'}}/>}
+                                                    className="bottom-0 border-none text-base hover:text-red-700"
+                                                />
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    </Col>
+                                );
+                            })
+                        }      
                         </Row>
                     </div>
                 </section>
