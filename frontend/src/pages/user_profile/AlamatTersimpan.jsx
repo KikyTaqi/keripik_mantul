@@ -95,7 +95,7 @@ const AlamatTersimpan = () => {
                             overflowY: 'auto'
                         }}>
                             {alamat.map((item, itemIndex) => (
-                                <div className="border rounded-xl border-[#A1A1A1] bg-white w-full min-h-[170px] py-4 px-3 flex mb-3" key={itemIndex} onClick={() => handleSelectAddress(item._id)}>
+                                <div className="border rounded-xl border-[#A1A1A1] bg-white w-full min-h-[170px] py-4 px-3 flex mb-3 hover:cursor-pointer" key={itemIndex} onClick={() => handleSelectAddress(item._id)}>
                                     <div className="w-full">
                                         <div className="flex">
                                             <div className="w-fit pe-3 me-2 py-0 my-0" style={{borderRight: '2px solid #A1A1A1'}}>
@@ -114,7 +114,7 @@ const AlamatTersimpan = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex justify-center mb-2 mt-5">
+                        <div className="flex justify-center mb-3 mt-3">
                             <Link to={'/profile/alamat/add'}>
                                 <Button
                                     type="secondary"

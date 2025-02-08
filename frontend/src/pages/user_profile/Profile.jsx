@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, ConfigProvider, message  } from 'antd';
+import { Button, Image, ConfigProvider, message, Upload  } from 'antd';
 import { HiPencilSquare } from "react-icons/hi2";
 import axios from 'axios';
 import { URL_USER } from '../../utils/Endpoint';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../style.css';
 import {jwtDecode} from "jwt-decode";
+
 
 const Profile = () => {
     const [users, setUsers] = useState([]);
@@ -30,7 +31,6 @@ const Profile = () => {
         fetchData();
     }, []);
 
-    
 
     return (
         <ConfigProvider
@@ -76,12 +76,20 @@ const Profile = () => {
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Tanggal Lahir</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">{data.tgl_lahir || "(Tanggal lahir tidak tersedia)"}</td>
+                                        <td className="ps-5 font-base text-stone-400">
+                                            {data.tgl_lahir
+                                                ? new Date(data.tgl_lahir).toLocaleDateString('id-ID', {
+                                                    day: '2-digit',
+                                                    month: 'long',
+                                                    year: 'numeric',
+                                                })
+                                                : "(Tanggal lahir tidak tersedia)"}
+                                        </td>
                                     </tr>
                                     <tr className="text-lg">
                                         <td className="font-medium text-right">Jenis Kelamin</td>
                                         <td className="font-medium">:</td>
-                                        <td className="ps-5 font-base text-stone-400">{data.gender || "(Jenis kelamin tidak tersedia)"}</td>
+                                        <td className="ps-5 font-base text-stone-400">{data.jenis_kelamin || "(Jenis kelamin tidak tersedia)"}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -90,15 +98,16 @@ const Profile = () => {
                     <div>
                         <div className="mt-12 mx-16 mb-28 p-12">
                             <div className="border p-3 border-[#F2E8C6]">
+                                {console.log(users.profile_image)}
                                 <Image 
-                                    src="https://res.cloudinary.com/drlckqgew/image/upload/v1737338748/mfpcyton3edmwxk48qeb.gif"
+                                    src={data.profile_image}
                                     alt="Foto Profile"
                                     style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        borderRadius: '100%',
-                                        padding: '2rem',
-                                        objectFit: 'contain',
+                                        // aspectRatio: '1/1',
+                                        width: '15rem',
+                                        height: '15rem',
+                                        borderRadius: '50%',
+                                        objectFit: 'cover',
                                     }}
                                 />
                             </div>

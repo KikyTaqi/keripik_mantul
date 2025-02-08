@@ -1,5 +1,6 @@
 import { React, useEffect, useState } from "react";
-import { FaSearch, FaUserCircle, FaCartPlus } from "react-icons/fa";
+import { FaSearch, FaUserCircle, FaRegUserCircle, FaCartPlus } from "react-icons/fa";
+import { BsCart, BsCartFill } from "react-icons/bs";
 import { Link, useNavigate, useLocation, matchPath } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
@@ -124,7 +125,11 @@ const Header = () => {
 
         <div className="flex items-center" id="profileButton" onClick={handleProfile}>
           {/* User Icon */}
-          <FaUserCircle className={`text-red-800 text-3xl object-right hover:cursor-pointer  ${location.pathname == "/dashboard/profile" ? "border-b-2 border-red-800" : ""}`}/>
+          {location.pathname == "/dashboard/profile" ? 
+            <FaUserCircle className={`text-red-800 text-3xl object-right ms-8 hover:cursor-pointer`}/>
+            : 
+            <FaRegUserCircle className={`text-red-800 text-3xl object-right ms-8 hover:cursor-pointer`}/>
+          }
         </div>
       </div>
     );
@@ -201,7 +206,11 @@ const Header = () => {
           isCheck ?
             <>
                 <Link to="/cart">
-                  <FaCartPlus className="text-red-800 text-3xl object-right ms-8"/>
+                  {location.pathname == "/cart" ? 
+                    <BsCartFill className={`text-red-800 text-3xl object-right ms-8`}/>
+                    : 
+                    <BsCart className={`text-red-800 text-3xl object-right ms-8`}/>
+                  }
                 </Link>
               <Dropdown
               menu={{
@@ -218,7 +227,11 @@ const Header = () => {
               trigger={['hover']}
               >
                 <Link to="/profile">
-                  <FaUserCircle className={`text-red-800 text-3xl object-right ms-10 ${location.pathname == "/profile" ? "border-b-2 border-red-800" : ""}`} />
+                  {location.pathname == "/profile" ? 
+                    <FaUserCircle className={`text-red-800 text-3xl object-right ms-8`}/>
+                    : 
+                    <FaRegUserCircle className={`text-red-800 text-3xl object-right ms-8`}/>
+                  }
                 </Link>
               </Dropdown>
             </>

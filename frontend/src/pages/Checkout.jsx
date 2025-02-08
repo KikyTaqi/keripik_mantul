@@ -30,6 +30,8 @@ const Checkout = () => {
     const [alamat, setAlamat] = useState([{}]);
     const [users, setUsers] = useState([]);
     const [userId, setUserId] = useState("");
+    const [selectedAlamat, setSelectedAlamat] = useState(null);
+    const [confirmedAlamat, setConfirmedAlamat] = useState({});
 
     const handleBack = () => {
         navigate(-1)
@@ -39,7 +41,6 @@ const Checkout = () => {
         axios
             .get(`${URL_PRODUCT}/${id}`)
             .then((res) => {
-                console.log("res", res.data);
                 setProduct(res.data);
                 setMidtransUrl(res.data.midtrans_url);
             })
@@ -55,7 +56,7 @@ const Checkout = () => {
                 setUsers(response.data);
 
                 axios.get(`${URL_ALAMAT}/${response.data[0]._id}`)
-                    .then(response => setAlamat(response.data.alamat || []))
+                    .then(response => setAlamat(response.data.alamat || [{}]))
                     .catch(error => console.error("Error fetching cart:", error)); 
             } catch (error) {
                 console.error("Error fetching profile");
@@ -65,8 +66,21 @@ const Checkout = () => {
             }
         };
         fetchData();
-    }, []);
 
+    }, []);
+    useEffect(() => {
+        const defaultAlamats = alamat.find(al => al.utama == true) || [{}];
+        // console.log("AULTTTT: "+JSON.stringify(defaultAlamats.utama))
+        if(defaultAlamats.utama == true){
+            setConfirmedAlamat(defaultAlamats._id);
+            setSelectedAlamat(defaultAlamats._id);
+        }
+        // console.log("DEFFFFFFF: "+confirmedAlamat);
+        
+        // const tess = alamat.find(al => al._id == confirmedAlamat);
+        // console.log("HaHHH: "+tess.nama);
+    }, [alamat]);
+    
     const handleCheckout = (values) => {
         setLoading(true);
         console.log("Values", values);
@@ -133,24 +147,13 @@ const Checkout = () => {
         },
     ];
     
-    const [selectedAlamat, setSelectedAlamat] = useState(null);
-
-    useEffect(() => {
-        const defaultAlamat = alamat.find(al => al.utama);
-        if (defaultAlamat) {
-            setSelectedAlamat(defaultAlamat._id);
-        }
-    }, []);
-
     
 
      // Cari alamat yang memiliki "main: true"
-     const defaultAlamats = alamat.find(al => al.utama) || alamat[0];
 
     //  console.log("DEFAULT: "+defaultAlamats);
  
      // State untuk alamat yang sudah dikonfirmasi
-     const [confirmedAlamat, setConfirmedAlamat] = useState(defaultAlamats._id);
  
      // Fungsi untuk menangani konfirmasi alamat
      const handleConfirmAlamat = () => {
@@ -198,10 +201,10 @@ const Checkout = () => {
                         <div className="flex justify-between mx-3 w-full">
                             <div className="font-medium">
                             <p>
-                                {alamat.find(al => al._id === confirmedAlamat)?.nama} 
-                                ({alamat.find(al => al._id === confirmedAlamat)?.no_telp})
+                                {alamat.find(al => al._id == confirmedAlamat)?.nama} 
+                                ({alamat.find(al => al._id == confirmedAlamat)?.no_telp})
                             </p>
-                            <p>{alamat.find(al => al._id === confirmedAlamat)?.kecamatan}</p>
+                            <p>{alamat.find(al => al._id == confirmedAlamat)?.kecamatan}</p>
                             </div>
                             <RightOutlined className="text-lg" />
                         </div>
@@ -323,9 +326,9 @@ const Checkout = () => {
                 }}
             >
                 <div className="p-3 py-5">
-                    {alamat.map((al) => (
+                    {alamat.map((al, idx) => (
                         <div 
-                            key={al._id} 
+                            key={idx} 
                             className={`rounded-lg p-3 border ${
                                 selectedAlamat === al._id ? "border-red-800" : "border-stone-300"
                             } grid grid-cols-5 mb-2 cursor-pointer`}

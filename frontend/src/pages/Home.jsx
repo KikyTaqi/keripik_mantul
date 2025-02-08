@@ -103,7 +103,6 @@ const Home = () => {
     const handleAddToCart = async (product) => {
         if (!userId) {
             message.error("Silakan login terlebih dahulu!");
-            console.log("blabala: " + userId);
             return;
         }
    
