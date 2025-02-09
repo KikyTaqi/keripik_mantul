@@ -26,15 +26,13 @@ const ProfileSidebar = () => {
       setProfile(response.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
+      navigate('/signin');
     }
   };
 
-  const checkLogin = async () => {
+  const checkLogin =  () => {
     const userToken = localStorage.removeItem('userToken');
-
-    if(userToken == null || userEmail == null || userRole == null){
-      navigate('/signin');
-    }
+    navigate('/signin');
   }
 
   const location = useLocation(); // Mendapatkan rute saat ini
@@ -45,7 +43,7 @@ const ProfileSidebar = () => {
     { name: "Alamat Tersimpan", path: "/profile/alamat", icon: <LuMapPin /> },
     { name: "Produk Favorit", path: "/profile/s", icon: <FaRegHeart /> },
     { name: "Ubah Password", path: "/profile/password/change", icon: <TbLockPassword /> },
-    { name: "Log Out", path: "/profile/z", icon: <MdLogout /> },
+    { name: "Log Out", path: "/signin", icon: <MdLogout /> },
   ];
 
   return (
@@ -96,7 +94,7 @@ const ProfileSidebar = () => {
                 <Link
                   to={item.path}
                   onClick={(e) => {
-                    if (item.name === "Log Out") {
+                    if (item.name == "Log Out") {
                       checkLogin();
                     }
                   }}
