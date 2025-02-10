@@ -32,7 +32,7 @@ const Checkout = () => {
     const [userId, setUserId] = useState("");
     const [selectedAlamat, setSelectedAlamat] = useState(null);
     const [confirmedAlamat, setConfirmedAlamat] = useState({});
-    // const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState([]);
 
     const handleBack = () => {
         navigate(-1)
@@ -45,23 +45,25 @@ const Checkout = () => {
             const response = axios.post(`${URL_TRANSACTION}/products/get`, { id: decoded._id })
             .then((res) => {
                 setProduct(res.data);
-                // setCart((prevCart) => {
-                //     // Cek apakah produk sudah ada di cart
-                //     const existingItem = prevCart.find((item) => item.id === product.id);
-            
-                //     if (existingItem) {
-                //         // Jika produk sudah ada, update quantity
-                //         return prevCart.map((item) =>
-                //             item.id === product.id
-                //                 ? { ...item, quantity: item.quantity + 1 }
-                //                 : item
-                //         );
-                //     } else {
-                //         // Jika belum ada, tambahkan produk dengan quantity awal 1
-                //         return [...prevCart, { ...product, quantity: 1 }];
-                //     }
-                // });
-                setMidtransUrl(res.data.midtrans_url);
+                // console.log("DATAAAA: "+JSON.stringify(res.data));
+                setCart((prevCart) => {
+                    // Cek apakah produk sudah ada di cart
+                    const existingItem = prevCart.find(item => item._id === res.data._id);
+          
+                    if (existingItem) {
+                        // Jika produk sudah ada, update quantity
+                        return prevCart.map(item =>
+                            item._id === res.data._id
+                                ? { ...item, quantity: item.quantity + 1 }
+                                : item
+                        );
+                    } else {
+                        // Jika produk belum ada, tambahkan dengan quantity 1
+                        return [...prevCart, { ...res.data, quantity: 1 }];
+                    }
+                });
+          
+                setMidtransUrl(res.data.midtrans_url || "");
             })
             .catch((err) => {
                 console.log("err", err.response);
@@ -152,10 +154,10 @@ const Checkout = () => {
          setOpen(false); // Tutup modal
      };
 
-     const [cart, setCart] = useState([
-        { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
-        { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
-    ]); 
+    //  const [cart, setCart] = useState([
+    //     { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
+    //     { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
+    // ]); 
     
     const [subtotal, setSubtotal] = useState(0);
     const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
