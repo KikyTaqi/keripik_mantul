@@ -115,6 +115,11 @@ function Login() {
             });
     };
 
+    useEffect(() => {
+        const userToken = localStorage.removeItem('userToken');
+    }, [])
+    
+
     return (
         <>
             <ConfigProvider

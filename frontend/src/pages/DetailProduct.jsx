@@ -6,16 +6,81 @@ import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
+import { jwtDecode } from "jwt-decode";
 
 const DetailProduct = () => {
     const [Products, setProducts] = useState({});
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const reviewsPerPage = 4; // Jumlah ulasan per halaman
+    const [userId, setUserId] = useState("");
+    const [cartItems, setCartItems] = useState([]);
 
     const params = useParams();
     const navigate = useNavigate();
     const { id } = params;
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Mengambil data profil dan produk secara bersamaan
+                const token = localStorage.getItem("userToken");
+                if (!token) return;
+    
+                const decoded = jwtDecode(token);
+                const profileResponse = await axios.post(`${URL_USER}/profile`, {
+                    email: decoded.email,
+                });
+    
+                const userId = profileResponse.data[0]._id;
+                setUserId(userId);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const addToCart = async (productcart) => {
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
+            const response = await axios.post(`${URL_CART}/add`, {
+                userId: decoded._id,
+                productId: productcart._id,
+                name: productcart.name,
+                price: productcart.price,
+                thumbnail: productcart.thumbnail,
+            });
+            message.warning(`${productcart.name} berhasil ditambahkan ke keranjang!`);
+            console.log("Add to Cart Response:", response.data);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
+    };
+
+    const handleAddToCart = async (product) => {
+        if (!userId) {
+            message.error("Silakan login terlebih dahulu!");
+            return;
+        }
+   
+        const isInCart = cartItems.some(
+            (item) => item.productId === product._id
+        );
+        console.log(isInCart);
+         // Debugging untuk memastikan kondisi ini bekerja dengan benar
+   
+        await addToCart(product);
+   
+        // Refresh cart setelah menambahkan atau menghapus item
+        const updatedCart = await axios.get(`${URL_CART}/${userId}`);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -125,6 +190,10 @@ const DetailProduct = () => {
                                     <h1 className="text-2xl font-medium mt-7">Rp {Products.price?.toLocaleString('id-ID')}</h1>
                                     <div className="flex mt-16 pe-28">
                                         <Button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleAddToCart(Products);
+                                            }}
                                             type="secondary"
                                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center text-base"
                                         >

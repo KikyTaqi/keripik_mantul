@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema(
             type: String,
             unique: true,
         },
+        tgl_lahir: {
+            type: Date,
+        },
+        jenis_kelamin: {
+            type: String,
+        },
         role: {
             type: String,
             default: "User",
@@ -29,7 +35,14 @@ const userSchema = new mongoose.Schema(
         isRegistered: {
             type: Boolean,
             default: false
-        }
+        },
+        profile_image: {
+            type: String,
+            default: "https://res.cloudinary.com/drlckqgew/image/upload/v1738942827/morsxlcuwikchlazjker.png"
+        },
+        cloudinaryId: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

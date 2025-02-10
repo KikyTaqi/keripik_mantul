@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const cloudinary = require('../config/cloudinary');
 
 exports.getUsers = async (req, res) => {
     try {
@@ -38,19 +39,32 @@ exports.createUser = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
+    console.log("checkImagesadawdsawdasdsdawd: ");
     try {
         const id = req.body.id;
         let user = await User.find({'_id': id});
         if(!user){
             res.status(500).json({ message: 'User tidak ditemukan!', user });
         }
+
+        let upload = null;
+
+        if(req.file.path != null){
+            console.log("checkImage: "+req.file.path);
+            upload = await cloudinary.uploader.upload(req.file.path);
+        }
         const updateUser = {
             name: req.body.nama,
             // email: req.body.email,
             no_telp: req.body.no_telp,
+            tgl_lahir: req.body.tgl_lahir,
+            jenis_kelamin: req.body.jenis_kelamin,
+            profile_image: upload ? upload.secure_url : null,
+            cloudinaryId: upload ? upload.public_id : null,
         }
         user = await User.findByIdAndUpdate(id, updateUser, {new: true});
         console.log("User: "+user);
+        console.log("User: "+JSON.stringify(updateUser));
         res.status(200).json({ message: 'Profile updated successfully!' });
     }catch (err) {
         res.status(500).json({ message: err.message });
@@ -64,13 +78,20 @@ exports.editProfilePassword = async (req, res) => {
         if(!user){
             return res.status(400).json({ message: 'User tidak ditemukan!' });
         }
-        if(user.password == req.body.password){
+        if(req.body.password == null){
             const updateUser = {
                 password: req.body.newPassword
             }
             user = await User.findByIdAndUpdate(id, updateUser, {new: true});
         }else{
-            return res.status(400).json({ message: 'Password tidak sama!' });
+            if(user.password == req.body.password){
+                const updateUser = {
+                    password: req.body.newPassword
+                }
+                user = await User.findByIdAndUpdate(id, updateUser, {new: true});
+            }else{
+                return res.status(400).json({ message: 'Password tidak sama!' });
+            }
         }
         return res.status(200).json({ message: 'Profile updated successfully!' });
     }catch (err) {

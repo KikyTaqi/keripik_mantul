@@ -4,7 +4,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { URL_PRODUCT, URL_KATEGORI, URL_CART, URL_USER } from "../utils/Endpoint";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import { jwtDecode } from "jwt-decode";
 import "../style.css";
@@ -20,6 +20,7 @@ const PilihKategori = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 25;
     const { category_id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {

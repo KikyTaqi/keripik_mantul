@@ -6,8 +6,8 @@ import { jwtDecode } from "jwt-decode";
 import { URL_PROFILE, URL_USER } from "../../../utils/Endpoint";
 
 const DashboardEditProfile = () => {
-    const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
     const [profile, setProfile] = useState([]);
     const navigate = useNavigate();
 

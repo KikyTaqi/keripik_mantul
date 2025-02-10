@@ -14,8 +14,10 @@ import DashboardEditProfile from "./pages/dashboard/ProfileAdmin/DashboardEditPr
 import DashboardChangePassword from "./pages/dashboard/ProfileAdmin/DashboardChangePassword";
 
 import UserProfile from "./pages/user_profile/Profile";
+import ProfileEdit from "./pages/user_profile/ProfileEdit";
 import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
 import AddAlamat from "./pages/user_profile/AlamatCreate";
+import UserChangePassword from "./pages/user_profile/UserChangePassword";
 
 
 // Product
@@ -78,7 +80,7 @@ const App = () => {
                         <Route path="/products/:id" element={<UserDetailProduct />} />
                         <Route path="/products/kategori" element={<ProductsKategori />} />
                         <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
-                        <Route path="/checkout/:id" element={<Checkout />} />
+                        <Route path="/products/checkout/:id" element={<Checkout />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/profile/*" element={
@@ -101,9 +103,11 @@ const App = () => {
                                       >
                                         <Routes>
                                           <Route path="/" element={<UserProfile />} />
+                                          <Route path="/edit" element={<ProfileEdit />} />
                                           <Route path="/products" element={<Product />} />
                                           <Route path="/alamat" element={<AlamatTersimpan />} />
                                           <Route path="/alamat/add" element={<AddAlamat />} />
+                                          <Route path="/password/change" element={<UserChangePassword />} />
                                         </Routes>
                                       </Content>
                                     </div>

@@ -30,6 +30,9 @@ const Checkout = () => {
     const [alamat, setAlamat] = useState([{}]);
     const [users, setUsers] = useState([]);
     const [userId, setUserId] = useState("");
+    const [selectedAlamat, setSelectedAlamat] = useState(null);
+    const [confirmedAlamat, setConfirmedAlamat] = useState({});
+    const [cart, setCart] = useState([]);
 
     const handleBack = () => {
         navigate(-1)
@@ -39,8 +42,23 @@ const Checkout = () => {
         axios
             .get(`${URL_PRODUCT}/${id}`)
             .then((res) => {
-                console.log("res", res.data);
                 setProduct(res.data);
+                setCart((prevCart) => {
+                    // Cek apakah produk sudah ada di cart
+                    const existingItem = prevCart.find((item) => item.id === product.id);
+            
+                    if (existingItem) {
+                        // Jika produk sudah ada, update quantity
+                        return prevCart.map((item) =>
+                            item.id === product.id
+                                ? { ...item, quantity: item.quantity + 1 }
+                                : item
+                        );
+                    } else {
+                        // Jika belum ada, tambahkan produk dengan quantity awal 1
+                        return [...prevCart, { ...product, quantity: 1 }];
+                    }
+                });
                 setMidtransUrl(res.data.midtrans_url);
             })
             .catch((err) => {
@@ -55,7 +73,7 @@ const Checkout = () => {
                 setUsers(response.data);
 
                 axios.get(`${URL_ALAMAT}/${response.data[0]._id}`)
-                    .then(response => setAlamat(response.data.alamat || []))
+                    .then(response => setAlamat(response.data.alamat || [{}]))
                     .catch(error => console.error("Error fetching cart:", error)); 
             } catch (error) {
                 console.error("Error fetching profile");
@@ -65,8 +83,21 @@ const Checkout = () => {
             }
         };
         fetchData();
-    }, []);
 
+    }, []);
+    useEffect(() => {
+        const defaultAlamats = alamat.find(al => al.utama == true) || [{}];
+        // console.log("AULTTTT: "+JSON.stringify(defaultAlamats.utama))
+        if(defaultAlamats.utama == true){
+            setConfirmedAlamat(defaultAlamats._id);
+            setSelectedAlamat(defaultAlamats._id);
+        }
+        // console.log("DEFFFFFFF: "+confirmedAlamat);
+        
+        // const tess = alamat.find(al => al._id == confirmedAlamat);
+        // console.log("HaHHH: "+tess.nama);
+    }, [alamat]);
+    
     const handleCheckout = (values) => {
         setLoading(true);
         console.log("Values", values);
@@ -93,64 +124,11 @@ const Checkout = () => {
         setOpen(true);
     }
 
-    const alamatList = [
-        {
-            id: 1,
-            name: "Viola",
-            phone: "+62 812-3456-7890",
-            address: "Dusun Krajan RT.01/RW.06, Salamsari, Kec Boja, Kab Kendal, Jawa Tengah, ID, 51381",
-            main: true,
-        },
-        {
-            id: 2,
-            name: "Viola (Vio)",
-            phone: "+62 812-3456-7890",
-            address: "Dusun Krajan RT.01/RW.06, Limbangan, Kec Limbangan, Kab Kendal, Jawa Tengah, ID, 51383",
-        },
-        {
-            id: 3,
-            name: "Daniel",
-            phone: "+62 813-9876-5432",
-            address: "Jl. Merdeka No.45, Kel. Banyumanik, Kec. Banyumanik, Semarang, Jawa Tengah, ID, 50263",
-        },
-        {
-            id: 4,
-            name: "Sinta",
-            phone: "+62 852-4567-1234",
-            address: "Jl. Diponegoro No.78, Kel. Candisari, Kec. Candisari, Semarang, Jawa Tengah, ID, 50252",
-        },
-        {
-            id: 5,
-            name: "Budi Santoso",
-            phone: "+62 856-7890-4567",
-            address: "Perumahan Griya Indah Blok A-12, Kel. Pedurungan, Kec. Pedurungan, Semarang, Jawa Tengah, ID, 50192",
-        },
-        {
-            id: 6,
-            name: "Rina Kusuma",
-            phone: "+62 857-6543-7890",
-            address: "Jl. Ahmad Yani No.99, Kel. Tlogosari, Kec. Tlogosari, Semarang, Jawa Tengah, ID, 50196",
-        },
-    ];
-    
-    const [selectedAlamat, setSelectedAlamat] = useState(null);
-
-    useEffect(() => {
-        const defaultAlamat = alamat.find(al => al.utama);
-        if (defaultAlamat) {
-            setSelectedAlamat(defaultAlamat._id);
-        }
-    }, []);
-
-    
-
      // Cari alamat yang memiliki "main: true"
-     const defaultAlamats = alamat.find(al => al.utama) || alamat[0];
 
     //  console.log("DEFAULT: "+defaultAlamats);
  
      // State untuk alamat yang sudah dikonfirmasi
-     const [confirmedAlamat, setConfirmedAlamat] = useState(defaultAlamats._id);
  
      // Fungsi untuk menangani konfirmasi alamat
      const handleConfirmAlamat = () => {
@@ -164,10 +142,10 @@ const Checkout = () => {
          setOpen(false); // Tutup modal
      };
 
-    const [cart, setCart] = useState([
-        { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
-        { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
-    ]);
+    //  const [cart, setCart] = useState([
+    //     { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
+    //     { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
+    // ]); 
     
     const [subtotal, setSubtotal] = useState(0);
     const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
@@ -198,10 +176,10 @@ const Checkout = () => {
                         <div className="flex justify-between mx-3 w-full">
                             <div className="font-medium">
                             <p>
-                                {alamat.find(al => al._id === confirmedAlamat)?.nama} 
-                                ({alamat.find(al => al._id === confirmedAlamat)?.no_telp})
+                                {alamat.find(al => al._id == confirmedAlamat)?.nama} 
+                                ({alamat.find(al => al._id == confirmedAlamat)?.no_telp})
                             </p>
-                            <p>{alamat.find(al => al._id === confirmedAlamat)?.kecamatan}</p>
+                            <p>{alamat.find(al => al._id == confirmedAlamat)?.kecamatan}</p>
                             </div>
                             <RightOutlined className="text-lg" />
                         </div>
@@ -323,9 +301,9 @@ const Checkout = () => {
                 }}
             >
                 <div className="p-3 py-5">
-                    {alamat.map((al) => (
+                    {alamat.map((al, idx) => (
                         <div 
-                            key={al._id} 
+                            key={idx} 
                             className={`rounded-lg p-3 border ${
                                 selectedAlamat === al._id ? "border-red-800" : "border-stone-300"
                             } grid grid-cols-5 mb-2 cursor-pointer`}

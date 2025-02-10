@@ -12,6 +12,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 const userRoutes = require('./routes/UserRoutes');
 const productsRoutes = require('./routes/ProductRoutes');

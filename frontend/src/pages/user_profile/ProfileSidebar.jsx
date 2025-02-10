@@ -26,15 +26,13 @@ const ProfileSidebar = () => {
       setProfile(response.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
+      navigate('/signin');
     }
   };
 
-  const checkLogin = async () => {
+  const checkLogin =  () => {
     const userToken = localStorage.removeItem('userToken');
-
-    if(userToken == null || userEmail == null || userRole == null){
-      navigate('/signin');
-    }
+    navigate('/signin');
   }
 
   const location = useLocation(); // Mendapatkan rute saat ini
@@ -44,8 +42,8 @@ const ProfileSidebar = () => {
     { name: "Pesanan Saya", path: "/profile/w", icon: <FaTruckFast /> },
     { name: "Alamat Tersimpan", path: "/profile/alamat", icon: <LuMapPin /> },
     { name: "Produk Favorit", path: "/profile/s", icon: <FaRegHeart /> },
-    { name: "Ubah Password", path: "/profile/d", icon: <TbLockPassword /> },
-    { name: "Log Out", path: "/profile/z", icon: <MdLogout /> },
+    { name: "Ubah Password", path: "/profile/password/change", icon: <TbLockPassword /> },
+    { name: "Log Out", path: "/signin", icon: <MdLogout /> },
   ];
 
   return (
@@ -67,12 +65,13 @@ const ProfileSidebar = () => {
               <div className="flex">
                 <div className="flex-1 me-4">
                   <img 
-                      src="https://res.cloudinary.com/drlckqgew/image/upload/v1737338748/mfpcyton3edmwxk48qeb.gif"
+                      src={data.profile_image}
                       alt="Foto Profile"
                       style={{
-                        minWidth: '2rem',
-                        minHeight: '2rem',
-                        borderRadius: '100%',
+                        width: '6rem',
+                        height: '6rem',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
                         padding: 3,
                       }}
                   />
@@ -95,7 +94,7 @@ const ProfileSidebar = () => {
                 <Link
                   to={item.path}
                   onClick={(e) => {
-                    if (item.name === "Log Out") {
+                    if (item.name == "Log Out") {
                       checkLogin();
                     }
                   }}
