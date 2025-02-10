@@ -41,7 +41,7 @@ exports.createUser = async (req, res) => {
 exports.editProfile = async (req, res) => {
     try {
         const id = req.body.id;
-        let user = await User.find({'_id': id});
+        let user = await User.findOne({'_id': id});
         if(!user){
             res.status(500).json({ message: 'User tidak ditemukan!', user });
         }
@@ -50,35 +50,42 @@ exports.editProfile = async (req, res) => {
         let upload = null;
 
         // Konversi tanggal lahir jika ada
-        let tanggal = user[0].tgl_lahir ? new Date(user[0].tgl_lahir) : null;
-        let tanggalInput = req.body.tgl_lahir || null;
-        let formattedDate = tanggal ? tanggal.toISOString().split("T")[0] : null;
-
-        // Cek apakah tanggalInput valid sebelum mengonversi
-        let formattedDateInput = null;
-        if (tanggalInput && !isNaN(new Date(tanggalInput).getTime())) {
-            formattedDateInput = new Date(tanggalInput).toISOString().split("T")[0];
-        }
-
-        console.log("TESTGLL: " + tanggalInput);
-        console.log("USERR: " + user[0].tgl_lahir);
+        // let tanggalInput = req.body.tgl_lahir || null;
+        // let formattedDateInput = null;
+        // if (tanggalInput !== null && tanggalInput !== undefined && !isNaN(new Date(tanggalInput).getTime())) {
+        //     formattedDateInput = new Date(tanggalInput).toISOString().split("T")[0];
+        // }
 
         // Cek apakah ada file yang diunggah
         if (req.file) {
             console.log("checkImage: " + req.file.path);
             upload = await cloudinary.uploader.upload(req.file.path);
             if (upload) {
-                updateUser.profile_image = upload.secure_url;
-                updateUser.cloudinaryId = upload.public_id;
+                if (upload.secure_url != null && upload.secure_url != undefined) {
+                    updateUser.profile_image = upload.secure_url;
+                }
+                if (upload.public_id != null && upload.public_id != undefined) {
+                    updateUser.cloudinaryId = upload.public_id;
+                }
             }
         }
 
         // Update hanya jika ada perubahan dari req.body
-        if (req.body.nama) updateUser.name = req.body.nama;
-        if (req.body.no_telp) updateUser.no_telp = req.body.no_telp;
-        if (formattedDateInput) updateUser.tgl_lahir = formattedDateInput; // Hanya update jika valid
-        if (req.body.jenis_kelamin) updateUser.jenis_kelamin = req.body.jenis_kelamin;
+        if (req.body.nama != null && req.body.nama != undefined) {
+            updateUser.name = req.body.nama || user.name;
+        }
 
+        if (req.body.no_telp !== null && req.body.no_telp !== undefined) {
+            updateUser.no_telp = req.body.no_telp || user.no_telp;
+        }
+
+        if (req.body.tgl_lahir !== null && req.body.tgl_lahir !== undefined) {
+            updateUser.tgl_lahir = req.body.tgl_lahir || user.tgl_lahir;
+        }
+
+        if (req.body.jenis_kelamin !== null && req.body.jenis_kelamin !== undefined) {
+            updateUser.jenis_kelamin = req.body.jenis_kelamin || user.jenis_kelamin;
+        }
 
         console.log("Update Data:", updateUser);
 

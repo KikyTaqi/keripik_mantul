@@ -148,6 +148,7 @@ const ProfileEdit = () => {
         setLoading(true);
         try {
             let id = users.length > 0 ? users[0]._id : null;
+            console.log("CEKK: "+values.tgl_lahir);
     
             // Gunakan FormData
             const formData = new FormData();
@@ -157,9 +158,7 @@ const ProfileEdit = () => {
             }
             formData.append("nama", values.nama);
             formData.append("no_telp", values.no_telp);
-            console.log("tgllahir: "+values.tgl_lahir);
-            const formattedDate = new Date(values.tgl_lahir).toISOString().split("T")[0];
-            formData.append("tgl_lahir", formattedDate);
+            formData.append("tgl_lahir", values.tgl_lahir);
             formData.append("jenis_kelamin", values.jenis_kelamin);
     
     
@@ -234,6 +233,7 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='nama'
+                                            initialValue=""
                                         >
                                             <Input placeholder="Masukkan nama" className="text-lg font-sm focus:border-t-0 focus:border-s-0 focus:border-e-0 rounded-none focus:shadow-none p-0" style={{
                                                 borderTop: 'none',
@@ -244,6 +244,7 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='no_telp'
+                                            initialValue=""
                                         >
                                             <Input placeholder="Masukkan nomor telepon" className="text-lg font-sm focus:border-t-0 focus:border-s-0 focus:border-e-0 rounded-none focus:shadow-none p-0" style={{
                                                 borderTop: 'none',
@@ -264,6 +265,7 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='jenis_kelamin'
+                                            initialValue=""
                                         >
                                             <Select
                                                 // defaultValue={'Laki-laki'}
