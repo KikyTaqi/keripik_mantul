@@ -4,7 +4,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import axios from "axios";
 import { URL_PRODUCT } from "../utils/Endpoint";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
 
 const DetailProduct = () => {
@@ -130,12 +130,13 @@ const DetailProduct = () => {
                                         >
                                             <span className="mb-1">Tambah Ke Keranjang</span>
                                         </Button>
-                                        <Button
-                                            type="secondary"
-                                            className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
-                                        >
-                                            <span className="mb-1">Beli Sekarang</span>
-                                        </Button>
+                                            <Button
+                                                type="secondary"
+                                                className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
+                                                onClick={() => {navigate(`/checkout/${Products._id}`)}}
+                                            >
+                                                <span className="mb-1">Beli Sekarang</span>
+                                            </Button>
                                     </div>
                                 </>
                             )
