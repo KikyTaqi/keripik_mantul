@@ -152,14 +152,16 @@ const ProfileEdit = () => {
             // Gunakan FormData
             const formData = new FormData();
             formData.append("id", id);
-            formData.append("nama", values.nama);
-            formData.append("no_telp", values.no_telp);
-            formData.append("tgl_lahir", values.tgl_lahir);
-            formData.append("jenis_kelamin", values.jenis_kelamin);
-    
             if (imageUrl instanceof File) {
                 formData.append("image", imageUrl);
             }
+            formData.append("nama", values.nama);
+            formData.append("no_telp", values.no_telp);
+            console.log("tgllahir: "+values.tgl_lahir);
+            const formattedDate = new Date(values.tgl_lahir).toISOString().split("T")[0];
+            formData.append("tgl_lahir", formattedDate);
+            formData.append("jenis_kelamin", values.jenis_kelamin);
+    
     
             // Kirim data ke server
             const response = await axios.post(`${URL_PROFILE}/edit`, formData, {
@@ -232,7 +234,6 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='nama'
-                                            rules={[{ required: true, message: 'Harap memasukkan nama!' }]}
                                         >
                                             <Input placeholder="Masukkan nama" className="text-lg font-sm focus:border-t-0 focus:border-s-0 focus:border-e-0 rounded-none focus:shadow-none p-0" style={{
                                                 borderTop: 'none',
@@ -243,7 +244,6 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='no_telp'
-                                            rules={[{ required: true, message: 'Harap memasukkan nomor telepon!' }]}
                                         >
                                             <Input placeholder="Masukkan nomor telepon" className="text-lg font-sm focus:border-t-0 focus:border-s-0 focus:border-e-0 rounded-none focus:shadow-none p-0" style={{
                                                 borderTop: 'none',
@@ -254,7 +254,6 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='tgl_lahir'
-                                            rules={[{ required: true, message: 'Harap memasukkan tanggal lahir!' }]}
                                         >
                                             <DatePicker placeholder="Masukkan tanggal lahir" className="text-lg font-sm focus:shadow-none w-full" style={{
                                                 // borderTop: 'none',
@@ -265,7 +264,6 @@ const ProfileEdit = () => {
                                         <Form.Item
                                             className=""
                                             name='jenis_kelamin'
-                                            rules={[{ required: true, message: 'Harap memasukkan jenis kelamin!' }]}
                                         >
                                             <Select
                                                 // defaultValue={'Laki-laki'}
