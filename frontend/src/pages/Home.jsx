@@ -248,11 +248,11 @@ const Home = () => {
                                                         handleAddToCart(product);
                                                     }}
                                                 />
-                                                <Button
+                                                {/* <Button
                                                     type="secondary"
                                                     icon={<FaRegHeart style={{fontSize: '20px'}}/>}
                                                     className="bottom-0 border-none text-base hover:text-red-700"
-                                                />
+                                                /> */}
                                                 </div>
                                             </div>
                                         </Card>
@@ -328,11 +328,11 @@ const Home = () => {
                                                         handleAddToCart(product);
                                                     }}
                                                 />
-                                                <Button
+                                                {/* <Button
                                                     type="secondary"
                                                     icon={<FaRegHeart style={{fontSize: '20px'}}/>}
                                                     className="bottom-0 border-none text-base hover:text-red-700"
-                                                />
+                                                /> */}
                                                 </div>
                                             </div>
                                         </Card>
