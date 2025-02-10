@@ -39,8 +39,10 @@ const Checkout = () => {
     }
 
     useEffect(() => {
-        axios
-            .get(`${URL_PRODUCT}/${id}`)
+        try {
+            const token = localStorage.getItem("cartItems");
+            const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+            const response = axios.post(`${URL_TRANSACTION}/products/get`, { id: decoded._id })
             .then((res) => {
                 setProduct(res.data);
                 // setCart((prevCart) => {
@@ -64,6 +66,14 @@ const Checkout = () => {
             .catch((err) => {
                 console.log("err", err.response);
             });
+        } catch (error) {
+            console.error("Error fetching products!");
+            // navigate("/signin");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("userToken");
