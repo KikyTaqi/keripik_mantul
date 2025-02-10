@@ -32,6 +32,7 @@ const Checkout = () => {
     const [userId, setUserId] = useState("");
     const [selectedAlamat, setSelectedAlamat] = useState(null);
     const [confirmedAlamat, setConfirmedAlamat] = useState({});
+    const [cart, setCart] = useState([]);
 
     const handleBack = () => {
         navigate(-1)
@@ -42,6 +43,22 @@ const Checkout = () => {
             .get(`${URL_PRODUCT}/${id}`)
             .then((res) => {
                 setProduct(res.data);
+                setCart((prevCart) => {
+                    // Cek apakah produk sudah ada di cart
+                    const existingItem = prevCart.find((item) => item.id === product.id);
+            
+                    if (existingItem) {
+                        // Jika produk sudah ada, update quantity
+                        return prevCart.map((item) =>
+                            item.id === product.id
+                                ? { ...item, quantity: item.quantity + 1 }
+                                : item
+                        );
+                    } else {
+                        // Jika belum ada, tambahkan produk dengan quantity awal 1
+                        return [...prevCart, { ...product, quantity: 1 }];
+                    }
+                });
                 setMidtransUrl(res.data.midtrans_url);
             })
             .catch((err) => {
@@ -107,48 +124,6 @@ const Checkout = () => {
         setOpen(true);
     }
 
-    const alamatList = [
-        {
-            id: 1,
-            name: "Viola",
-            phone: "+62 812-3456-7890",
-            address: "Dusun Krajan RT.01/RW.06, Salamsari, Kec Boja, Kab Kendal, Jawa Tengah, ID, 51381",
-            main: true,
-        },
-        {
-            id: 2,
-            name: "Viola (Vio)",
-            phone: "+62 812-3456-7890",
-            address: "Dusun Krajan RT.01/RW.06, Limbangan, Kec Limbangan, Kab Kendal, Jawa Tengah, ID, 51383",
-        },
-        {
-            id: 3,
-            name: "Daniel",
-            phone: "+62 813-9876-5432",
-            address: "Jl. Merdeka No.45, Kel. Banyumanik, Kec. Banyumanik, Semarang, Jawa Tengah, ID, 50263",
-        },
-        {
-            id: 4,
-            name: "Sinta",
-            phone: "+62 852-4567-1234",
-            address: "Jl. Diponegoro No.78, Kel. Candisari, Kec. Candisari, Semarang, Jawa Tengah, ID, 50252",
-        },
-        {
-            id: 5,
-            name: "Budi Santoso",
-            phone: "+62 856-7890-4567",
-            address: "Perumahan Griya Indah Blok A-12, Kel. Pedurungan, Kec. Pedurungan, Semarang, Jawa Tengah, ID, 50192",
-        },
-        {
-            id: 6,
-            name: "Rina Kusuma",
-            phone: "+62 857-6543-7890",
-            address: "Jl. Ahmad Yani No.99, Kel. Tlogosari, Kec. Tlogosari, Semarang, Jawa Tengah, ID, 50196",
-        },
-    ];
-    
-    
-
      // Cari alamat yang memiliki "main: true"
 
     //  console.log("DEFAULT: "+defaultAlamats);
@@ -167,10 +142,10 @@ const Checkout = () => {
          setOpen(false); // Tutup modal
      };
 
-    const [cart, setCart] = useState([
-        { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
-        { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
-    ]);
+    //  const [cart, setCart] = useState([
+    //     { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
+    //     { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
+    // ]); 
     
     const [subtotal, setSubtotal] = useState(0);
     const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman

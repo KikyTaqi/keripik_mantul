@@ -4,7 +4,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { URL_PRODUCT, URL_USER, URL_CART } from "../utils/Endpoint";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import "../style.css";
@@ -18,6 +18,7 @@ const HomeProduct = () => {
   const [cartItems, setCartItems] = useState([]);
   const [userId, setUserId] = useState("");
   const pageSize = 25;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {

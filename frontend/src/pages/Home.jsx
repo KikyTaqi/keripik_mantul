@@ -137,12 +137,7 @@ const Home = () => {
                         Keripik Mantul memberikan pengalaman <br />
                         ngemil terbaik yang tak terlupakan.
                     </p>
-                    <Link to="#" onClick={() => {
-                        const targetElement = document.getElementById('product-list');
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }}>
+                    <Link to="/products">
                         <Button
                             type="secondary"
                             className="border-0 border-red-800 hover:border-red-600 hover:text-red-700"
@@ -377,12 +372,7 @@ const Home = () => {
                                 memberikan kenikmatan yang tak <br />
                                 terlupakan!
                             </p>
-                            <Link to="#" onClick={() => {
-                                const targetElement = document.getElementById('product-list');
-                                if (targetElement) {
-                                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                }
-                            }}>
+                            <Link to="/products">
                                 <Button
                                     type="secondary"
                                     className="border-0 border-red-800 hover:border-red-600 hover:text-red-700 mt-20"
