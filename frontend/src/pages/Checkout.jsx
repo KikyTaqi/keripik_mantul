@@ -32,7 +32,7 @@ const Checkout = () => {
     const [userId, setUserId] = useState("");
     const [selectedAlamat, setSelectedAlamat] = useState(null);
     const [confirmedAlamat, setConfirmedAlamat] = useState({});
-    const [cart, setCart] = useState([]);
+    // const [cart, setCart] = useState([]);
 
     const handleBack = () => {
         navigate(-1)
@@ -43,22 +43,22 @@ const Checkout = () => {
             .get(`${URL_PRODUCT}/${id}`)
             .then((res) => {
                 setProduct(res.data);
-                setCart((prevCart) => {
-                    // Cek apakah produk sudah ada di cart
-                    const existingItem = prevCart.find((item) => item.id === product.id);
+                // setCart((prevCart) => {
+                //     // Cek apakah produk sudah ada di cart
+                //     const existingItem = prevCart.find((item) => item.id === product.id);
             
-                    if (existingItem) {
-                        // Jika produk sudah ada, update quantity
-                        return prevCart.map((item) =>
-                            item.id === product.id
-                                ? { ...item, quantity: item.quantity + 1 }
-                                : item
-                        );
-                    } else {
-                        // Jika belum ada, tambahkan produk dengan quantity awal 1
-                        return [...prevCart, { ...product, quantity: 1 }];
-                    }
-                });
+                //     if (existingItem) {
+                //         // Jika produk sudah ada, update quantity
+                //         return prevCart.map((item) =>
+                //             item.id === product.id
+                //                 ? { ...item, quantity: item.quantity + 1 }
+                //                 : item
+                //         );
+                //     } else {
+                //         // Jika belum ada, tambahkan produk dengan quantity awal 1
+                //         return [...prevCart, { ...product, quantity: 1 }];
+                //     }
+                // });
                 setMidtransUrl(res.data.midtrans_url);
             })
             .catch((err) => {
@@ -142,10 +142,10 @@ const Checkout = () => {
          setOpen(false); // Tutup modal
      };
 
-    //  const [cart, setCart] = useState([
-    //     { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
-    //     { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
-    // ]); 
+     const [cart, setCart] = useState([
+        { id: 1, name: "Keripik Singkong", price: 5000, quantity: 2 },
+        { id: 2, name: "Keripik Tempe", price: 3000, quantity: 5 }
+    ]); 
     
     const [subtotal, setSubtotal] = useState(0);
     const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
@@ -252,6 +252,7 @@ const Checkout = () => {
                         <Button
                             type="secondary"
                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-5 justify-items-center text-base"
+                            onClick={handleCheckout}
                         >
                             <span className="mb-1">Buat Pesanan</span>
                         </Button>
