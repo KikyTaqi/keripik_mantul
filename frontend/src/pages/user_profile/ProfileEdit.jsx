@@ -268,7 +268,8 @@ const ProfileEdit = () => {
                                             rules={[{ required: true, message: 'Harap memasukkan jenis kelamin!' }]}
                                         >
                                             <Select
-                                                defaultValue={'Laki-laki'}
+                                                // defaultValue={'Laki-laki'}
+                                                // initialValues={'Laki-laki'}
                                                 placeholder="Pilih jenis kelamin"
                                                 onChange={handleChangeSelect}
                                                 options={[
