@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Card, Col, Row, Button, Typography, message, Skeleton, Pagination } from "antd";
+import {
+  Card,
+  Col,
+  Row,
+  Button,
+  Typography,
+  message,
+  Skeleton,
+  Pagination,
+  Empty,
+} from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { URL_PRODUCT, URL_USER, URL_CART } from "../utils/Endpoint";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import jumbotron_produk from "../assets/jumbotron_produk.jpg";
 import "../style.css";
@@ -19,6 +29,9 @@ const HomeProduct = () => {
   const [userId, setUserId] = useState("");
   const pageSize = 25;
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const searchQuery = queryParams.get("search");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,12 +50,20 @@ const HomeProduct = () => {
         setUserId(userId);
         const [productResponse, cartResponse] = await Promise.all([
           axios.get(URL_PRODUCT),
-          axios.get(`${URL_CART}/${userId}`)
+          axios.get(`${URL_CART}/${userId}`),
         ]);
         setCartItems(cartResponse.data.items || []);
         const response = await axios.get(URL_PRODUCT);
-        setProducts(response.data);
 
+        // Filter produk berdasarkan pencarian jika ada query
+        let filteredProducts = productResponse.data;
+        if (searchQuery) {
+          filteredProducts = productResponse.data.filter((product) =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+
+        setProducts(filteredProducts);
       } catch (err) {
         message.error("Gagal memuat data!");
         console.error(err);
@@ -52,7 +73,7 @@ const HomeProduct = () => {
     };
 
     fetchData();
-  }, []);
+  }, [searchQuery]);
 
   const addToCart = async (productcart) => {
     try {
@@ -73,7 +94,6 @@ const HomeProduct = () => {
     }
   };
 
-
   const removeFromCart = async (product) => {
     try {
       const token = localStorage.getItem("userToken");
@@ -82,7 +102,7 @@ const HomeProduct = () => {
         userId: decoded._id,
         productId: product._id,
       });
-      setCartItems(response.data.items || []);  // Pastikan state diperbarui setelah penghapusan
+      setCartItems(response.data.items || []); // Pastikan state diperbarui setelah penghapusan
       message.warning(`${product.name} dihapus dari keranjang!`);
     } catch (error) {
       console.error("Error removing from cart:", error);
@@ -96,9 +116,7 @@ const HomeProduct = () => {
       return;
     }
 
-    const isInCart = cartItems.some(
-      (item) => item.productId === product._id
-    );
+    const isInCart = cartItems.some((item) => item.productId === product._id);
     console.log(isInCart);
     // Debugging untuk memastikan kondisi ini bekerja dengan benar
 
@@ -117,39 +135,105 @@ const HomeProduct = () => {
     setCurrentPage(page);
   };
 
-  const paginatedProducts = products.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const paginatedProducts = products.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <div style={{ padding: "0", position: "relative" }}>
-      <div style={{ width: '100%', height: '55vh', padding: '0', position: 'relative', backgroundColor: 'transparent' }}>
-        <img src={jumbotron_produk} alt="" draggable='false' style={{ zIndex: '0', position: 'absolute' }} />
+      <div
+        style={{
+          width: "100%",
+          height: "55vh",
+          padding: "0",
+          position: "relative",
+          backgroundColor: "transparent",
+        }}
+      >
+        <img
+          src={jumbotron_produk}
+          alt=""
+          draggable="false"
+          style={{ zIndex: "0", position: "absolute" }}
+        />
       </div>
-      <div className="py-5 bg-white relative" style={{ zIndex: '5', borderRadius: '80px 80px 0 0' }}>
-        <div className="flex text-center w-full justify-evenly pb-5 text-2xl" style={{ borderBottom: "2px solid #7B281D" }}>
-          <Link to="/products" className={`text-[#7B281D] hover:text-red-600 font-bold ${location.pathname === "/products" ? "border-b-2 border-red-800" : ""
-            }`}>Produk</Link>
-          <Link to="/products/kategori" className={`text-[#7B281D] hover:text-red-600 font-bold ${location.pathname === "/products/kategori" ? "border-b-2 border-red-800" : ""
-            }`}>Kategori</Link>
+      <div
+        className="py-5 bg-white relative"
+        style={{ zIndex: "5", borderRadius: "80px 80px 0 0" }}
+      >
+        <div
+          className="flex text-center w-full justify-evenly pb-5 text-2xl"
+          style={{ borderBottom: "2px solid #7B281D" }}
+        >
+          <Link
+            to="/products"
+            className={`text-[#7B281D] hover:text-red-600 font-bold ${
+              location.pathname === "/products"
+                ? "border-b-2 border-red-800"
+                : ""
+            }`}
+          >
+            Produk
+          </Link>
+          <Link
+            to="/products/kategori"
+            className={`text-[#7B281D] hover:text-red-600 font-bold ${
+              location.pathname === "/products/kategori"
+                ? "border-b-2 border-red-800"
+                : ""
+            }`}
+          >
+            Kategori
+          </Link>
         </div>
         <div className="bg-white p-5">
           <Row gutter={[13, 13]}>
-            {loading
-              ? Array.from({ length: 5 }).map((_, index) => (
-                <Col span={5} key={index} style={{ flex: "0 0 20%", maxWidth: "20%" }}>
-                  <Card style={{ height: "436px", minHeight: "436px", padding: 10 }} hoverable>
-                    <Skeleton.Image style={{ width: "13vw", height: "250px", marginBottom: "10px" }} />
+            {loading ? (
+              Array.from({ length: 5 }).map((_, index) => (
+                <Col
+                  span={5}
+                  key={index}
+                  style={{ flex: "0 0 20%", maxWidth: "20%" }}
+                >
+                  <Card
+                    style={{ height: "436px", minHeight: "436px", padding: 10 }}
+                    hoverable
+                  >
+                    <Skeleton.Image
+                      style={{
+                        width: "13vw",
+                        height: "250px",
+                        marginBottom: "10px",
+                      }}
+                    />
                     <Skeleton active paragraph={{ rows: 2 }} />
                   </Card>
                 </Col>
               ))
-              : paginatedProducts.map((product) => {
-                const isInCart = Array.isArray(cartItems) && cartItems.some(items => items.productId === product._id);
+            ) : products.length === 0 ? (
+              <div className="w-full h-[50vh] flex items-center">
+                <Empty
+                  description="Tidak ada data produk"
+                  className="mx-auto"
+                  style={{ marginTop: "20px" }}
+                />
+              </div>
+            ) : (
+              paginatedProducts.map((product) => {
+                const isInCart =
+                  Array.isArray(cartItems) &&
+                  cartItems.some((items) => items.productId === product._id);
                 return (
-                  <Col span={5} key={`${product._id}-${isInCart}`} style={{ flex: '0 0 20%', maxWidth: '20%' }}>
+                  <Col
+                    span={5}
+                    key={`${product._id}-${isInCart}`}
+                    style={{ flex: "0 0 20%", maxWidth: "20%" }}
+                  >
                     <Card
                       style={{
-                        height: '436px',
-                        minHeight: '436px',
+                        height: "436px",
+                        minHeight: "436px",
                         padding: 10,
                       }}
                       hoverable
@@ -168,18 +252,30 @@ const HomeProduct = () => {
                     >
                       <Card.Meta
                         style={{
-                          marginTop: 'auto',
-                          marginBottom: '3rem',
+                          marginTop: "auto",
+                          marginBottom: "3rem",
                         }}
                         title={product.name}
-                        description={`Rp ${product.price?.toLocaleString("id-ID")}`}
+                        description={`Rp ${product.price?.toLocaleString(
+                          "id-ID"
+                        )}`}
                       />
                       <div className="flex justify-between items-center">
                         <p>0 Terjual</p>
                         <div className="flex flex-row-reverse">
                           <Button
                             type="secondary"
-                            icon={isInCart ? <FaShoppingCart style={{ color: "red", fontSize: "20px" }} /> : <ShoppingCartOutlined style={{ fontSize: "23px" }} />}
+                            icon={
+                              isInCart ? (
+                                <FaShoppingCart
+                                  style={{ color: "red", fontSize: "20px" }}
+                                />
+                              ) : (
+                                <ShoppingCartOutlined
+                                  style={{ fontSize: "23px" }}
+                                />
+                              )
+                            }
                             className="border-none text-base hover:text-red-700"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -188,7 +284,7 @@ const HomeProduct = () => {
                           />
                           <Button
                             type="secondary"
-                            icon={<FaRegHeart style={{ fontSize: '20px' }} />}
+                            icon={<FaRegHeart style={{ fontSize: "20px" }} />}
                             className="bottom-0 border-none text-base hover:text-red-700"
                           />
                         </div>
@@ -197,16 +293,20 @@ const HomeProduct = () => {
                   </Col>
                 );
               })
-            }
+            )}
           </Row>
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={products.length}
-            onChange={handlePageChange}
-            className="custom-pagination"
-            style={{ textAlign: "center", marginTop: "20px" }}
-          />
+          {products.length <= pageSize ? (
+            ""
+          ) : (
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={products.length}
+              onChange={handlePageChange}
+              className="custom-pagination"
+              style={{ textAlign: "center", marginTop: "20px" }}
+            />
+          )}
         </div>
       </div>
     </div>
