@@ -1,5 +1,8 @@
 const Transaction = require("../models/Transaction");
+const Product = require("../models/Product");
 const midtransClient = require("midtrans-client");
+const jwt = require('jsonwebtoken');
+const secretkey = process.env.JWT_SECRET;
 
 exports.createTransaction = async (req, res) => {
     try {
@@ -40,3 +43,32 @@ exports.createTransaction = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+exports.getProducts = async (req, res) => {
+    try {
+        console.log("IDDDPRODUK: "+req.body.productId);
+        const products = await Product.findOne({ "_id": req.body.productId });
+        
+        console.log("PRODUKKKKKKKKKKKKKK: "+products.name);
+        const productPayload = {
+            _id: products._id,
+            name: products.name,
+        }
+        console.log("PRODUKKKKPAYLOADaddaad: "+JSON.stringify(productPayload));
+    
+        const cartItems = jwt.sign(productPayload, secretkey, { expiresIn: '1h' });
+        res.status(200).json(cartItems);
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+};
+exports.findProducts = async (req,res) => {
+    const {id} = req.body;
+
+    try{
+        const product = await Product.findOne({ _id: id });
+        console.log("disini: "+id);
+        res.status(200).json(product);
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}

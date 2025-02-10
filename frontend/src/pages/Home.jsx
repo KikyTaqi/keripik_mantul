@@ -1,4 +1,3 @@
-import { useCart } from "../context/CartContext";
 import React, {useState, useEffect} from "react";
 import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
@@ -249,11 +248,11 @@ const Home = () => {
                                                         handleAddToCart(product);
                                                     }}
                                                 />
-                                                <Button
+                                                {/* <Button
                                                     type="secondary"
                                                     icon={<FaRegHeart style={{fontSize: '20px'}}/>}
                                                     className="bottom-0 border-none text-base hover:text-red-700"
-                                                />
+                                                /> */}
                                                 </div>
                                             </div>
                                         </Card>
@@ -329,11 +328,11 @@ const Home = () => {
                                                         handleAddToCart(product);
                                                     }}
                                                 />
-                                                <Button
+                                                {/* <Button
                                                     type="secondary"
                                                     icon={<FaRegHeart style={{fontSize: '20px'}}/>}
                                                     className="bottom-0 border-none text-base hover:text-red-700"
-                                                />
+                                                /> */}
                                                 </div>
                                             </div>
                                         </Card>

@@ -39,28 +39,37 @@ exports.createUser = async (req, res) => {
 }
 
 exports.editProfile = async (req, res) => {
-    console.log("checkImagesadawdsawdasdsdawd: ");
     try {
         const id = req.body.id;
         let user = await User.find({'_id': id});
         if(!user){
             res.status(500).json({ message: 'User tidak ditemukan!', user });
         }
-
+        
+        let updateUser = {};
         let upload = null;
-
-        if(req.file.path != null){
+        
+        console.log("checkImagesadawdsawdasdsdawd");
+        if(req.file != null){
             console.log("checkImage: "+req.file.path);
             upload = await cloudinary.uploader.upload(req.file.path);
-        }
-        const updateUser = {
-            name: req.body.nama,
-            // email: req.body.email,
-            no_telp: req.body.no_telp,
-            tgl_lahir: req.body.tgl_lahir,
-            jenis_kelamin: req.body.jenis_kelamin,
-            profile_image: upload ? upload.secure_url : null,
-            cloudinaryId: upload ? upload.public_id : null,
+            updateUser = {
+                name: req.body.nama,
+                // email: req.body.email,
+                no_telp: req.body.no_telp,
+                tgl_lahir: req.body.tgl_lahir,
+                jenis_kelamin: req.body.jenis_kelamin,
+                profile_image: upload ? upload.secure_url : null,
+                cloudinaryId: upload ? upload.public_id : null,
+            }
+        }else{
+            updateUser = {
+                name: req.body.nama,
+                // email: req.body.email,
+                no_telp: req.body.no_telp,
+                tgl_lahir: req.body.tgl_lahir,
+                jenis_kelamin: req.body.jenis_kelamin,
+            }
         }
         user = await User.findByIdAndUpdate(id, updateUser, {new: true});
         console.log("User: "+user);
