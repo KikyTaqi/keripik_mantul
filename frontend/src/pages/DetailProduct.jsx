@@ -3,7 +3,7 @@ import { Image, message, Button, Col, Row, Pagination, Skeleton } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_TRANSACTION } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
 import { jwtDecode } from "jwt-decode";
@@ -45,6 +45,23 @@ const DetailProduct = () => {
 
         fetchData();
     }, []);
+
+    const handleToCheckout = async (id) => {
+        if(id != null){
+            try{
+                let data = {
+                    productId: id,
+                }
+                const productResponse = await axios.post(`${URL_TRANSACTION}/products`, data);
+                // setProducts(productResponse.data);
+                localStorage.setItem('cartItems', productResponse.data);
+                navigate(`/products/checkout/`);
+            }catch(err){
+                console.error(err);
+                message.error(err)
+            }
+        }
+    }
 
     const addToCart = async (productcart) => {
         try {
@@ -199,13 +216,13 @@ const DetailProduct = () => {
                                         >
                                             <span className="mb-1">Tambah Ke Keranjang</span>
                                         </Button>
-                                            <Button
-                                                type="secondary"
-                                                className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
-                                                onClick={() => {navigate(`/checkout/${Products._id}`)}}
-                                            >
-                                                <span className="mb-1">Beli Sekarang</span>
-                                            </Button>
+                                        <Button
+                                            type="secondary"
+                                            className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
+                                            onClick={() => {handleToCheckout(Products._id)}}
+                                        >
+                                            <span className="mb-1">Beli Sekarang</span>
+                                        </Button>
                                     </div>
                                 </>
                             )

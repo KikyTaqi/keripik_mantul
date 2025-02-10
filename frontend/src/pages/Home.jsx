@@ -1,4 +1,3 @@
-import { useCart } from "../context/CartContext";
 import React, {useState, useEffect} from "react";
 import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';

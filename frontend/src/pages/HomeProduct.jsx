@@ -42,7 +42,6 @@ const HomeProduct = () => {
         setCartItems(cartResponse.data.items || []);
         const response = await axios.get(URL_PRODUCT);
         setProducts(response.data);
-
       } catch (err) {
         message.error("Gagal memuat data!");
         console.error(err);

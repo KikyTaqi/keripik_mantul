@@ -39,31 +39,43 @@ const Checkout = () => {
     }
 
     useEffect(() => {
-        axios
-            .get(`${URL_PRODUCT}/${id}`)
+        try {
+            const token = localStorage.getItem("cartItems");
+            const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
+            const response = axios.post(`${URL_TRANSACTION}/products/get`, { id: decoded._id })
             .then((res) => {
                 setProduct(res.data);
+                // console.log("DATAAAA: "+JSON.stringify(res.data));
                 setCart((prevCart) => {
                     // Cek apakah produk sudah ada di cart
-                    const existingItem = prevCart.find((item) => item.id === product.id);
-            
+                    const existingItem = prevCart.find(item => item._id === res.data._id);
+          
                     if (existingItem) {
                         // Jika produk sudah ada, update quantity
-                        return prevCart.map((item) =>
-                            item.id === product.id
+                        return prevCart.map(item =>
+                            item._id === res.data._id
                                 ? { ...item, quantity: item.quantity + 1 }
                                 : item
                         );
                     } else {
-                        // Jika belum ada, tambahkan produk dengan quantity awal 1
-                        return [...prevCart, { ...product, quantity: 1 }];
+                        // Jika produk belum ada, tambahkan dengan quantity 1
+                        return [...prevCart, { ...res.data, quantity: 1 }];
                     }
                 });
-                setMidtransUrl(res.data.midtrans_url);
+          
+                setMidtransUrl(res.data.midtrans_url || "");
             })
             .catch((err) => {
                 console.log("err", err.response);
             });
+        } catch (error) {
+            console.error("Error fetching products!");
+            // navigate("/signin");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("userToken");

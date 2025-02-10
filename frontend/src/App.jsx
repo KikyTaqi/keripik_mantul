@@ -81,6 +81,7 @@ const App = () => {
                         <Route path="/products/kategori" element={<ProductsKategori />} />
                         <Route path="/products/kategori/:category_id" element={<PilihKategori />} />
                         <Route path="/products/checkout/:id" element={<Checkout />} />
+                        <Route path="/products/checkout/" element={<Checkout />} />
                         <Route path="/about" element={<About />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/profile/*" element={
