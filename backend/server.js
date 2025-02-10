@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
-const midtransClient = require('midtrans-client');
 
 dotenv.config();
 connectDB();

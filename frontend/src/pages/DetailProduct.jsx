@@ -3,7 +3,7 @@ import { Image, message, Button, Col, Row, Pagination, Skeleton } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT, URL_TRANSACTION } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_TRANSACTION, URL_USER } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
 import { jwtDecode } from "jwt-decode";
