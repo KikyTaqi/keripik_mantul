@@ -365,7 +365,7 @@ const DetailProduct = () => {
                             currentReviews.map((review, index) => (
                                 <Col key={index} className="mb-3" span={24}>
                                     <div className="bg-[#F2E8C6] rounded-md px-4 py-2">
-                                        <h1 className="font-medium text-base mb-1">{review.user.name}</h1>
+                                        <h1 className="font-medium text-base mb-1">{review.username}</h1>
                                         <div className="flex mb-1">{renderStars(review.rating)}</div>
                                         <p className="text-gray-500 mb-1">{review.date}</p>
                                         <p>{review.comment}</p>

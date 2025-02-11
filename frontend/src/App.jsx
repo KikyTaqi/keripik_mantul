@@ -20,6 +20,7 @@ import AddAlamat from "./pages/user_profile/AlamatCreate";
 import UserChangePassword from "./pages/user_profile/UserChangePassword";
 import Order from "./pages/user_profile/Order";
 import OrderDetail from "./pages/user_profile/OrderDetail";
+import Review from "./pages/user_profile/Review";
 
 
 // Product
@@ -113,6 +114,7 @@ const App = () => {
                                           <Route path="/password/change" element={<UserChangePassword />} />
                                           <Route path="/order" element={<Order />} />
                                           <Route path="/order/detail" element={<OrderDetail />} />
+                                          <Route path="/order/review" element={<Review />} />
                                         </Routes>
                                       </Content>
                                     </div>

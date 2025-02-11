@@ -105,9 +105,11 @@ const PaginatedList = ({ data, showReviewButton = false }) => {
                   </Button>
                 </Link>
                 {showReviewButton && (
-                  <Button type="primary" className="px-10 py-4 text-base font-semibold">
-                    Beri Ulasan
-                  </Button>
+                  <Link to={`/profile/order/review`}>
+                    <Button type="primary" className="px-10 py-4 text-base font-semibold">
+                      Beri Ulasan
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
