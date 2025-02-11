@@ -83,7 +83,7 @@ const Checkout = () => {
                 const decoded = jwtDecode(token); // Decode token untuk mendapatkan email
                 const response = await axios.post(`${URL_USER}/profile`, { email: decoded.email });
                 setUserId(response.data[0]._id);
-                setUsers(response.data);
+                setUsers(response.data[0]);
 
                 axios.get(`${URL_ALAMAT}/${response.data[0]._id}`)
                     .then(response => setAlamat(response.data.alamat || [{}]))
@@ -110,6 +110,25 @@ const Checkout = () => {
         // const tess = alamat.find(al => al._id == confirmedAlamat);
         // console.log("HaHHH: "+tess.nama);
     }, [alamat]);
+
+    useEffect(() => {
+        const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+        const myMidtransClientKey = "SB-Mid-client-AaeHgXoorNfBGWfa"; // Ganti dengan client key
+
+        let scriptTag = document.createElement("script");
+        scriptTag.src = midtransScriptUrl;
+        scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+        scriptTag.onload = () => {
+            console.log("Midtrans script loaded");
+        };
+
+        document.body.appendChild(scriptTag);
+
+        return () => {
+            document.body.removeChild(scriptTag);
+        };
+    }, []);
+
     
     const handleCheckout = async () => {
         setLoading(true);
@@ -119,6 +138,7 @@ const Checkout = () => {
     
             const data = {
                 user_id: userId,
+                first_name: users.name,
                 item_details: cart.map(item => ({
                     id: item._id,
                     price: item.price,
@@ -126,7 +146,7 @@ const Checkout = () => {
                     name: item.name,
                 })),
                 gross_amount: totalAmount,
-                shipping_cost: shippingCost,
+                // shipping_cost: shippingCost,
                 alamat_id: confirmedAlamat, // Alamat pengiriman yang dipilih
             };
             
@@ -138,7 +158,17 @@ const Checkout = () => {
     
             if (res.data.midtrans_url) {
                 setMidtransUrl(res.data.midtrans_url);
-                window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
+                // window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
+                const {token} = res.data.transaction;
+                if (window.snap && typeof window.snap.pay === "function") {
+                    window.snap.pay(token, {
+                        onSuccess: (result) => alert("Payment success!", result),
+                        onPending: (result) => alert("Payment pending!", result),
+                        onError: (result) => alert("Payment failed!", result),
+                    });
+                } else {
+                    console.error("Midtrans Snap belum tersedia.");
+                }
             } else {
                 console.error("Midtrans URL tidak ditemukan dalam respons API");
             }

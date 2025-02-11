@@ -41,36 +41,63 @@ exports.createUser = async (req, res) => {
 exports.editProfile = async (req, res) => {
     try {
         const id = req.body.id;
-        let user = await User.find({'_id': id});
+        let user = await User.findOne({'_id': id});
         if(!user){
             res.status(500).json({ message: 'User tidak ditemukan!', user });
         }
         
         let updateUser = {};
         let upload = null;
-        
-        console.log("checkImagesadawdsawdasdsdawd");
-        if(req.file != null){
-            console.log("checkImage: "+req.file.path);
+
+        // Konversi tanggal lahir jika ada
+        // let tanggalInput = req.body.tgl_lahir || null;
+        // let formattedDateInput = null;
+        // if (tanggalInput !== null && tanggalInput !== undefined && !isNaN(new Date(tanggalInput).getTime())) {
+        //     formattedDateInput = new Date(tanggalInput).toISOString().split("T")[0];
+        // }
+
+        // Cek apakah ada file yang diunggah
+        if (req.file) {
+            console.log("checkImage: " + req.file.path);
             upload = await cloudinary.uploader.upload(req.file.path);
-            updateUser = {
-                name: req.body.nama,
-                // email: req.body.email,
-                no_telp: req.body.no_telp,
-                tgl_lahir: req.body.tgl_lahir,
-                jenis_kelamin: req.body.jenis_kelamin,
-                profile_image: upload ? upload.secure_url : null,
-                cloudinaryId: upload ? upload.public_id : null,
-            }
-        }else{
-            updateUser = {
-                name: req.body.nama,
-                // email: req.body.email,
-                no_telp: req.body.no_telp,
-                tgl_lahir: req.body.tgl_lahir,
-                jenis_kelamin: req.body.jenis_kelamin,
+            if (upload) {
+                if (upload.secure_url != null && upload.secure_url != undefined) {
+                    updateUser.profile_image = upload.secure_url;
+                }
+                if (upload.public_id != null && upload.public_id != undefined) {
+                    updateUser.cloudinaryId = upload.public_id;
+                }
             }
         }
+
+        // Update hanya jika ada perubahan dari req.body
+        if (req.body.nama != null && req.body.nama != undefined) {
+            updateUser.name = req.body.nama || user.name;
+        }
+
+        if (req.body.no_telp !== null && req.body.no_telp !== undefined) {
+            updateUser.no_telp = req.body.no_telp || user.no_telp;
+        }
+
+        if (req.body.tgl_lahir !== null && req.body.tgl_lahir !== undefined) {
+            updateUser.tgl_lahir = req.body.tgl_lahir || user.tgl_lahir;
+        }
+
+        if (req.body.jenis_kelamin !== null && req.body.jenis_kelamin !== undefined) {
+            updateUser.jenis_kelamin = req.body.jenis_kelamin || user.jenis_kelamin;
+        }
+
+        console.log("Update Data:", updateUser);
+
+        // else{
+        //     updateUser = {
+        //         name: req.body.nama,
+        //         // email: req.body.email,
+        //         no_telp: req.body.no_telp,
+        //         tgl_lahir: req.body.tgl_lahir,
+        //         jenis_kelamin: req.body.jenis_kelamin,
+        //     }
+        // }
         user = await User.findByIdAndUpdate(id, updateUser, {new: true});
         console.log("User: "+user);
         console.log("User: "+JSON.stringify(updateUser));

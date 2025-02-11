@@ -6,23 +6,26 @@ const secretkey = process.env.JWT_SECRET;
 
 exports.createTransaction = async (req, res) => {
     try {
-        const { first_name, amount, product_id } = req.body;
-        let snap = new midtransClient.snap({
+        const { first_name, gross_amount, product_id } = req.body;
+        console.log("wkwkwk disini: "+gross_amount);
+
+        let snap = new midtransClient.Snap({
             isProduction: false,
             serverKey: process.env.MIDTRANS_SERVERKEY,
+            clientKey: process.env.MIDTRANS_CLIENTKEY,
         });
 
         const order_id = "ORDER-" + new Date().getTime()
 
         const parameter = {
-            transaction_detail: {
+            transaction_details: {
                 order_id: order_id,
-                gross_amount: amount,
+                gross_amount: gross_amount,
             },
             credit_card: {
                 secure: true,
             },
-            customer_detail: {
+            customer_details: {
                 first_name : first_name,
             },
         };
@@ -38,22 +41,20 @@ exports.createTransaction = async (req, res) => {
         });
 
         await newTransaction.save();
-        res.status(201).json(newTransaction);
+        res.status(201).json({midtrans_url: transactionUrl, transaction: transaction});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
 exports.getProducts = async (req, res) => {
     try {
-        console.log("IDDDPRODUK: "+req.body.productId);
         const products = await Product.findOne({ "_id": req.body.productId });
         
-        console.log("PRODUKKKKKKKKKKKKKK: "+products.name);
         const productPayload = {
             _id: products._id,
             name: products.name,
         }
-        console.log("PRODUKKKKPAYLOADaddaad: "+JSON.stringify(productPayload));
+        // console.log("PRODUKKKKPAYLOADaddaad: "+JSON.stringify(productPayload));
     
         const cartItems = jwt.sign(productPayload, secretkey, { expiresIn: '1h' });
         res.status(200).json(cartItems);
@@ -66,7 +67,6 @@ exports.findProducts = async (req,res) => {
 
     try{
         const product = await Product.findOne({ _id: id });
-        console.log("disini: "+id);
         res.status(200).json(product);
     }catch(err){
         res.status(500).json({message: err.message});
