@@ -150,8 +150,8 @@ const Checkout = () => {
                     quantity: item.quantity,
                     name: item.name,
                 })),
-                gross_amount: totalAmount,
-                // shipping_cost: shippingCost,
+                gross_amount: total,
+                shipping_cost: 3000,
                 alamat_id: confirmedAlamat, // Alamat pengiriman yang dipilih
             };
             
@@ -209,7 +209,7 @@ const Checkout = () => {
      };
      
     const [subtotal, setSubtotal] = useState(0);
-    const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
+    const [shippingCost, setShippingCost] = useState(3000); // Biaya pengiriman
     const [total, setTotal] = useState(0);    
 
     useEffect(() => {
@@ -284,7 +284,7 @@ const Checkout = () => {
                             <hr className="border mb-2" />
                             <div className="grid grid-cols-3">
                                 <div className="col-span-2">
-                                    <p className="text-base font-normal">Subtotal</p>
+                                    <p className="text-base font-normal">Subtotal</p> 
                                 </div>
                                 <div className="">
                                     <p className="text-base font-normal">Rp {subtotal.toLocaleString("id-ID")}</p>
@@ -295,7 +295,7 @@ const Checkout = () => {
                                     <p className="text-base font-normal">Subtotal Pengiriman</p>
                                 </div>
                                 <div className="">
-                                    <p className="text-base font-normal">Rp 0</p>
+                                    <p className="text-base font-normal">Rp {shippingCost.toLocaleString("id-ID")}</p>
                                 </div>
                             </div>
                         </div>
@@ -313,6 +313,7 @@ const Checkout = () => {
                         <Button
                             type="secondary"
                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-5 justify-items-center text-base"
+                            loading={loading}
                             onClick={handleCheckout}
                         >
                             <span className="mb-1">Buat Pesanan</span>

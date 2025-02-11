@@ -15,7 +15,7 @@ exports.getCart = async (req, res) => {
 
 // Tambah produk ke cart
 exports.addToCart = async (req, res) => {
-    const { userId, productId, name, price, thumbnail } = req.body;
+    const { userId, productId, name, price, thumbnail } = req.body; 
   
     try {
       let cart = await Cart.findOne({ userId });

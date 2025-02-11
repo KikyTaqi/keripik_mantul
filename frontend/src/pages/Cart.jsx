@@ -1,7 +1,7 @@
 import { FaMinus, FaPlus, FaTimesCircle, FaCheck } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { URL_PROFILE, URL_USER, URL_CART } from "../utils/Endpoint";
+import { URL_PROFILE, URL_USER, URL_CART, URL_ALAMAT, URL_TRANSACTION } from "../utils/Endpoint";
 import { jwtDecode } from "jwt-decode";
 import { icons } from "antd/es/image/PreviewGroup";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +10,28 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [selectedCartItems, setSelectedCartItems] = useState([]);
   const [userId, setUserId] = useState("");
+  const [alamat, setAlamat] = useState([]);
+  const [selectedAlamat, setSelectedAlamat] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [midtransUrl, setMidtransUrl] = useState("");
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   
   useEffect(() => {
     fetchProfile();
+
+    setSelectedAlamat(
+      alamat
+        .filter((item) => item.utama === true)
+        .map((item) => ({
+          id: item._id,
+          kecamatan: item.kecamatan,
+          nama_jalan: item.nama_jalan,
+          detail_lain: item.detail_lain,
+        }))
+    );
   }, []);
 
   const fetchProfile = async () => {
@@ -26,27 +42,120 @@ const CartPage = () => {
         email: decoded.email,
       });
       setUserId(response.data[0]._id);
+      setUsers(response.data[0]);
 
       axios
         .get(`${URL_CART}/${response.data[0]._id}`)
         .then((response) => setCartItems(response.data.items || []))
         .catch((error) => console.error("Error fetching cart:", error));
+      axios
+        .get(`${URL_ALAMAT}/${response.data[0]._id}`)
+        .then((response) => setAlamat(response.data.alamat || []))
+        .catch((error) => console.error("Error fetching alamat:", error));
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
   };
 
   const toggleSelect = (productId) => {
-    setSelectedItems((prevSelected) => {
-      if (prevSelected.includes(productId)) {
-        return prevSelected.filter((id) => id !== productId);
-      } else {
-        return [...prevSelected, productId];
-      }
-    });
-    console.log("seellle: "+selectedItems);
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(productId)
+        ? prevSelected.filter((id) => id !== productId)
+        : [...prevSelected, productId]
+    );
   };
 
+  useEffect(() => {
+      const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+      const myMidtransClientKey = "SB-Mid-client-AaeHgXoorNfBGWfa"; // Ganti dengan client key
+
+      let scriptTag = document.createElement("script");
+      scriptTag.src = midtransScriptUrl;
+      scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+      scriptTag.onload = () => {
+          console.log("Midtrans script loaded");
+      };
+
+      document.body.appendChild(scriptTag);
+
+      return () => {
+          document.body.removeChild(scriptTag);
+      };
+  }, []);
+
+  useEffect(() => {
+    setSelectedCartItems(
+      cartItems
+        .filter((item) => selectedItems.includes(item.productId))
+        .map((item) => ({
+          id: item._id,
+          price: item.price,
+          quantity: item.quantity,
+          name: item.name,
+        }))
+    );
+    if(selectedItems < 1){
+      setDisabled(true);
+    }else{
+      setDisabled(false);
+    }
+  }, [selectedItems, cartItems]); // Bergantung pada perubahan selectedItems & cartItems
+
+  const handleCheckout = async () => {
+    setLoading(true);
+
+    try {
+        const totalAmount = selectedCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        if(totalAmount == 0){
+
+        }
+
+        const data = {
+            user_id: userId,
+            first_name: users.name,
+            item_details: selectedCartItems.map(item => ({
+                id: item.id,
+                price: item.price,
+                quantity: item.quantity,
+                name: item.name,
+            })),
+            gross_amount: totalAmount,
+            shipping_cost: 3000,
+            alamat_id: selectedAlamat[0].id, // Alamat pengiriman yang dipilih
+        };
+         
+        console.log("IDDDDDDDD: " + JSON.stringify(selectedCartItems));
+        console.log("amount: " + selectedAlamat[0].id);
+        // console.log("Alamat: " + confirmedAlamat);
+        
+        const res = await axios.post(`${URL_TRANSACTION}/checkout`, data);
+
+        if (res.data.midtrans_url) {
+            setMidtransUrl(res.data.midtrans_url);
+            // window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
+            const {token} = res.data.transaction;
+            if (window.snap && typeof window.snap.pay === "function") {
+                window.snap.pay(token, {
+                    onSuccess: (result) => alert("Payment success!", result),
+                    onPending: (result) => alert("Payment pending!", result),
+                    onError: (result) => alert("Payment failed!", result),
+                });
+            } else {
+                console.error("Midtrans Snap belum tersedia.");
+            }
+        } else {
+            console.error("Midtrans URL tidak ditemukan dalam respons API");
+        }
+    } catch (err) {
+        console.error("Error saat checkout:", err);
+    } finally {
+        setLoading(false);
+    }
+};
+
+  console.log("seellle: "+selectedItems);
+  
   const removeFromCart = async (productId) => {
     try {
       const response = await axios.post(`${URL_CART}/remove`, {
@@ -60,6 +169,7 @@ const CartPage = () => {
   };
 
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const updateQuantity = async (productId, type) => {
 
@@ -263,7 +373,10 @@ const CartPage = () => {
               </div>
             </div>
           </div>
-          <button className="w-full mt-4 py-2 bg-red-800 text-white rounded-full font-semibold hover:bg-red-700">
+          <button className="w-full mt-4 py-2 bg-red-800 text-white rounded-full font-semibold hover:bg-red-700 disabled:opacity-80 disabled:cursor-not-allowed"
+            onClick={handleCheckout}
+            disabled={selectedItems.length < 1 ? true : false}
+          >
             CHECKOUT
           </button>
         </div>

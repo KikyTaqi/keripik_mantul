@@ -3,6 +3,7 @@ const {
     createTransaction,
     getProducts,
     findProducts,
+    // handleMidtransNotification,
 } = require("../controllers/TransactionController");
 
 const router = express.Router();
@@ -13,5 +14,6 @@ router.get("/", (req, res) => {
 router.post("/checkout", createTransaction);
 router.post('/products', getProducts);
 router.post('/products/get', findProducts);
+// router.post("/midtrans/notification", handleMidtransNotification);
 
 module.exports = router;

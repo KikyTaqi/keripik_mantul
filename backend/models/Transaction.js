@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
 
-const transactionSchema = new mongoose.Schema({
-    transaction_id: {
-        type: String,
+const TransactionSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  transaction_id: { type: String, required: true, unique: true },
+  first_name: { type: String, required: true },
+  gross_amount: { type: Number, required: true },
+  item_details: [
+    {
+      id: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      quantity: { type: Number, required: true },
     },
-    first_name: {
-        type: String,
-    },
-    amount: {
-        type: Number,
-    },
-    product_id: {
-        type: String,
-    },
-    midtrans_url: {
-        type: String,
-    },
-})
+  ],
+  alamat_id: { type: mongoose.Schema.Types.ObjectId, ref: "Alamat", required: true },
+  midtrans_url: { type: String, required: true },
+  status: { type: String, enum: ["pending","diproses", "dikirim", "selesai"], default: "pending" },
+}, { timestamps: true });
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model("Transaction", TransactionSchema);
