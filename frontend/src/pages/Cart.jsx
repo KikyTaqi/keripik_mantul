@@ -6,13 +6,14 @@ import { jwtDecode } from "jwt-decode";
 import { icons } from "antd/es/image/PreviewGroup";
 import { useNavigate } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [userId, setUserId] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -43,6 +44,7 @@ const CartPage = () => {
         return [...prevSelected, productId];
       }
     });
+    console.log("seellle: "+selectedItems);
   };
 
   const removeFromCart = async (productId) => {
@@ -57,27 +59,40 @@ const CartPage = () => {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
   const updateQuantity = async (productId, type) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.productId === productId
-          ? {
-              ...item,
-              quantity: type === "increase"
-                ? item.quantity + 1
-                : Math.max(1, item.quantity - 1),
-            }
-          : item
-      )
-    );
-  
-    // Kirim perubahan ke backend
-    await axios.post(`${URL_CART}/quantity/update`, {
-      userId: userId,
-      productId: productId,
-      type: type,
-    });
+
+    setLoading(true); // Set loading sebelum request
+
+    try {
+      // Kirim perubahan ke backend
+      await axios.post(`${URL_CART}/quantity/update`, {
+        userId: userId,
+        productId: productId,
+        type: type,
+      });
+
+      // Update state frontend setelah backend sukses
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.productId === productId
+            ? {
+                ...item,
+                quantity: type === "increase"
+                  ? item.quantity + 1
+                  : Math.max(1, item.quantity - 1),
+              }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Gagal update quantity:", error);
+    }
+
+    setLoading(false); // Reset loading setelah request selesai
   };
+
   
 
   const handleBack = () => {
@@ -139,19 +154,22 @@ const CartPage = () => {
                 {/* Jumlah */}
                 <div className="flex items-center bg-[#F2E8C6] gap-0 rounded-3xl w-max">
                   <button
-                    className=" p-2 rounded-full hover:bg-[#F5E6B4]"
+                    className="p-2 rounded-full hover:bg-[#F5E6B4] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => updateQuantity(item.productId, "decrease")}
+                    loading={loading}
                   >
                     <FaMinus />
                   </button>
                   <span className="px-3 font-semibold">{item.quantity}</span>
                   <button
-                    className=" p-2 rounded-full hover:bg-[#F5E6B4]"
+                    className="p-2 rounded-full hover:bg-[#F5E6B4] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => updateQuantity(item.productId, "increase")}
+                    loading={loading}
                   >
                     <FaPlus />
                   </button>
                 </div>
+
 
                 {/* Total */}
                 <div className="text-gray-700 text-base font-semibold">

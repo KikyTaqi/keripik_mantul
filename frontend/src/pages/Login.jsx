@@ -169,13 +169,13 @@ function Login() {
                                 style={{ background: "#F2E8C6" }}  
                             />
                         </Form.Item>
-                            <div className="flex justify-between mb-7">
-                                <Checkbox
+                            <div className="flex justify-end mb-7">
+                                {/* <Checkbox
                                     checked={rememberMe}
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 >
                                     Remember me
-                                </Checkbox>
+                                </Checkbox> */}
                                 <a href="/password/reset" className="opacity-50 hover:opacity-70 transition-opacity" style={{
                                     color: "#000",
                                 }}>

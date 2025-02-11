@@ -64,26 +64,33 @@ exports.removeFromCart = async (req, res) => {
 exports.updateQuantity = async (req, res) => {
   try {
     const { userId, productId, type } = req.body;
-    console.log('idd: '+productId);
+    console.log("Product ID:", productId);
 
-    const cartItem = await Cart.findOne({ userId: userId });
+    // Cari cart berdasarkan userId
+    const cartItem = await Cart.findOne({ userId });
 
-    const userProduct = cartItem.items.some((item) => item.productId === productId);
-    
-    
-    console.log("kepanggil: "+JSON.stringify(userProduct));
     if (!cartItem) {
-      return res.status(500).json({ message: "Item not found in cart" });
+      return res.status(404).json({ message: "Cart not found" });
     }
-    
-    // Update jumlah
-    userProduct.quantity = type === "increase" ? userProduct.quantity + 1 : Math.max(1, userProduct.items.quantity - 1);
-    
-    console.log("kepanggisadl: ");
-    await userProduct.save(); // Simpan ke database
 
-    res.json({ message: "Quantity updated", cartItem });
+    // Cari produk di dalam array items
+    const productIndex = cartItem.items.findIndex((item) => item.productId.toString() === productId);
+
+    if (productIndex === -1) {
+      return res.status(404).json({ message: "Product not found in cart" });
+    }
+
+    // Update quantity produk tertentu
+    cartItem.items[productIndex].quantity = type === "increase" 
+      ? cartItem.items[productIndex].quantity + 1 
+      : Math.max(1, cartItem.items[productIndex].quantity - 1);
+
+    // Simpan perubahan ke database
+    await cartItem.save();
+
+    res.json({ message: "Quantity updated", cart: cartItem });
   } catch (error) {
+    console.error("Error updating quantity:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };

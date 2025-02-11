@@ -279,7 +279,7 @@ const DetailProduct = () => {
                                         <Button
                                             type="secondary"
                                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
-                                            onClick={() => { navigate(`/checkout/${Products._id}`) }}
+                                            onClick={() => { handleToCheckout(Products._id) }}
                                         >
                                             <span className="mb-1">Beli Sekarang</span>
                                         </Button>
