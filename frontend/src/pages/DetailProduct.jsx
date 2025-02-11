@@ -109,7 +109,9 @@ const DetailProduct = () => {
                 rating,
                 comment,
             });
-    
+            
+            console.log("bakankdnajkak: " + decoded.name);
+            
             console.log("Response dari server:", response.data);
     
             message.success("Ulasan berhasil ditambahkan!");
@@ -207,6 +209,11 @@ const DetailProduct = () => {
             }
         }
         return stars;
+    };
+
+    const maskUsername = (username) => {
+        if (!username || username.length < 2) return username; // Jika hanya 1 huruf, tidak diubah
+        return username[0] + "*".repeat(username.length - 2) + username.slice(-1);
     };
 
     // Hitung indeks awal dan akhir untuk slicing data ulasan
@@ -365,9 +372,15 @@ const DetailProduct = () => {
                             currentReviews.map((review, index) => (
                                 <Col key={index} className="mb-3" span={24}>
                                     <div className="bg-[#F2E8C6] rounded-md px-4 py-2">
-                                        <h1 className="font-medium text-base mb-1">{review.user.name}</h1>
+                                        <h1 className="font-medium text-base mb-1">{maskUsername(review.username)}</h1>
                                         <div className="flex mb-1">{renderStars(review.rating)}</div>
-                                        <p className="text-gray-500 mb-1">{review.date}</p>
+                                        <p className="text-gray-500 mb-1">{review.date
+                                                ? new Date(review.date).toLocaleDateString('id-ID', {
+                                                    day: '2-digit',
+                                                    month: 'long',
+                                                    year: 'numeric',
+                                                })
+                                                : "(Tanggal lahir tidak tersedia)"}</p>
                                         <p>{review.comment}</p>
                                     </div>
                                 </Col>
