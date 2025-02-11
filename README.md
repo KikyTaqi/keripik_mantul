@@ -23,7 +23,7 @@ Keripik Mantul adalah platform e-commerce berbasis **MERN Stack** yang memungkin
 
 ## 🎨 Screenshot
 
-![Tampilan Website](https://via.placeholder.com/800x400.png?text=Keripik+Mantul)
+![Tampilan Website](/frontend/public/home.png)
 
 ## 📞 Kontak
 
