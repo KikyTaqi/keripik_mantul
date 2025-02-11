@@ -13,3 +13,4 @@ export const URL_USER = `${BASEURL}/api/users`
 export const URL_PROFILE = `${BASEURL}/api/users/profile`
 export const URL_CART = `${BASEURL}/api/cart`
 export const URL_ALAMAT = `${BASEURL}/api/alamat`
+export const URL_ULASAN = `${BASEURL}/api/ulasan`

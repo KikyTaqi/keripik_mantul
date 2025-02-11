@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Image, message, Button, Col, Row, Pagination, Skeleton } from "antd";
+import { Image, message, Button, Col, Row, Pagination, Skeleton, Modal, Rate, Input } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT, URL_TRANSACTION, URL_USER } from "../utils/Endpoint";
+import { URL_PRODUCT, URL_TRANSACTION, URL_ULASAN, URL_USER } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
 import { jwtDecode } from "jwt-decode";
 
 const DetailProduct = () => {
     const [Products, setProducts] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+    const [ulasan, setUlasan] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const reviewsPerPage = 4; // Jumlah ulasan per halaman
@@ -19,21 +23,23 @@ const DetailProduct = () => {
     const params = useParams();
     const navigate = useNavigate();
     const { id } = params;
+    const showModal = () => setIsModalOpen(true);
+    const handleCancel = () => setIsModalOpen(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                
+
                 // Mengambil data profil dan produk secara bersamaan
                 const token = localStorage.getItem("userToken");
                 if (!token) return;
-    
+
                 const decoded = jwtDecode(token);
                 const profileResponse = await axios.post(`${URL_USER}/profile`, {
                     email: decoded.email,
                 });
-    
+
                 const userId = profileResponse.data[0]._id;
                 setUserId(userId);
             } catch (err) {
@@ -46,9 +52,31 @@ const DetailProduct = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        const fetchUlasan = async () => {
+            try {
+                const response = await axios.get(`${URL_ULASAN}/${id}`);
+                console.log("Ulasan dari API:", response.data); // Debugging
+    
+                if (Array.isArray(response.data)) {
+                    setUlasan(response.data);
+                } else {
+                    setUlasan([]); // Pastikan tetap array kosong jika respons bukan array
+                }
+            } catch (error) {
+                console.error("Error fetching reviews:", error);
+            }
+        };
+    
+        if (id) {
+            console.log("Fetching ulasan untuk produk:", id); // Debugging
+            fetchUlasan();
+        }
+    }, [id, ulasan.length]);
+
     const handleToCheckout = async (id) => {
-        if(id != null){
-            try{
+        if (id != null) {
+            try {
                 let data = {
                     productId: id,
                 }
@@ -56,12 +84,54 @@ const DetailProduct = () => {
                 // setProducts(productResponse.data);
                 localStorage.setItem('cartItems', productResponse.data);
                 navigate(`/products/checkout/`);
-            }catch(err){
+            } catch (err) {
                 console.error(err);
                 message.error(err)
             }
         }
     }
+
+    const handleSubmitReview = async () => {
+        if (!rating || !comment) {
+            message.error("Harap isi rating dan komentar!");
+            return;
+        }
+    
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
+    
+            console.log("Mengirim ulasan untuk produk:", id);
+    
+            const response = await axios.post(`${URL_ULASAN}/${id}/ulasan`, {
+                userId: decoded._id,
+                username: decoded.name,
+                rating,
+                comment,
+            });
+    
+            console.log("Response dari server:", response.data);
+    
+            message.success("Ulasan berhasil ditambahkan!");
+    
+            // Tutup modal
+            setIsModalOpen(false);
+    
+            // Reset input
+            setRating(0);
+            setComment("");
+    
+            // Tambahkan ulasan baru ke awal array
+            setUlasan((prevUlasan) => [response.data, ...prevUlasan]);
+    
+        } catch (error) {
+            console.error("Gagal menambahkan ulasan:", error.response?.data || error.message);
+            message.error("Terjadi kesalahan saat menambahkan ulasan.");
+        }
+    };
+    
+      
+    
 
     const addToCart = async (productcart) => {
         try {
@@ -86,15 +156,15 @@ const DetailProduct = () => {
             message.error("Silakan login terlebih dahulu!");
             return;
         }
-   
+
         const isInCart = cartItems.some(
             (item) => item.productId === product._id
         );
         console.log(isInCart);
-         // Debugging untuk memastikan kondisi ini bekerja dengan benar
-   
+        // Debugging untuk memastikan kondisi ini bekerja dengan benar
+
         await addToCart(product);
-   
+
         // Refresh cart setelah menambahkan atau menghapus item
         const updatedCart = await axios.get(`${URL_CART}/${userId}`);
     };
@@ -139,20 +209,10 @@ const DetailProduct = () => {
         return stars;
     };
 
-    // Ulasan produk (contoh data jika tidak ada API)
-    const reviews = Products.reviews || [
-        { username: "m*****h", date: "2024-04-12 10:39", comment: "Mantap! Enak banget.", rating: 5 },
-        { username: "a*****n", date: "2024-04-11 14:22", comment: "Lumayan, sesuai ekspektasi.", rating: 4 },
-        { username: "b*****o", date: "2024-04-10 08:15", comment: "Kurang crispy, tapi masih enak.", rating: 3.5 },
-        { username: "c*****y", date: "2024-04-09 17:45", comment: "Enak sih, tapi agak kemahalan.", rating: 4 },
-        { username: "d*****p", date: "2024-04-08 12:33", comment: "Wow, enak banget! Must try!", rating: 5 },
-        { username: "e*****z", date: "2024-04-07 19:50", comment: "Paket datang cepat, produk bagus.", rating: 4.5 },
-    ];
-
     // Hitung indeks awal dan akhir untuk slicing data ulasan
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+    const currentReviews = Array.isArray(ulasan) ? ulasan.slice(indexOfFirstReview, indexOfLastReview) : [];
 
     return (
         <div>
@@ -172,16 +232,16 @@ const DetailProduct = () => {
                         {loading ? (
                             <Skeleton.Image style={{ width: "30vw", height: "50vh" }} />
                         )
-                        :
-                        (
-                            <Image
-                                src={Products.thumbnail}
-                                style={{ height: "50vh", maxWidth: '30vw', objectFit: "cover" }}
-                                alt="Foto produk"
-                                loading="lazy"
-                                className="border p-3 rounded-md border-red-700"
-                            />
-                        )
+                            :
+                            (
+                                <Image
+                                    src={Products.thumbnail}
+                                    style={{ height: "50vh", maxWidth: '30vw', objectFit: "cover" }}
+                                    alt="Foto produk"
+                                    loading="lazy"
+                                    className="border p-3 rounded-md border-red-700"
+                                />
+                            )
                         }
                     </div>
                     <div className="py-5">
@@ -193,7 +253,7 @@ const DetailProduct = () => {
                                 </div>
                                 <Skeleton.Input style={{ width: 120 }} active className="mt-3" />
                             </>
-                            )
+                        )
                             :
                             (
                                 <>
@@ -219,7 +279,7 @@ const DetailProduct = () => {
                                         <Button
                                             type="secondary"
                                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-4 justify-items-center ms-5 text-base"
-                                            onClick={() => {handleToCheckout(Products._id)}}
+                                            onClick={() => { navigate(`/checkout/${Products._id}`) }}
                                         >
                                             <span className="mb-1">Beli Sekarang</span>
                                         </Button>
@@ -228,7 +288,7 @@ const DetailProduct = () => {
                             )
                         }
 
-                        
+
                     </div>
                 </div>
 
@@ -237,26 +297,61 @@ const DetailProduct = () => {
                 <div className="my-5">
                     <h1 className="text-lg font-medium mb-5">Deskripsi</h1>
                     {loading ? (
-                            <Skeleton paragraph={{ rows: 6 }} active />
-                        ) : (
-                            <textarea 
-                                style={{
-                                    width: '100%',
-                                    minHeight: "70vh",
-                                    resize: 'none',
-                                    boxSizing: 'border-box',
-                                    backgroundColor: 'white'
-                                }}
-                                value={Products.description}
-                                readOnly
-                                disabled
-                            />
-                        )}
+                        <Skeleton paragraph={{ rows: 6 }} active />
+                    ) : (
+                        <textarea
+                            style={{
+                                width: '100%',
+                                minHeight: "70vh",
+                                resize: 'none',
+                                boxSizing: 'border-box',
+                                backgroundColor: 'white'
+                            }}
+                            value={Products.description}
+                            readOnly
+                            disabled
+                        />
+                    )}
                 </div>
 
                 <hr />
 
                 {/* Ulasan Produk */}
+                <Button
+                    type="primary"
+                    className="bg-red-800 text-white rounded-3xl px-4 py-2 mb-4"
+                    onClick={showModal}
+                >
+                    Tambah Ulasan
+                </Button>
+
+                <Modal
+                    title="Tambah Ulasan"
+                    open={isModalOpen}
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button key="back" onClick={handleCancel}>
+                            Batal
+                        </Button>,
+                        <Button key="submit" type="primary" onClick={handleSubmitReview}>
+                            Kirim Ulasan
+                        </Button>,
+                    ]}
+                >
+                    <div className="mb-3">
+                        <h4 className="font-medium">Rating:</h4>
+                        <Rate allowHalf value={rating} onChange={setRating} />
+                    </div>
+                    <div className="mb-3">
+                        <h4 className="font-medium">Komentar:</h4>
+                        <Input.TextArea
+                            rows={4}
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Tulis ulasan Anda di sini..."
+                        />
+                    </div>
+                </Modal>
                 <div className="my-5">
                     <h1 className="text-lg font-medium mb-5">Ulasan Produk</h1>
                     <Row>
@@ -270,7 +365,7 @@ const DetailProduct = () => {
                             currentReviews.map((review, index) => (
                                 <Col key={index} className="mb-3" span={24}>
                                     <div className="bg-[#F2E8C6] rounded-md px-4 py-2">
-                                        <h1 className="font-medium text-base mb-1">{review.username}</h1>
+                                        <h1 className="font-medium text-base mb-1">{review.user.name}</h1>
                                         <div className="flex mb-1">{renderStars(review.rating)}</div>
                                         <p className="text-gray-500 mb-1">{review.date}</p>
                                         <p>{review.comment}</p>
@@ -278,18 +373,18 @@ const DetailProduct = () => {
                                 </Col>
                             ))
                         )}
-                        
+
                     </Row>
 
                     {/* Pagination */}
                     <div className="flex justify-center mt-4">
                         <Pagination
                             current={currentPage}
-                            total={reviews.length}
+                            total={ulasan.length}
                             pageSize={reviewsPerPage}
                             onChange={(page) => setCurrentPage(page)}
                             showSizeChanger={false}
-                            className= 'custom-pagination'
+                            className='custom-pagination'
                         />
                     </div>
                 </div>
