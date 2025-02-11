@@ -57,21 +57,28 @@ const CartPage = () => {
     }
   };
 
-  const updateQuantity = (productId, type) => {
+  const updateQuantity = async (productId, type) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.productId === productId
           ? {
               ...item,
-              quantity:
-                type === "increase"
-                  ? item.quantity + 1
-                  : Math.max(1, item.quantity - 1),
+              quantity: type === "increase"
+                ? item.quantity + 1
+                : Math.max(1, item.quantity - 1),
             }
           : item
       )
     );
+  
+    // Kirim perubahan ke backend
+    await axios.post(`${URL_CART}/quantity/update`, {
+      userId: userId,
+      productId: productId,
+      type: type,
+    });
   };
+  
 
   const handleBack = () => {
     navigate(-1);

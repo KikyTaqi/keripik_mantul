@@ -1,4 +1,5 @@
 const Cart = require("../models/cart");
+const User = require("../models/User");
 
 // Ambil cart berdasarkan userId
 exports.getCart = async (req, res) => {
@@ -57,5 +58,32 @@ exports.removeFromCart = async (req, res) => {
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.updateQuantity = async (req, res) => {
+  try {
+    const { userId, productId, type } = req.body;
+    console.log('idd: '+productId);
+
+    const cartItem = await Cart.findOne({ userId: userId });
+
+    const userProduct = cartItem.items.some((item) => item.productId === productId);
+    
+    
+    console.log("kepanggil: "+JSON.stringify(userProduct));
+    if (!cartItem) {
+      return res.status(500).json({ message: "Item not found in cart" });
+    }
+    
+    // Update jumlah
+    userProduct.quantity = type === "increase" ? userProduct.quantity + 1 : Math.max(1, userProduct.items.quantity - 1);
+    
+    console.log("kepanggisadl: ");
+    await userProduct.save(); // Simpan ke database
+
+    res.json({ message: "Quantity updated", cartItem });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };

@@ -37,6 +37,7 @@ exports.signIn = async (req, res) => {
         const userPayload = {
           _id: user._id,
           role: user.role,
+          name: user.name,
           email: user.email,
         }
   
@@ -96,6 +97,7 @@ exports.signInGoogle = async (req, res) => {
       const userPayload = {
         _id: user._id,
         role: user.role,
+        name: user.name,
         email: user.email,
       }
 
