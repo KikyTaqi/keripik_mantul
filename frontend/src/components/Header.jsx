@@ -9,10 +9,18 @@ import { BsCart, BsCartFill } from "react-icons/bs";
 import { Link, useNavigate, useLocation, matchPath } from "react-router-dom";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
-import { Dropdown, message, Space, Button, AutoComplete, Input, ConfigProvider } from "antd";
+import {
+  Dropdown,
+  message,
+  Space,
+  Button,
+  AutoComplete,
+  Input,
+  ConfigProvider,
+} from "antd";
 import logo from "../assets/logo_keripik.png";
 import { URL_PRODUCT } from "../utils/Endpoint";
-import axios from 'axios';
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const Header = () => {
@@ -174,23 +182,21 @@ const Header = () => {
 
     useEffect(() => {
       const fetchData = async () => {
-          try {
-              setLoading(true);
-              const [productResponse] = await Promise.all([
-                  axios.get(URL_PRODUCT),
-              ]);
+        try {
+          setLoading(true);
+          const [productResponse] = await Promise.all([axios.get(URL_PRODUCT)]);
 
-              setProducts(productResponse.data);
-          } catch (err) {
-              message.error("Gagal memuat data!");
-              console.error(err);
-          } finally {
-              setLoading(false);
-          }
+          setProducts(productResponse.data);
+        } catch (err) {
+          message.error("Gagal memuat data!");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
       };
 
       fetchData();
-  }, []);
+    }, []);
 
     // Simulasi hasil pencarian
     const searchResults = Products || [
@@ -206,7 +212,9 @@ const Header = () => {
       setOptions(
         name
           ? searchResults
-              .filter((item) => item.name.toLowerCase().includes(name.toLowerCase()))
+              .filter((item) =>
+                item.name.toLowerCase().includes(name.toLowerCase())
+              )
               .map((item) => ({ value: item.name })) // Ubah name menjadi value
           : []
       );
@@ -221,7 +229,6 @@ const Header = () => {
         navigate(`/products?search=${searchValue}`);
       }
     };
-    
 
     const items = [
       {
@@ -281,24 +288,24 @@ const Header = () => {
 
         <div className="flex items-center">
           <div className="flex items-center border-solid border rounded-lg ms-5 me-4 px-4 py-1 border-red-800 w-[450px]">
-              <AutoComplete
-                style={{ width: "100%" }}
-                options={options}
-                onSearch={handleSearch}
-                onSelect={handleSelect}
+            <AutoComplete
+              style={{ width: "100%" }}
+              options={options}
+              onSearch={handleSearch}
+              onSelect={handleSelect}
+              variant="borderless"
+              className="border-none focus:border-none focus:outline-none shadow-none"
+            >
+              <Input
+                className="font-semibold text-red-800 placeholder-[#80000088]"
                 placeholder="Cari..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={handleSearchEnter}
                 variant="borderless"
-                className="border-none focus:border-none focus:outline-none shadow-none"
-              >
-                <Input
-                 className="font-semibold text-red-800 placeholder-red-800" 
-                 value={searchValue}
-                 onChange={(e) => setSearchValue(e.target.value)}
-                 onKeyDown={handleSearchEnter}
-                 variant="borderless"
-                 type="search"
-                 />
-              </AutoComplete>
+                type="search"
+              />
+            </AutoComplete>
             <FaSearch className="text-red-800 ml-3" />
           </div>
 
@@ -330,14 +337,10 @@ const Header = () => {
                 trigger={["hover"]}
               >
                 <Link to="/profile">
-                  {location.pathname == "/profile" ? (
-                    <FaUserCircle
-                      className={`text-red-800 text-3xl object-right ms-8`}
-                    />
+                  {location.pathname.startsWith("/profile") ? (
+                    <FaUserCircle className="text-red-800 text-3xl object-right ms-8" />
                   ) : (
-                    <FaRegUserCircle
-                      className={`text-red-800 text-3xl object-right ms-8`}
-                    />
+                    <FaRegUserCircle className="text-red-800 text-3xl object-right ms-8" />
                   )}
                 </Link>
               </Dropdown>
