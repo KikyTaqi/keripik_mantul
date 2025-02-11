@@ -12,6 +12,8 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedCartItems, setSelectedCartItems] = useState([]);
   const [userId, setUserId] = useState("");
+  const [ongkir, setOngkir] = useState(3000);
+  const [grossAmount, setGrossAmount] = useState();
   const [alamat, setAlamat] = useState([]);
   const [selectedAlamat, setSelectedAlamat] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -21,17 +23,6 @@ const CartPage = () => {
   
   useEffect(() => {
     fetchProfile();
-
-    setSelectedAlamat(
-      alamat
-        .filter((item) => item.utama === true)
-        .map((item) => ({
-          id: item._id,
-          kecamatan: item.kecamatan,
-          nama_jalan: item.nama_jalan,
-          detail_lain: item.detail_lain,
-        }))
-    );
   }, []);
 
   const fetchProfile = async () => {
@@ -43,6 +34,17 @@ const CartPage = () => {
       });
       setUserId(response.data[0]._id);
       setUsers(response.data[0]);
+
+      setSelectedAlamat(
+        alamat
+          .filter((item) => item.utama === true)
+          .map((item) => ({
+            id: item._id,
+            kecamatan: item.kecamatan,
+            nama_jalan: item.nama_jalan,
+            detail_lain: item.detail_lain,
+          }))
+      );
 
       axios
         .get(`${URL_CART}/${response.data[0]._id}`)
@@ -94,59 +96,70 @@ const CartPage = () => {
           name: item.name,
         }))
     );
-    if(selectedItems < 1){
-      setDisabled(true);
-    }else{
-      setDisabled(false);
-    }
-  }, [selectedItems, cartItems]); // Bergantung pada perubahan selectedItems & cartItems
+    // if(selectedItems < 1){
+    //   setDisabled(true);
+    // }else{
+    //   setDisabled(false);
+    // }
 
+    setGrossAmount(
+      cartItems
+      .filter((item) => selectedItems.includes(item.productId))
+      .reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      )
+      + ongkir
+    )
+  }, [selectedItems, cartItems]); // Bergantung pada perubahan selectedItems & cartItems
+  
   const handleCheckout = async () => {
     setLoading(true);
-
+    
     try {
-        const totalAmount = selectedCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-        if(totalAmount == 0){
-
-        }
-
-        const data = {
-            user_id: userId,
-            first_name: users.name,
-            item_details: selectedCartItems.map(item => ({
-                id: item.id,
-                price: item.price,
-                quantity: item.quantity,
-                name: item.name,
-            })),
-            gross_amount: totalAmount,
-            shipping_cost: 3000,
-            alamat_id: selectedAlamat[0].id, // Alamat pengiriman yang dipilih
-        };
-         
-        console.log("IDDDDDDDD: " + JSON.stringify(selectedCartItems));
-        console.log("amount: " + selectedAlamat[0].id);
-        // console.log("Alamat: " + confirmedAlamat);
+      const totalAmount = selectedCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      
+      // if(totalAmount == 0){
         
-        const res = await axios.post(`${URL_TRANSACTION}/checkout`, data);
+      // }
+      
+      console.log("Gross: "+grossAmount);
+      const data = {
+          user_id: userId,
+          first_name: users.name,
+          item_details: selectedCartItems.map(item => ({
+              id: item.id,
+              price: item.price,
+              quantity: item.quantity,
+              name: item.name,
+          })),
+          gross_amount: grossAmount,
+          shipping_cost: 3000,
+          alamat_id: selectedAlamat[0].id, // Alamat pengiriman yang dipilih
+      };
+        
+      console.log("IDDDDDDDD: " + JSON.stringify(selectedCartItems));
+      console.log("amount: " + selectedAlamat[0].id);
+      // console.log("Alamat: " + confirmedAlamat);
+      
+      const res = await axios.post(`${URL_TRANSACTION}/checkout`, data);
 
-        if (res.data.midtrans_url) {
-            setMidtransUrl(res.data.midtrans_url);
-            // window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
-            const {token} = res.data.transaction;
-            if (window.snap && typeof window.snap.pay === "function") {
-                window.snap.pay(token, {
-                    onSuccess: (result) => alert("Payment success!", result),
-                    onPending: (result) => alert("Payment pending!", result),
-                    onError: (result) => alert("Payment failed!", result),
-                });
-            } else {
-                console.error("Midtrans Snap belum tersedia.");
-            }
-        } else {
-            console.error("Midtrans URL tidak ditemukan dalam respons API");
-        }
+      if (res.data.midtrans_url) {
+          setMidtransUrl(res.data.midtrans_url);
+          // window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
+          const {token} = res.data.transaction;
+          if (window.snap && typeof window.snap.pay === "function") {
+              window.snap.pay(token, {
+                  onSuccess: (result) => alert("Payment success!", result),
+                  onPending: (result) => alert("Payment pending!", result),
+                  onError: (result) => alert("Payment failed!", result),
+              });
+          } else {
+              console.error("Midtrans Snap belum tersedia.");
+          }
+      } else {
+          console.error("Midtrans URL tidak ditemukan dalam respons API");
+      }
     } catch (err) {
         console.error("Error saat checkout:", err);
     } finally {
@@ -349,7 +362,7 @@ const CartPage = () => {
                   <p className="text-base font-normal">Subtotal Pengiriman</p>
                 </div>
                 <div className="">
-                  <p className="text-base font-normal">Rp 0</p>
+                  <p className="text-base font-normal">Rp {ongkir.toLocaleString("id-ID")}</p>
                 </div>
               </div>
             </div>
@@ -361,13 +374,7 @@ const CartPage = () => {
                 <div className="">
                   <p className="text-base font-semibold">
                     Rp{" "}
-                    {cartItems
-                      .filter((item) => selectedItems.includes(item.productId))
-                      .reduce(
-                        (acc, item) => acc + item.price * item.quantity,
-                        0
-                      )
-                      .toLocaleString("id-ID")}
+                    {grossAmount?.toLocaleString("id-ID")}
                   </p>
                 </div>
               </div>

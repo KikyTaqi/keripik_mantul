@@ -14,31 +14,39 @@ exports.createTransaction = async (req, res) => {
             serverKey: process.env.MIDTRANS_SERVERKEY,
         });
 
-        // const alamat = await Alamat.findOne({ "alamat._id": alamat_id });
+        const alamat = await Alamat.findOne({ "alamat._id": alamat_id });
 
         const order_id = "ORDER-" + new Date().getTime();
         const totalAmount = item_details.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
         const parameter = {
             transaction_details: {
-                order_id,
-                gross_amount: totalAmount,
+              order_id,
+              gross_amount: totalAmount + shipping_cost, // Tambahkan ongkir ke total harga
             },
-            item_details: item_details.map(item => ({
-                id: item._id,
+            item_details: [
+              ...item_details.map(item => ({
+                id: item.id,
                 price: item.price,
                 quantity: item.quantity,
                 name: item.name,
-            })),
-            // shipping_cost: shipping_cost,
-            customer_details: { 
-                first_name,
+              })),
+              {
+                id: "SHIPPING",
+                price: shipping_cost,  // Ongkir sebagai item tambahan
+                quantity: 1,
+                name: "Biaya Pengiriman",
+              },
+            ],
+            customer_details: {
+              first_name,
+            //   address: {
+            //     street: alamat.alamat[0].nama_jalan,
+            //     city: alamat.alamat[0].kecamatan,
+            //   },
             },
-            // address: {
-            //     street: alamat.nama_jalan,
-            //     city: alamat.kecamatan,
-            // }
-        };
+          };
+          
 
         const transaction = await snap.createTransaction(parameter);
         const transactionUrl = transaction.redirect_url;
