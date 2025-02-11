@@ -141,9 +141,11 @@ const OrderDetail = () => {
             </div>
             
             <div className="flex justify-end mt-4">
+              <Link to={`/profile/order/review`}>
                 <Button type="primary" className="px-10 py-4 text-base">
                     Beri Ulasan
                 </Button>
+              </Link>
             </div>
 
           </div>
