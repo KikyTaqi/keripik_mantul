@@ -19,6 +19,7 @@ exports.createReview = async (req, res) => {
 
         const newReview = new Review ({
             user: userId,
+            username: req.body.username,
             product: req.params.id,
             rating,
             comment,
@@ -37,13 +38,26 @@ exports.createReview = async (req, res) => {
 
 // Ambil semua review berdasarkan produk
 exports.getReviewsByProduct = async (req, res) => {
+    try {
         const productId = req.params.id;
-        const Ulasan = await Review.findOne({ productId: productId });
-        // console.error("OWNHFSFNAHFEHFDFLAOWEDOP: "+cart) 
-      try {
-        const Ulasan = await Review.find().sort({ _id: -1 });
-        res.status(200).json(Ulasan);
-      } catch (error) {
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+            return res.status(400).json({ message: "ID produk tidak valid" });
+        }
+
+        const reviews = await Review.find({ product: productId })
+            .populate("user", "username") // Ambil username dari koleksi User
+            .sort({ _id: -1 });
+
+        console.log("Review ditemukan:", reviews);
+
+        if (reviews.length === 0) {
+            return res.status(404).json({ message: "Belum ada ulasan untuk produk ini" });
+        }
+
+        res.status(200).json(reviews);
+    } catch (error) {
+        console.error("Error mengambil ulasan:", error);
         res.status(500).json({ message: "Server Error" });
-      }
+    }
 };
