@@ -52,3 +52,44 @@
     margin-top: auto;
     margin-bottom: auto;
   }
+
+  /* Menghilangkan border bawah default dari tab */
+.custom-tabs .ant-tabs-nav {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Menyembunyikan garis bawaan abu-abu */
+.custom-tabs .ant-tabs-nav::before {
+  border-bottom: none !important;
+}
+
+/* Menyesuaikan garis bawah tab aktif agar tetap terlihat */
+.custom-tabs .ant-tabs-ink-bar {
+  background-color: #b91c1c !important; /* Warna merah */
+  height: 2px !important;
+}
+
+.custom-tabs .ant-tabs-tab {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+}
+
+.custom-tabs .ant-tabs-tab-active .tab-label {
+  color: #b91c1c;
+  font-weight: bold;
+}
+
+/* Mengatur jarak antar tab */
+.custom-tabs .ant-tabs-tab {
+  margin-right: 8vw !important; 
+  margin-left: 8vw !important; 
+}
+
+/* Opsional: Menyesuaikan jarak untuk tampilan mobile */
+@media (max-width: 768px) {
+  .custom-tabs .ant-tabs-tab {
+    margin-right: 10px !important;
+  }
+}

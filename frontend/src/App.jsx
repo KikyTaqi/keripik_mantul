@@ -18,6 +18,8 @@ import ProfileEdit from "./pages/user_profile/ProfileEdit";
 import AlamatTersimpan from "./pages/user_profile/AlamatTersimpan";
 import AddAlamat from "./pages/user_profile/AlamatCreate";
 import UserChangePassword from "./pages/user_profile/UserChangePassword";
+import Order from "./pages/user_profile/Order";
+import OrderDetail from "./pages/user_profile/OrderDetail";
 
 
 // Product
@@ -109,6 +111,8 @@ const App = () => {
                                           <Route path="/alamat" element={<AlamatTersimpan />} />
                                           <Route path="/alamat/add" element={<AddAlamat />} />
                                           <Route path="/password/change" element={<UserChangePassword />} />
+                                          <Route path="/order" element={<Order />} />
+                                          <Route path="/order/detail" element={<OrderDetail />} />
                                         </Routes>
                                       </Content>
                                     </div>

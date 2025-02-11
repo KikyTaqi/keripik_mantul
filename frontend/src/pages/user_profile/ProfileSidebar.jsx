@@ -39,7 +39,7 @@ const ProfileSidebar = () => {
   const isProfile = location.pathname == "/profile";
 
   const menuItems = [
-    { name: "Pesanan Saya", path: "/profile/w", icon: <FaTruckFast /> },
+    { name: "Pesanan Saya", path: "/profile/order", icon: <FaTruckFast /> },
     { name: "Alamat Tersimpan", path: "/profile/alamat", icon: <LuMapPin /> },
     { name: "Ubah Password", path: "/profile/password/change", icon: <TbLockPassword /> },
     { name: "Log Out", path: "/signin", icon: <MdLogout /> },
@@ -57,8 +57,8 @@ const ProfileSidebar = () => {
           <li key={0} className="border-solid border rounded-lg border-stone-700 hover:border-red-900">
             <Link
               to="/profile"
-              className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 hover:bg-orange-100 rounded-lg ${
-                isProfile ? "bg-orange-200 text-red-900" : ""
+              className={`flex items-center justify-between px-4 py-3 text-gray-700 hover:text-red-900 hover:bg-[#f3e6bb] rounded-lg ${
+                isProfile ? "bg-[#F2E8C6] text-red-900" : ""
               }`}
             >
               <div className="flex">
@@ -97,8 +97,8 @@ const ProfileSidebar = () => {
                       checkLogin();
                     }
                   }}
-                  className={`flex items-center justify-between px-4 py-2 text-gray-700 hover:text-red-900 hover:bg-orange-100 rounded-lg ${
-                    isDashboardActive || isActive ? "bg-orange-200 text-red-900 font-semibold" : ""
+                  className={`flex items-center justify-between px-4 py-2 text-gray-700 hover:text-red-900 hover:bg-[#f3e6bb] rounded-lg ${
+                    isDashboardActive || isActive ? "bg-[#F2E8C6] text-red-900 font-semibold" : ""
                   }`}
                 >
                   <div className="flex items-center">

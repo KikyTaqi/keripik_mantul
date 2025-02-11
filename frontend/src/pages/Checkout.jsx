@@ -7,7 +7,7 @@ import {
     Col,
     Row,
     Modal,
-    Select,
+    message,
     Tag,
 } from "antd";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -107,6 +107,11 @@ const Checkout = () => {
         }
         // console.log("DEFFFFFFF: "+confirmedAlamat);
         
+        if(alamat.length === 0){
+            navigate('/profile/alamat');
+            message.error("Mohon masukan alamat terlebih dahulu!");
+        }
+
         // const tess = alamat.find(al => al._id == confirmedAlamat);
         // console.log("HaHHH: "+tess.nama);
     }, [alamat]);
@@ -243,10 +248,10 @@ const Checkout = () => {
                     <hr className="my-3 border" />
                     <Row>
                         {cart.map((item) => (
-                            <Col key={item.id} className="mb-3">
+                            <Col key={item.id} className="mb-3 w-full h-max">
                                 <div className="border border-stone-300 rounded-md grid grid-cols-4">
-                                    <div className="">
-                                        <img src={product?.thumbnail} alt="Produk" style={{ maxHeight: '30vh', maxWidth: '40vw', objectFit: 'cover' }} />
+                                    <div className="max-w-[40vw] object-cover">
+                                        <img src={product?.thumbnail} alt="Produk" className="object-cover p-4" />
                                     </div>
                                     <div className="col-span-2 my-auto ms-4">
                                         <p className="text-base">{item.name}</p>
