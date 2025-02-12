@@ -17,6 +17,14 @@ exports.getOrders = async (req,res) => {
         res.status(500).json({message: err.message});
     }
 }
+exports.getProductSales = async (req,res) => {
+    try{
+        const orders = await Transaction.find();
+        res.status(200).json(orders);
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
 exports.createTransaction = async (req, res) => {
     try {
         const { user_id, first_name, item_details, alamat_id, shipping_cost, gross_amount } = req.body;
@@ -60,7 +68,7 @@ exports.createTransaction = async (req, res) => {
             },
           };
           
-        console.log("image: "+JSON.stringify(item_details))
+        // console.log("image: "+JSON.stringify(item_details))
 
         const transaction = await snap.createTransaction(parameter);
         const transactionUrl = transaction.redirect_url;
@@ -113,7 +121,7 @@ exports.findProducts = async (req,res) => {
 }
 
 exports.updateStatus = async (req,res) => {
-    const {id, status} = req.body;
+    const {id, status, products, productsCart} = req.body;
     // console.log("111111");
     // console.log("111111:: "+id);
     // console.log("1212122:: "+status);
@@ -128,6 +136,29 @@ exports.updateStatus = async (req,res) => {
     try{
         // console.log("222222");
         const order = await Transaction.findOne({transaction_id: id});
+        const updateTerjual = async (id, qty) => {
+            const product = await Product.findOne({ _id: id });
+            console.log("productk: "+JSON.stringify(product));
+            console.log("producsss: "+JSON.stringify(products));
+            console.log("producsssidd: "+JSON.stringify(id));
+            console.log("QUANTITITITITI: "+qty);
+            
+            if(product){
+                product.terjual = (product.terjual || 0) + Number(qty);
+                console.log("productk2: "+JSON.stringify(product));
+                product.save();
+            }
+        }
+
+        if(products != null){
+            products.map((item) => {
+                updateTerjual(item._id, item.quantity);
+            });
+        }else{
+            productsCart.map((item) => {
+                updateTerjual(item.id, item.quantity);
+            });
+        }
         // console.log("ORDER: "+JSON.stringify(order));
         
         order.status = statusTransaction;

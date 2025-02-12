@@ -58,7 +58,7 @@ const Dashboard = () => {
         setOrders(filteredProducts);
     }; 
     const fetchReview = async () => {
-        const response = await axios.get("http://localhost:4000/api/Review");
+        const response = await axios.get("http://localhost:4000/api/ulasan");
         setReview(response.data);
         setReviewsCount(response.data.length);
     };
@@ -119,44 +119,56 @@ const Dashboard = () => {
                 },
             },        
         ];
+
     const columnsOrders = [
-            {
-                title: "NO",
-                key: "no",
-                align: "center",
-                width: "5px",
-                render: (_, __, index) => index + 1, // row numbering
+        {
+            title: "NO",
+            key: "no",
+            align: "center",
+            width: "5px",
+            render: (_, __, index) => index + 1, // row numbering
+        },
+        {
+            title: 'Customer',
+            dataIndex: 'first_name',
+            key: 'name',
+            align: "center",
+        },
+        {
+            title: 'Produk',
+            dataIndex: 'item_details',
+            key: 'produk',
+            align: "center",
+            render: (item_details) => item_details.map(item => item.name).join(", "),
+            // render: (item_details) => item_details.length > 0 ? item_details[0].name : "Tidak Ada Produk",
+        },
+        {
+            title: 'Total Harga',
+            dataIndex: 'gross_amount',
+            key: 'price',
+            align: "center",
+            render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
+        },
+        {
+            title: 'Tanggal Pesanan',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            align: "center",
+            render: (createdAt) => {
+                const formatDate = (isoString) => {
+                    const date = new Date(isoString);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Bulan dimulai dari 0
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                
+                    return `${day}-${month}-${year} ${hours}.${minutes}`;
+                };
+                return createdAt ? formatDate(createdAt) : "Tidak Diketahui";
             },
-            {
-                title: 'Customer',
-                dataIndex: 'name',
-                key: 'name',
-                align: "center",
-            },
-            {
-                title: 'Produk',
-                dataIndex: 'item_details.name',
-                key: 'produk',
-                align: "center",
-            },
-            {
-                title: 'Total Harga',
-                dataIndex: 'gross_amount',
-                key: 'price',
-                align: "center",
-                render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
-            },
-            {
-                title: 'Tanggal Pesanan',
-                dataIndex: 'createdAt',
-                key: 'category_id',
-                align: "center",
-                render: (categoryId) => {
-                    const category = categories.find((cat) => String(cat._id) === String(categoryId));
-                    return category ? category.nama_kategori : "Tidak Diketahui";
-                },
-            },        
-        ];
+        },        
+    ];
 
     return (
         <ConfigProvider
@@ -219,7 +231,6 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-5">
                     <div className="">
-                        <h1 className="font-bold">Produk Terbaru</h1>
                         <h1 className="font-bold">Produk Terbaru</h1>
                         <Table
                             dataSource={products}

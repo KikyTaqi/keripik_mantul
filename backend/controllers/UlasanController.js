@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 exports.getReviews = async (req, res) => {
     try{
-        const reviews = await Ulasan.find().sort({_id: -1});
+        const reviews = await Review.find().sort({_id: -1});
         res.status(200).json(reviews);
     }catch(err){
         res.status(500).json({message: err.message});
@@ -16,8 +16,11 @@ exports.getReviews = async (req, res) => {
 exports.createReview = async (req, res) => {
     try {
         const { userId, rating, comment } = req.body;
-        const product = await Product.findById(req.params.id);
-
+        const {id} = req.params;
+        const product = await Product.findOne({_id: id});
+        const reviews = await Review.find({ product: id });
+        
+        
         if (!product) {
             return res.status(404).json({ message: "Produk tidak ditemukan" });
         }
@@ -26,6 +29,18 @@ exports.createReview = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User tidak ditemukan" });
         }
+        
+        // Hitung jumlah ulasan dan total rating
+        const totalReviews = reviews.length + 1;
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        
+        // Hitung rata-rata rating (jika ada review)
+        const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0;
+        product.ulasan = (product.ulasan || 0) + 1;
+        product.rating = parseFloat(averageRating);
+        product.save();
+
+        console.log("cekulasan: "+JSON.stringify(product));
 
         const newReview = new Review ({
             user: userId,
