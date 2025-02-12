@@ -160,6 +160,7 @@ const Checkout = () => {
                 first_name: users.name,
                 item_details: cart.map(item => ({
                     id: item._id,
+                    image: item.thumbnail,
                     price: item.price,
                     quantity: item.quantity,
                     name: item.name,

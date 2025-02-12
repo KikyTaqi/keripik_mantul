@@ -95,11 +95,14 @@ const CartPage = () => {
         .filter((item) => selectedItems.includes(item.productId))
         .map((item) => ({
           id: item._id,
+          image: item.thumbnail,
           price: item.price,
           quantity: item.quantity,
           name: item.name,
         }))
     );
+
+    console.log("CEKSELECTED: "+JSON.stringify(selectedCartItems))
     // if(selectedItems < 1){
     //   setDisabled(true);
     // }else{
@@ -148,6 +151,7 @@ const CartPage = () => {
           first_name: users.name,
           item_details: selectedCartItems.map(item => ({
               id: item.id,
+              image: item.image,
               price: item.price,
               quantity: item.quantity,
               name: item.name,

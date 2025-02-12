@@ -27,6 +27,7 @@ exports.createTransaction = async (req, res) => {
             item_details: [
               ...item_details.map(item => ({
                 id: item.id,
+                image: item.image,
                 price: item.price,
                 quantity: item.quantity,
                 name: item.name,
@@ -47,6 +48,7 @@ exports.createTransaction = async (req, res) => {
             },
           };
           
+        console.log("image: "+JSON.stringify(item_details))
 
         const transaction = await snap.createTransaction(parameter);
         const transactionUrl = transaction.redirect_url;
@@ -156,6 +158,22 @@ exports.updateStatus = async (req,res) => {
         res.status(200).json({message: `Pembayaran ${status}`});
     }catch(err){
         console.error(err.message);
+        res.status(500).json({message: err.message});
+    }
+}
+
+exports.getTransaction = async (req,res) => {
+    const userId = req.params.id;
+
+    try{
+        const transaction = await Transaction.find({ user_id: userId });
+
+        console.log("TESTRA: "+transaction.filter((item) => item.status === "diproses").flatMap((item) => item.item_details));
+        const product = transaction.filter((item) => item.status === "diproses").flatMap((item) => item.item_details);
+        const alamat = await Alamat.find();
+
+        res.status(200).json(transaction);
+    }catch(err){
         res.status(500).json({message: err.message});
     }
 }
