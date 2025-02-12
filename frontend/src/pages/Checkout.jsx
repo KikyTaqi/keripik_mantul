@@ -134,6 +134,20 @@ const Checkout = () => {
         };
     }, []);
 
+    const handlePayment = async (text, result, status, id) => {
+        const order = await axios.post(`${URL_TRANSACTION}/checkout/status`,{
+            id: id,
+            status: status,
+        });
+        // console.log("TRANSACTIONPAY: "+JSON.stringify(result))
+        if(status === "success"){
+            message.success(text);
+        }else if(status === "error"){
+            message.error(text);
+        }else{
+            message.warning(text);
+        }
+    }
     
     const handleCheckout = async () => {
         setLoading(true);
@@ -146,12 +160,13 @@ const Checkout = () => {
                 first_name: users.name,
                 item_details: cart.map(item => ({
                     id: item._id,
+                    image: item.thumbnail,
                     price: item.price,
                     quantity: item.quantity,
                     name: item.name,
                 })),
-                gross_amount: totalAmount,
-                // shipping_cost: shippingCost,
+                gross_amount: total,
+                shipping_cost: 3000,
                 alamat_id: confirmedAlamat, // Alamat pengiriman yang dipilih
             };
             
@@ -167,9 +182,9 @@ const Checkout = () => {
                 const {token} = res.data.transaction;
                 if (window.snap && typeof window.snap.pay === "function") {
                     window.snap.pay(token, {
-                        onSuccess: (result) => alert("Payment success!", result),
-                        onPending: (result) => alert("Payment pending!", result),
-                        onError: (result) => alert("Payment failed!", result),
+                        onSuccess: (result) => handlePayment("Pembayaran berhasil! Terima kasih telah berbelanja di sini😊", result, "success", res.data.order_id),
+                        onPending: (result) => handlePayment("Pembayaran tertunda!", result, "pending", res.data.order_id),
+                        onError: (result) => handlePayment("Pembayaran gagal!", result, "error", res.data.order_id),
                     });
                 } else {
                     console.error("Midtrans Snap belum tersedia.");
@@ -209,7 +224,7 @@ const Checkout = () => {
      };
      
     const [subtotal, setSubtotal] = useState(0);
-    const [shippingCost, setShippingCost] = useState(0); // Biaya pengiriman
+    const [shippingCost, setShippingCost] = useState(3000); // Biaya pengiriman
     const [total, setTotal] = useState(0);    
 
     useEffect(() => {
@@ -284,7 +299,7 @@ const Checkout = () => {
                             <hr className="border mb-2" />
                             <div className="grid grid-cols-3">
                                 <div className="col-span-2">
-                                    <p className="text-base font-normal">Subtotal</p>
+                                    <p className="text-base font-normal">Subtotal</p> 
                                 </div>
                                 <div className="">
                                     <p className="text-base font-normal">Rp {subtotal.toLocaleString("id-ID")}</p>
@@ -295,7 +310,7 @@ const Checkout = () => {
                                     <p className="text-base font-normal">Subtotal Pengiriman</p>
                                 </div>
                                 <div className="">
-                                    <p className="text-base font-normal">Rp 0</p>
+                                    <p className="text-base font-normal">Rp {shippingCost.toLocaleString("id-ID")}</p>
                                 </div>
                             </div>
                         </div>
@@ -313,6 +328,7 @@ const Checkout = () => {
                         <Button
                             type="secondary"
                             className="bg-red-800 hover:bg-red-700 text-white font-semibold rounded-3xl w-full h-6 py-5 justify-items-center text-base"
+                            loading={loading}
                             onClick={handleCheckout}
                         >
                             <span className="mb-1">Buat Pesanan</span>

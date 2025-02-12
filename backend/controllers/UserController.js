@@ -48,15 +48,15 @@ exports.editProfile = async (req, res) => {
         
         let updateUser = {};
         let upload = null;
-
+        
         // Konversi tanggal lahir jika ada
         // let tanggalInput = req.body.tgl_lahir || null;
         // let formattedDateInput = null;
         // if (tanggalInput !== null && tanggalInput !== undefined && !isNaN(new Date(tanggalInput).getTime())) {
-        //     formattedDateInput = new Date(tanggalInput).toISOString().split("T")[0];
-        // }
-
-        // Cek apakah ada file yang diunggah
+            //     formattedDateInput = new Date(tanggalInput).toISOString().split("T")[0];
+            // }
+            
+            // Cek apakah ada file yang diunggah
         if (req.file) {
             console.log("checkImage: " + req.file.path);
             upload = await cloudinary.uploader.upload(req.file.path);
@@ -69,22 +69,29 @@ exports.editProfile = async (req, res) => {
                 }
             }
         }
-
+        console.log("WOJLKANFLFNOA: "+req.body.tgl_lahir);
         // Update hanya jika ada perubahan dari req.body
-        if (req.body.nama != null && req.body.nama != undefined) {
+        if (req.body.nama != null && req.body.nama != undefined && req.body.nama != "") {
+            console.log("edskfosfn");
             updateUser.name = req.body.nama || user.name;
         }
 
-        if (req.body.no_telp !== null && req.body.no_telp !== undefined) {
-            updateUser.no_telp = req.body.no_telp || user.no_telp;
+        if (req.body.no_telp !== null && req.body.no_telp !== undefined && req.body.no_telp != "") {
+            updateUser.no_telp = req.body.no_telp;
+        }else{
+            updateUser.no_telp = user.no_telp;
         }
 
-        if (req.body.tgl_lahir !== null && req.body.tgl_lahir !== undefined) {
-            updateUser.tgl_lahir = req.body.tgl_lahir || user.tgl_lahir;
+        if (req.body.tgl_lahir != null && req.body.tgl_lahir != undefined && req.body.tgl_lahir != "undefined" && req.body.tgl_lahir != "") {
+            updateUser.tgl_lahir = req.body.tgl_lahir;
+        }else{
+            updateUser.tgl_lahir = user.tgl_lahir;
         }
 
-        if (req.body.jenis_kelamin !== null && req.body.jenis_kelamin !== undefined) {
-            updateUser.jenis_kelamin = req.body.jenis_kelamin || user.jenis_kelamin;
+        if (req.body.jenis_kelamin !== null && req.body.jenis_kelamin !== undefined && req.body.jenis_kelamin != "") {
+            updateUser.jenis_kelamin = req.body.jenis_kelamin;
+        }else{
+            updateUser.jenis_kelamin = user.jenis_kelamin;
         }
 
         console.log("Update Data:", updateUser);

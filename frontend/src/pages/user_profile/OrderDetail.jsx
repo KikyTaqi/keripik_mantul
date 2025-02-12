@@ -3,7 +3,7 @@ import { Button, Tabs, ConfigProvider, Pagination } from "antd";
 import { LuMapPin } from "react-icons/lu";
 import axios from "axios";
 import { URL_USER } from "../../utils/Endpoint";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../style.css";
 import { jwtDecode } from "jwt-decode";
 
