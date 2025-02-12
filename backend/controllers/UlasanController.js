@@ -61,3 +61,47 @@ exports.getReviewsByProduct = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+exports.getUlasan = async (req, res) => {
+    try {
+        const ulasan = await Review.find().sort({ _id: -1 });
+        res.status(200).json(ulasan); 
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+};
+
+exports.deleteUlasan = async (req, res) => {
+    try {
+        const ulasan = await Review.findById(req.params.id);
+        //hapus file dari mongodb
+        await ulasan.deleteOne();
+        res.status(201).json({message: 'Berhasil menghapus kategori'})
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({message: 'Gagal menghapus kategori!'})
+    }
+};
+
+exports.updateUlasan = async (req, res) => {
+    try {
+        console.log("Request received:", req.params.id, req.body);
+
+        const { id } = req.params;
+        const ulasan = await Review.findById(id);
+        
+        if (!ulasan) {
+            return res.status(404).json({ message: "Ulasan tidak ditemukan" });
+        }
+
+        // Toggle status ulasan (contoh: aktif/nonaktif)
+        ulasan.isActive = !ulasan.isActive;
+        await ulasan.save();
+
+        res.status(200).json({ message: "Ulasan berhasil diupdate", ulasan });
+    } catch (error) {
+        console.error("Error updating ulasan:", error);
+        res.status(500).json({ message: "Terjadi kesalahan server" });
+    }
+};
+
