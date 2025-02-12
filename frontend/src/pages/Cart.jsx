@@ -1,4 +1,5 @@
 import { FaMinus, FaPlus, FaTimesCircle, FaCheck } from "react-icons/fa";
+import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { URL_PROFILE, URL_USER, URL_CART, URL_ALAMAT, URL_TRANSACTION } from "../utils/Endpoint";
@@ -35,29 +36,32 @@ const CartPage = () => {
       setUserId(response.data[0]._id);
       setUsers(response.data[0]);
 
-      setSelectedAlamat(
-        alamat
-          .filter((item) => item.utama === true)
-          .map((item) => ({
-            id: item._id,
-            kecamatan: item.kecamatan,
-            nama_jalan: item.nama_jalan,
-            detail_lain: item.detail_lain,
-          }))
-      );
-
+      
       axios
-        .get(`${URL_CART}/${response.data[0]._id}`)
-        .then((response) => setCartItems(response.data.items || []))
-        .catch((error) => console.error("Error fetching cart:", error));
+      .get(`${URL_CART}/${response.data[0]._id}`)
+      .then((response) => setCartItems(response.data.items || []))
+      .catch((error) => console.error("Error fetching cart:", error));
       axios
-        .get(`${URL_ALAMAT}/${response.data[0]._id}`)
-        .then((response) => setAlamat(response.data.alamat || []))
-        .catch((error) => console.error("Error fetching alamat:", error));
+      .get(`${URL_ALAMAT}/${response.data[0]._id}`)
+      .then((response) => setAlamat(response.data.alamat || []))
+      .catch((error) => console.error("Error fetching alamat:", error));
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
   };
+  
+  useEffect(() => {
+    setSelectedAlamat(
+      alamat
+        .filter((item) => item.utama === true)
+        .map((item) => ({
+          id: item._id,
+          kecamatan: item.kecamatan,
+          nama_jalan: item.nama_jalan,
+          detail_lain: item.detail_lain,
+        }))
+    );
+  }, [alamat])
 
   const toggleSelect = (productId) => {
     setSelectedItems((prevSelected) =>
@@ -112,6 +116,21 @@ const CartPage = () => {
       + ongkir
     )
   }, [selectedItems, cartItems]); // Bergantung pada perubahan selectedItems & cartItems
+
+  const handlePayment = async (text, result, status, id) => {
+    const order = await axios.post(`${URL_TRANSACTION}/checkout/status`,{
+      id: id,
+      status: status,
+    });
+    // console.log("TRANSACTIONPAY: "+JSON.stringify(result))
+    if(status === "success"){
+      message.success(text);
+    }else if(status === "error"){
+      message.error(text);
+    }else{
+      message.warning(text);
+    }
+  }
   
   const handleCheckout = async () => {
     setLoading(true);
@@ -138,8 +157,8 @@ const CartPage = () => {
           alamat_id: selectedAlamat[0].id, // Alamat pengiriman yang dipilih
       };
         
-      console.log("IDDDDDDDD: " + JSON.stringify(selectedCartItems));
-      console.log("amount: " + selectedAlamat[0].id);
+      // console.log("IDDDDDDDD: " + JSON.stringify(selectedCartItems));
+      // console.log("amount: " + selectedAlamat[0].id);
       // console.log("Alamat: " + confirmedAlamat);
       
       const res = await axios.post(`${URL_TRANSACTION}/checkout`, data);
@@ -148,11 +167,12 @@ const CartPage = () => {
           setMidtransUrl(res.data.midtrans_url);
           // window.location.href = res.data.midtrans_url; // Redirect ke Midtrans
           const {token} = res.data.transaction;
+          // console.log("TRANSACTION: "+JSON.stringify(res.data.order_id));
           if (window.snap && typeof window.snap.pay === "function") {
               window.snap.pay(token, {
-                  onSuccess: (result) => alert("Payment success!", result),
-                  onPending: (result) => alert("Payment pending!", result),
-                  onError: (result) => alert("Payment failed!", result),
+                  onSuccess: (result) => handlePayment("Pembayaran berhasil! Terima kasih telah berbelanja di sini😊", result, "success", res.data.order_id),
+                  onPending: (result) => handlePayment("Pembayaran tertunda!", result, "pending", res.data.order_id),
+                  onError: (result) => handlePayment("Pembayaran gagal!", result, "error", res.data.order_id),
               });
           } else {
               console.error("Midtrans Snap belum tersedia.");
@@ -182,7 +202,7 @@ const CartPage = () => {
   };
 
   const [loading, setLoading] = useState(false);
-  const [disabled, setDisabled] = useState(false);
+  // const [disabled, setDisabled] = useState(false);
 
   const updateQuantity = async (productId, type) => {
 
@@ -227,7 +247,7 @@ const CartPage = () => {
       <div className="flex bg-[#F2E8C6] mb-3 p-3 py-5">
         <button
           onClick={handleBack}
-          className="text-4xl text-red-800 me-4 ms-3"
+          className="text-4xl text-red-800 me-4 ms-3" 
         >
           <IoArrowBackCircleOutline />
         </button>
@@ -279,7 +299,7 @@ const CartPage = () => {
                   <button
                     className="p-2 rounded-full hover:bg-[#F5E6B4] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => updateQuantity(item.productId, "decrease")}
-                    loading={loading}
+                    loading={loading ? true : false}
                   >
                     <FaMinus />
                   </button>
@@ -287,7 +307,7 @@ const CartPage = () => {
                   <button
                     className="p-2 rounded-full hover:bg-[#F5E6B4] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => updateQuantity(item.productId, "increase")}
-                    loading={loading}
+                    loading={loading ? true : false}
                   >
                     <FaPlus />
                   </button>

@@ -134,6 +134,20 @@ const Checkout = () => {
         };
     }, []);
 
+    const handlePayment = async (text, result, status, id) => {
+        const order = await axios.post(`${URL_TRANSACTION}/checkout/status`,{
+            id: id,
+            status: status,
+        });
+        // console.log("TRANSACTIONPAY: "+JSON.stringify(result))
+        if(status === "success"){
+            message.success(text);
+        }else if(status === "error"){
+            message.error(text);
+        }else{
+            message.warning(text);
+        }
+    }
     
     const handleCheckout = async () => {
         setLoading(true);
@@ -167,9 +181,9 @@ const Checkout = () => {
                 const {token} = res.data.transaction;
                 if (window.snap && typeof window.snap.pay === "function") {
                     window.snap.pay(token, {
-                        onSuccess: (result) => alert("Payment success!", result),
-                        onPending: (result) => alert("Payment pending!", result),
-                        onError: (result) => alert("Payment failed!", result),
+                        onSuccess: (result) => handlePayment("Pembayaran berhasil! Terima kasih telah berbelanja di sini😊", result, "success", res.data.order_id),
+                        onPending: (result) => handlePayment("Pembayaran tertunda!", result, "pending", res.data.order_id),
+                        onError: (result) => handlePayment("Pembayaran gagal!", result, "error", res.data.order_id),
                     });
                 } else {
                     console.error("Midtrans Snap belum tersedia.");

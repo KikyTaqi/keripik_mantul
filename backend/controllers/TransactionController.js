@@ -64,7 +64,7 @@ exports.createTransaction = async (req, res) => {
 
         await newTransaction.save();
 
-        res.status(201).json({ midtrans_url: transactionUrl, transaction: transaction });
+        res.status(201).json({ midtrans_url: transactionUrl, transaction: transaction, order_id: order_id });
     } catch (err) {
         console.error("Error: "+err);
         res.status(500).json({ message: "Error creating transaction", error: err.message });
@@ -126,6 +126,36 @@ exports.findProducts = async (req,res) => {
         const product = await Product.findOne({ _id: id });
         res.status(200).json(product);
     }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
+
+exports.updateStatus = async (req,res) => {
+    const {id, status} = req.body;
+    // console.log("111111");
+    // console.log("111111:: "+id);
+    // console.log("1212122:: "+status);
+    let statusTransaction = "pending";
+
+    if(status === "success"){
+        statusTransaction = "diproses";
+    }else{
+        return res.status(500).json({message: "Pembayaran gagal!"});
+    }
+    
+    try{
+        // console.log("222222");
+        const order = await Transaction.findOne({transaction_id: id});
+        // console.log("ORDER: "+JSON.stringify(order));
+        
+        order.status = statusTransaction;
+        // console.log("333333");
+        // console.log("ORDERSTATUS: "+order.status);
+        order.save();
+        // console.log("444444");
+        res.status(200).json({message: `Pembayaran ${status}`});
+    }catch(err){
+        console.error(err.message);
         res.status(500).json({message: err.message});
     }
 }
