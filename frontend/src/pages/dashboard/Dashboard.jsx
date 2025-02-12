@@ -14,9 +14,11 @@ const Dashboard = () => {
     const [products, setProducts] = useState([]);
     const [orders, setOrders] = useState([]);
     const [user, setUser] = useState([]); 
+    const [ulasan, setUlasan] = useState([]); 
     const [productsCount, setProductsCount] = useState(0);
     const [usersCount, setUsersCount] = useState(0);
     const [ordersCount, setOrdersCount] = useState(0);
+    const [ulasanCount, setUlasanCount] = useState(0);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -25,6 +27,7 @@ const Dashboard = () => {
         fetchOrders();
         fetchUser();
         fetchData();
+        fetchUlasan();
     }, []);
 
     const fetchProducts = async () => {
@@ -39,6 +42,12 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:4000/api/users");
         setUser(response.data);
         setUsersCount(response.data.length);
+    };
+
+    const fetchUlasan = async () => {
+        const response = await axios.get("http://localhost:4000/api/ulasan");
+        setUlasan(response.data);
+        setUlasanCount(response.data.length);
     };
 
     const fetchOrders = async () => {
@@ -189,7 +198,7 @@ const Dashboard = () => {
         
                         <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
                             <div className="flex-1 text-center">
-                                <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{ordersCount}</h3>
+                                <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{ulasanCount}</h3>
                                 <h4>Total Ulasan</h4>
                             </div>
                             <div className="flex-1">
@@ -210,6 +219,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-5">
                     <div className="">
+                        <h1 className="font-bold">Produk Terbaru</h1>
                         <h1 className="font-bold">Produk Terbaru</h1>
                         <Table
                             dataSource={products}

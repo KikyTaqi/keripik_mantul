@@ -42,6 +42,7 @@ import UpdateKategori from "./pages/dashboard/KategoriUpdate";
 import Ongkir from "./pages/dashboard/Ongkir";
 import AddOngkir from "./pages/dashboard/OngkirCreate";
 import UpdateOngkir from "./pages/dashboard/OngkirUpdate";
+import Ulasan from "./pages/dashboard/Ulasan";
 
 // Auth
 import Login from "./pages/Login";
@@ -176,6 +177,7 @@ const App = () => {
                         <Route path="/ongkir/create" element={<AddOngkir />} />
                         <Route path="/ongkir/:id" element={<UpdateOngkir />} />
                         <Route path="/customer" element={<Customer />} />
+                        <Route path="/ulasan" element={<Ulasan />} />
                       </Routes>
                     </Content>
                   </div>

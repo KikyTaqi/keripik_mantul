@@ -59,9 +59,11 @@ const DetailProduct = () => {
                 console.log("Ulasan dari API:", response.data); // Debugging
     
                 if (Array.isArray(response.data)) {
-                    setUlasan(response.data);
+                    // Filter hanya ulasan dengan isActive === true
+                    const filteredUlasan = response.data.filter(ulasan => ulasan.isActive);
+                    setUlasan(filteredUlasan);
                 } else {
-                    setUlasan([]); // Pastikan tetap array kosong jika respons bukan array
+                    setUlasan([]); // Jika respons bukan array, tetap set sebagai array kosong
                 }
             } catch (error) {
                 console.error("Error fetching reviews:", error);
@@ -72,7 +74,8 @@ const DetailProduct = () => {
             console.log("Fetching ulasan untuk produk:", id); // Debugging
             fetchUlasan();
         }
-    }, [id, ulasan.length]);
+    }, [id]);
+    
 
     const handleToCheckout = async (id) => {
         if (id != null) {
