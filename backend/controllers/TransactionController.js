@@ -3,8 +3,20 @@ const Product = require("../models/Product");
 const Alamat = require("../models/Alamat");
 const midtransClient = require("midtrans-client");
 const jwt = require('jsonwebtoken');
+const User = require("../models/User");
 const secretkey = process.env.JWT_SECRET;
 
+exports.getOrders = async (req,res) => {
+    try{
+        const orders = await Transaction.find({ status: { $ne: "pending" } }).sort({ _id: -1 }).populate({
+            model: 'User',
+            path: 'user_id'
+        });
+        res.status(200).json(orders);
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
 exports.createTransaction = async (req, res) => {
     try {
         const { user_id, first_name, item_details, alamat_id, shipping_cost, gross_amount } = req.body;
@@ -72,38 +84,6 @@ exports.createTransaction = async (req, res) => {
         res.status(500).json({ message: "Error creating transaction", error: err.message });
     }
 };
-
-// exports.handleMidtransNotification = async (req, res) => {
-//     try {
-//         const notification = req.body;
-//         const { order_id, transaction_status } = notification;
-
-//         console.log("Midtrans Notification:", notification);
-
-//         // Cek status pembayaran
-//         let status;
-//         if (transaction_status === "capture" || transaction_status === "settlement") {
-//             status = "success";
-//         } else if (transaction_status === "pending") {
-//             status = "pending";
-//         } else {
-//             status = "failed";
-//         }
-
-//         // Update status transaksi di database
-//         await Transaction.findOneAndUpdate(
-//             { transaction_id: order_id },
-//             { status: status },
-//             { new: true }
-//         );
-
-//         res.status(200).json({ message: "Notification processed", status });
-//     } catch (error) {
-//         console.error("Error handling notification:", error);
-//         res.status(500).json({ message: "Server error" });
-//     }
-// };
-
 
 exports.getProducts = async (req, res) => {
     try {

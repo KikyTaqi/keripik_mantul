@@ -42,8 +42,16 @@ const Dashboard = () => {
     };
 
     const fetchOrders = async () => {
-        const response = await axios.get("http://localhost:4000/orders");
+        const response = await axios.get("http://localhost:4000/api/transactions");
         setOrders(response.data);
+        setOrdersCount(response.data.length);
+        const filteredProducts = response.data.slice(0, 5).map(({ __v, ...rest }) => rest);
+        setOrders(filteredProducts);
+    }; 
+    const fetchReview = async () => {
+        const response = await axios.get("http://localhost:4000/api/Review");
+        setReview(response.data);
+        setReviewsCount(response.data.length);
     };
 
     const fetchData = async () => {
@@ -102,6 +110,44 @@ const Dashboard = () => {
                 },
             },        
         ];
+    const columnsOrders = [
+            {
+                title: "NO",
+                key: "no",
+                align: "center",
+                width: "5px",
+                render: (_, __, index) => index + 1, // row numbering
+            },
+            {
+                title: 'Customer',
+                dataIndex: 'name',
+                key: 'name',
+                align: "center",
+            },
+            {
+                title: 'Produk',
+                dataIndex: 'item_details.name',
+                key: 'produk',
+                align: "center",
+            },
+            {
+                title: 'Total Harga',
+                dataIndex: 'gross_amount',
+                key: 'price',
+                align: "center",
+                render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
+            },
+            {
+                title: 'Tanggal Pesanan',
+                dataIndex: 'createdAt',
+                key: 'category_id',
+                align: "center",
+                render: (categoryId) => {
+                    const category = categories.find((cat) => String(cat._id) === String(categoryId));
+                    return category ? category.nama_kategori : "Tidak Diketahui";
+                },
+            },        
+        ];
 
     return (
         <ConfigProvider
@@ -123,7 +169,7 @@ const Dashboard = () => {
                     <div className="gap-1 justify-around flex mb-5">
                         <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
                             <div className="flex-1 text-center">
-                                <h1 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>100</h1>
+                                <h1 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{ordersCount}</h1>
                                 <h4 className="ml-2">Pesanan Masuk</h4>
                             </div>
                             <div className="flex-1">
@@ -143,7 +189,7 @@ const Dashboard = () => {
         
                         <div className="outline outline-3 outline-red-800 border-0 bg-white rounded-md flex items-center justify-center mx-3" style={{ width: "100%", height: "100px" }}>
                             <div className="flex-1 text-center">
-                                <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>100</h3>
+                                <h3 className="font-bold text-start text-3xl ml-3" style={{ color: "#800000" }}>{ordersCount}</h3>
                                 <h4>Total Ulasan</h4>
                             </div>
                             <div className="flex-1">
@@ -164,7 +210,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-5">
                     <div className="">
-                        <h1 className="font-bold">Produk Terlaris</h1>
+                        <h1 className="font-bold">Produk Terbaru</h1>
                         <Table
                             dataSource={products}
                             columns={columns}
@@ -176,10 +222,10 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className="">
-                        <h1 className="font-bold">Produk Terlaris</h1>
+                        <h1 className="font-bold">Pesanan Terbaru</h1>
                         <Table
-                            dataSource={products}
-                            columns={columns}
+                            dataSource={orders}
+                            columns={columnsOrders}
                             loading={loading}
                             bordered
                             className="mt-4"

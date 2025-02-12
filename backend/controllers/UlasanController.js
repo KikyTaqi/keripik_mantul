@@ -2,6 +2,16 @@ const Review = require("../models/Ulasan");
 const Product = require("../models/Product");
 const User = require("../models/User");
 const mongoose = require("mongoose");
+
+exports.getReviews = async (req, res) => {
+    try{
+        const reviews = await Ulasan.find().sort({_id: -1});
+        res.status(200).json(reviews);
+    }catch(err){
+        res.status(500).json({message: err.message});
+    }
+}
+
 // Tambah review
 exports.createReview = async (req, res) => {
     try {
