@@ -35,45 +35,45 @@ const Review = () => {
   }, []);
 
   const handleSubmitReview = async () => {
-    if (!rating || !comment) {
-      message.error("Harap isi rating dan komentar!");
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("userToken");
-      const decoded = jwtDecode(token);
-
-      console.log("Mengirim ulasan untuk produk:", id);
-
-      const response = await axios.post(`${URL_ULASAN}/${id}/ulasan`, {
-        userId: decoded._id,
-        username: decoded.name,
-        rating,
-        comment,
-      });
-
-      console.log("Response dari server:", response.data);
-
-      message.success("Ulasan berhasil ditambahkan!");
-
-      // Tutup modal
-      setIsModalOpen(false);
-
-      // Reset input
-      setRating(0);
-      setComment("");
-
-      // Tambahkan ulasan baru ke awal array
-      setUlasan((prevUlasan) => [response.data, ...prevUlasan]);
-    } catch (error) {
-      console.error(
-        "Gagal menambahkan ulasan:",
-        error.response?.data || error.message
-      );
-      message.error("Terjadi kesalahan saat menambahkan ulasan.");
-    }
-  };
+        if (!rating || !comment) {
+            message.error("Harap isi rating dan komentar!");
+            return;
+        }
+    
+        try {
+            const token = localStorage.getItem("userToken");
+            const decoded = jwtDecode(token);
+    
+            console.log("Mengirim ulasan untuk produk:", id);
+    
+            const response = await axios.post(`${URL_ULASAN}/${id}/ulasan`, {
+                userId: decoded._id,
+                username: decoded.name,
+                rating,
+                comment,
+            });
+            
+            console.log("bakankdnajkak: " + decoded.name);
+            
+            console.log("Response dari server:", response.data);
+    
+            message.success("Ulasan berhasil ditambahkan!");
+    
+            // Tutup modal
+            setIsModalOpen(false);
+    
+            // Reset input
+            setRating(0);
+            setComment("");
+    
+            // Tambahkan ulasan baru ke awal array
+            setUlasan((prevUlasan) => [response.data, ...prevUlasan]);
+    
+        } catch (error) {
+            console.error("Gagal menambahkan ulasan:", error.response?.data || error.message);
+            message.error("Terjadi kesalahan saat menambahkan ulasan.");
+        }
+    };
 
   const HandleBack = () => {
     navigate(-1);
@@ -122,7 +122,7 @@ const Review = () => {
             >
                 Batal
             </Button>
-            <Button type="primary" className="px-10 py-4 text-base">
+            <Button type="primary" className="px-10 py-4 text-base" onClick={handleSubmitReview}>
                 Beri Ulasan
             </Button>
             </div>

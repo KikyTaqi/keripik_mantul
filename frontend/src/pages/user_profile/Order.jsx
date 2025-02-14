@@ -17,11 +17,11 @@ const Order = () => {
 
   const PaginatedList = ({ data, showReviewButton = false }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Bisa diubah sesuai kebutuhan
-  
+    const itemsPerPage = 10;
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
-  
+
     return (
       <div>
         <hr className="border-b-2 border-red-800 mb-3" />
@@ -45,13 +45,13 @@ const Order = () => {
                   <h1>Total: Rp {(item.price * item.quantity).toLocaleString("id-ID")}</h1>
                 </div>
                 <div className="flex justify-end w-full pt-12 pe-5 col-span-4">
-                  <Link to={`/profile/order/detail`}>
+                  <Link to={`/profile/order/detail/${item.transaction_id}`}>
                     <Button type="primary" className="px-10 py-4 text-base font-semibold me-3">
                       Lihat
                     </Button>
                   </Link>
                   {showReviewButton && (
-                    <Link to={`/profile/order/review`}>
+                    <Link to={`/profile/order/review/${item.transaction_id || item._id}`}>
                       <Button type="primary" className="px-10 py-4 text-base font-semibold">
                         Beri Ulasan
                       </Button>
@@ -75,21 +75,43 @@ const Order = () => {
       </div>
     );
   };
-  
+
   const Diproses = () => {
-    const data = product.filter((item) => item.status === "diproses").flatMap((item) => item.item_details);
+    const data = product
+      .filter((item) => item.status === "diproses")
+      .flatMap((item) =>
+        item.item_details.map((detail) => ({
+          ...detail,
+          transaction_id: item._id, // Pastikan setiap item memiliki transaction_id
+        }))
+      );
     return <PaginatedList data={data} />;
   };
   
   const Dikirim = () => {
-    const data = product.filter((item) => item.status === "dikirim").flatMap((item) => item.item_details);
+    const data = product
+      .filter((item) => item.status === "dikirim")
+      .flatMap((item) =>
+        item.item_details.map((detail) => ({
+          ...detail,
+          transaction_id: item._id,
+        }))
+      );
     return <PaginatedList data={data} />;
   };
   
   const Selesai = () => {
-    const data = product.filter((item) => item.status === "selesai").flatMap((item) => item.item_details);
+    const data = product
+      .filter((item) => item.status === "selesai")
+      .flatMap((item) =>
+        item.item_details.map((detail) => ({
+          ...detail,
+          transaction_id: item._id,
+        }))
+      );
     return <PaginatedList data={data} showReviewButton={true} />;
   };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,10 +124,9 @@ const Order = () => {
         setUsers(response.data);
         axios.get(`${URL_TRANSACTION}/checkout/get/${response.data[0]._id}`)
           .then(response => {
-            // setAlamat(response.data.alamat || [{}]);
             setProduct(response.data);
-        })
-          .catch(error => console.error("Error fetching cart:", error)); 
+          })
+          .catch(error => console.error("Error fetching cart:", error));
       } catch (error) {
         console.error("Error fetching profile");
         navigate("/signin");
@@ -115,6 +136,22 @@ const Order = () => {
     };
 
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await axios.get(`${URL_TRANSACTION}`);
+        console.log("Detail transaksi:", response.data);
+        setTransaction(response.data);
+      } catch (error) {
+        console.error("Error fetching order detail:", error);
+       } finally {
+        setLoading(false);
+      }
+    };
+
+      fetchOrder();
   }, []);
 
   const items = [
@@ -153,7 +190,5 @@ const Order = () => {
     </ConfigProvider>
   );
 };
-
-
 
 export default Order;

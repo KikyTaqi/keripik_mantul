@@ -129,15 +129,16 @@ const Dashboard = () => {
             },
             {
                 title: 'Customer',
-                dataIndex: 'name',
-                key: 'name',
+                dataIndex: 'first_name',
+                key: 'Curtomer',
                 align: "center",
             },
             {
                 title: 'Produk',
-                dataIndex: 'item_details.name',
+                dataIndex: 'item_details',
                 key: 'produk',
                 align: "center",
+                render: (items) => items.map(item => item.name).join(", ") // Gabungkan nama produk dengan koma
             },
             {
                 title: 'Total Harga',
@@ -149,13 +150,12 @@ const Dashboard = () => {
             {
                 title: 'Tanggal Pesanan',
                 dataIndex: 'createdAt',
-                key: 'category_id',
+                key: 'tgl_pesanan',
                 align: "center",
-                render: (categoryId) => {
-                    const category = categories.find((cat) => String(cat._id) === String(categoryId));
-                    return category ? category.nama_kategori : "Tidak Diketahui";
-                },
-            },        
+                render: (text) => new Date(text).toLocaleString("id-ID", { 
+                  day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" 
+                })
+              } 
         ];
 
     return (
@@ -219,7 +219,6 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-5">
                     <div className="">
-                        <h1 className="font-bold">Produk Terbaru</h1>
                         <h1 className="font-bold">Produk Terbaru</h1>
                         <Table
                             dataSource={products}

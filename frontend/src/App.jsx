@@ -43,6 +43,7 @@ import Ongkir from "./pages/dashboard/Ongkir";
 import AddOngkir from "./pages/dashboard/OngkirCreate";
 import UpdateOngkir from "./pages/dashboard/OngkirUpdate";
 import Ulasan from "./pages/dashboard/Ulasan";
+import Pesanan from "./pages/dashboard/Pesanan";
 
 // Auth
 import Login from "./pages/Login";
@@ -114,7 +115,7 @@ const App = () => {
                                           <Route path="/alamat/add" element={<AddAlamat />} />
                                           <Route path="/password/change" element={<UserChangePassword />} />
                                           <Route path="/order" element={<Order />} />
-                                          <Route path="/order/detail" element={<OrderDetail />} />
+                                          <Route path="/order/detail/:id" element={<OrderDetail />} />
                                           <Route path="/order/review" element={<Review />} />
                                         </Routes>
                                       </Content>
@@ -178,6 +179,7 @@ const App = () => {
                         <Route path="/ongkir/:id" element={<UpdateOngkir />} />
                         <Route path="/customer" element={<Customer />} />
                         <Route path="/ulasan" element={<Ulasan />} />
+                        <Route path="/pesanan" element={<Pesanan />} />
                       </Routes>
                     </Content>
                   </div>
