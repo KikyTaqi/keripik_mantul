@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/User");
 const secretkey = process.env.JWT_SECRET;
 const mongoose = require("mongoose");
+const axios = require('axios');
 
 exports.getOrders = async (req, res) => {
     try {
@@ -82,7 +83,7 @@ exports.createTransaction = async (req, res) => {
             transaction_id: order_id,
             midtrans_url: transactionUrl,
             status: "pending",
-            gross_amount: totalAmount,
+            gross_amount: totalAmount + shipping_cost,
             item_details: item_details,
         });
 
@@ -140,14 +141,14 @@ exports.updateStatus = async (req,res) => {
         const order = await Transaction.findOne({transaction_id: id});
         const updateTerjual = async (id, qty) => {
             const product = await Product.findOne({ _id: id });
-            console.log("productk: "+JSON.stringify(product));
-            console.log("producsss: "+JSON.stringify(products));
-            console.log("producsssidd: "+JSON.stringify(id));
-            console.log("QUANTITITITITI: "+qty);
+            // console.log("productk: "+JSON.stringify(product));
+            // console.log("producsss: "+JSON.stringify(products));
+            // console.log("producsssidd: "+JSON.stringify(id));
+            // console.log("QUANTITITITITI: "+qty);
             
             if(product){
                 product.terjual = (product.terjual || 0) + Number(qty);
-                console.log("productk2: "+JSON.stringify(product));
+                // console.log("productk2: "+JSON.stringify(product));
                 product.save();
             }
         }
@@ -164,6 +165,30 @@ exports.updateStatus = async (req,res) => {
         // console.log("ORDER: "+JSON.stringify(order));
 
         order.status = statusTransaction;
+        order.waktu_pembayaran = new Date();
+        // console.log("333333");
+        // console.log("ORDERSTATUS: "+order.status);
+        order.save();
+        // console.log("444444");
+        res.status(200).json({ message: `Pembayaran ${status}` });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: err.message });
+    }
+}
+
+exports.changeStatus = async (req,res) => {
+    const {status} = req.body;
+    // console.log("111111");
+    // console.log("111111:: "+id);
+    // console.log("1212122:: "+status);
+
+    try {
+        // console.log("222222");
+        const order = await Transaction.findOne({transaction_id: req.params.id});
+
+        order.status = status;
+        order.waktu_selesai = new Date();
         // console.log("333333");
         // console.log("ORDERSTATUS: "+order.status);
         order.save();
@@ -193,8 +218,21 @@ exports.getTransaction = async (req, res) => {
 
 exports.getDetailTransaction = async (req, res) => {
     try {
+        console.log("EEEEEEEEEEEEEEEEEE: ");
         const id = req.params.id;
         console.log("anjakjdbajda: " + id);
+
+        // try {
+        //     const response = await axios.get(`https://api.sandbox.midtrans.com/v2/ORDER-1739528013133/status`, {
+        //         headers: {
+        //             "Authorization": `Basic ${Buffer.from("SB-Mid-server-2qVIMYB5QItBfIQqQCGttOjL" + ":").toString("base64")}`
+        //         }
+        //     });
+        //     res.json(response.data);
+        // } catch (error) {
+        //     console.error("Error fetching transaction status:", error);
+        //     res.status(500).json({ message: 'Error fetching transaction status' });
+        // }
 
         // Cek apakah ID valid
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -203,17 +241,29 @@ exports.getDetailTransaction = async (req, res) => {
 
         // Ambil transaksi berdasarkan ID + populate data terkait
         let transaction = await Transaction.findById(id)
-        .populate("user_id", "no_telp")
+        .populate("user_id", "no_telp");
+
+        if (transaction) {
+        let alamatData = await Alamat.findOne({ "alamat._id": transaction.alamat_id }, { "alamat.$": 1 });
+        
+        if (alamatData) {
+            transaction = transaction.toObject(); // Konversi ke object agar bisa ditambah properti baru
+            transaction.alamat = alamatData.alamat[0]; // Tambah data alamat yang sesuai
+        }
+
         console.log("Transaction Data:", JSON.stringify(transaction, null, 2));
+        }
+
+
 
         if (!transaction) {
             return res.status(404).json({ message: "Transaction not found!" });
         }
 
         // Filter alamat agar hanya yang utama
-        if (transaction.alamat_id && !transaction.alamat_id.utama) {
-            transaction.alamat_id = null;
-        }
+        // if (transaction.alamat_id && !transaction.alamat_id.utama) {
+        //     transaction.alamat_id = null;
+        // }
 
         res.json(transaction);
     } catch (err) {

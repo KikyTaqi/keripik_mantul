@@ -11,12 +11,32 @@ const OrderDetail = () => {
   const [transaction, setTransaction] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  let [subtotal, setSubtotal] = useState(0);
 
   useEffect(() => {
+    const getTransactionStatus = async (order_id) => {
+        try {
+            //   const response = await axios.get(`https://cors-anywhere.herokuapp.com/https://api.sandbox.midtrans.com/v2/${order_id}/status`, {
+            //     headers: {
+            //         "Authorization": `Basic ${btoa("SB-Mid-server-2qVIMYB5QItBfIQqQCGttOjL" + ":")}`
+            //     }
+            // });
+        
+
+            console.log("Data Transaksi:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error mengambil data transaksi:", error.response?.data || error.message);
+        }
+    };
+
+    // Contoh pemanggilan
+    // getTransactionStatus("ORDER-1739341538643");
+
     const fetchOrderDetail = async () => {
       try {
         const response = await axios.get(`${URL_TRANSACTION}/${id}`);
-        console.log("Response lengkap dari API:", response); // Debugging response
+        // console.log("Response lengkap dari API:", response); // Debugging response
         console.log("Data transaksi:", response.data); // Debugging data transaksi
         setTransaction(response.data);
       } catch (error) {
@@ -30,8 +50,12 @@ const OrderDetail = () => {
     if (id) {
       fetchOrderDetail();
     }
-  }, [id, navigate]);
+  }, [id]);
   
+  useEffect(() => {
+    const calculatedSubtotal = transaction?.item_details?.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    setSubtotal(calculatedSubtotal || 0);
+  }, [transaction]);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (!transaction) return <div className="text-center mt-10">Pesanan tidak ditemukan</div>;
@@ -64,7 +88,7 @@ const OrderDetail = () => {
               <LuMapPin className="text-4xl" />
               <div className="mx-3">
                 <p>{transaction.first_name} ({transaction.user_id.no_telp})</p>
-                <p>{transaction.alamat_id?.alamat || transaction.shipping_address}</p>
+                <p>{transaction.alamat?.nama_jalan}, {transaction.alamat?.kecamatan}</p>
               </div>
             </div>
 
@@ -74,73 +98,66 @@ const OrderDetail = () => {
               <div className="font-bold text-base">No. Pesanan</div>
               <div className="text-end text-lg">{transaction.transaction_id}</div>
             </div>
-            <div className="grid grid-cols-2">
-              <div className="font-bold text-base">Metode Pembayaran</div>
-              <div className="text-end text-lg">{transaction.payment_method}</div>
-            </div>
 
             <hr className="my-3 border-[#0000003b] border-b" />
 
             {/* Produk dalam pesanan */}
-            {transaction.items?.map((item, index) => {
-              const product = item._id || {}; // Pastikan `id` ada untuk menghindari error
-              console.log("anjkdjkahj:" + item.id);    
+            {transaction.item_details?.map((item, index) => {
               return (
                 <div key={index} className="grid grid-cols-5">
                   <div>
-                    <img src={product.item_details.image} alt={product.item_details.name} className="object-cover p-4 max-h-[30vh] min-h-[30vh]" />
+                    <img src={item.image} alt={item.name} className="object-cover w-full p-4 max-h-[30vh] min-h-[30vh]" />
                   </div>
                   <div className="col-span-3 text-lg font-semibold pt-6">
-                    <p>{product.name}</p>
+                    <p>{item.name}</p>
                     <p className="text-gray-600 font-normal">×{item.quantity}</p>
                   </div>
                   <div className="text-lg font-semibold text-end flex flex-col justify-end pb-5">
-                    <p>Rp {product.price?.toLocaleString("id-ID")}</p>
-                    <p className="text-gray-500">Total: Rp {(product.price * item.quantity)?.toLocaleString("id-ID")}</p>
+                    <p>Rp {item.price?.toLocaleString("id-ID")}</p>
+                    <p className="">Total: Rp {(item.price * item.quantity)?.toLocaleString("id-ID")}</p>
                   </div>
                 </div>
               );
             })}
 
-
             <hr className="my-3 border-[#0000003b] border-b" />
 
             <div className="grid grid-cols-2 text-base font-semibold">
               <div>Subtotal Produk</div>
-              <div className="text-end text-lg">Rp {transaction.subtotal?.toLocaleString("id-ID")}</div>
+              <div className="text-end text-lg">Rp {subtotal.toLocaleString("id-ID")}</div>
             </div>
             <div className="grid grid-cols-2 text-base font-semibold">
               <div>Subtotal Pengiriman</div>
-              <div className="text-end text-lg">Rp {transaction.shipping_cost?.toLocaleString("id-ID")}</div>
+              <div className="text-end text-lg">Rp 3.000</div>
             </div>
-            <div className="grid grid-cols-2 text-base font-semibold">
+            {/* <div className="grid grid-cols-2 text-base font-semibold">
               <div>Diskon Produk</div>
-              <div className="text-end text-lg">Rp {transaction.discount?.toLocaleString("id-ID")}</div>
-            </div>
+              <div className="text-end text-lg">Rp 0</div>
+            </div> */}
 
             <hr className="my-3 border-[#0000003b] border-b" />
 
             <div className="grid grid-cols-6 text-base font-semibold">
               <div className="col-end-6">Total Pesanan :</div>
-              <div className="col-end-7 text-end text-lg">Rp {transaction.total_price?.toLocaleString("id-ID")}</div>
+              <div className="col-end-7 text-end text-lg">Rp {transaction.gross_amount?.toLocaleString("id-ID")}</div>
             </div>
 
             <hr className="my-3 border-[#0000003b] border-b" />
 
             <div className="grid grid-cols-2 text-base font-semibold">
               <div>Waktu Pemesanan</div>
-              <div className="text-end text-lg">{new Date(transaction.order_time).toLocaleString("id-ID")}</div>
+              <div className="text-end text-lg">{new Date(transaction.createdAt).toLocaleString("id-ID")}</div>
             </div>
             <div className="grid grid-cols-2 text-base font-semibold">
               <div>Waktu Pembayaran</div>
-              <div className="text-end text-lg">{transaction.payment_time || "-"}</div>
+              <div className="text-end text-lg">{new Date(transaction.waktu_pembayaran || transaction.updatedAt).toLocaleString("id-ID")}</div>
             </div>
 
             {/* Jika statusnya Dikirim */}
             {transaction.status === "dikirim" && (
               <div className="grid grid-cols-2 text-base font-semibold">
                 <div>Waktu Pengiriman</div>
-                <div className="text-end text-lg">{transaction.shipping_time || "-"}</div>
+                <div className="text-end text-lg">{transaction.waktu_pengiriman || "-"}</div>
               </div>
             )}
 
@@ -148,7 +165,7 @@ const OrderDetail = () => {
             {transaction.status === "selesai" && (
               <div className="grid grid-cols-2 text-base font-semibold">
                 <div>Waktu Selesai</div>
-                <div className="text-end text-lg">{transaction.completion_time || "-"}</div>
+                <div className="text-end text-lg">{transaction.waktu_selesai || "-"}</div>
               </div>
             )}
 

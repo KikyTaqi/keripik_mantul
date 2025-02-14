@@ -62,6 +62,14 @@ const Product = () => {
             dataIndex: 'stok',
             key: 'stok',
             align: "center",
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/products/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Harga',
@@ -69,6 +77,14 @@ const Product = () => {
             key: 'price',
             align: "center",
             render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/products/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Kategori',
@@ -79,6 +95,14 @@ const Product = () => {
                 const category = categories.find((cat) => String(cat._id) === String(categoryId));
                 return category ? category.nama_kategori : "Tidak Diketahui";
             },
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/products/detail/${record?._id}`);
+                    },
+                };
+            }
         },        
         {
             title: "Gambar",

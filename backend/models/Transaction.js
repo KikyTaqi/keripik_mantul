@@ -14,7 +14,7 @@ const TransactionSchema = new mongoose.Schema({
       quantity: { type: Number, required: true },
     },
   ],
-  alamat_id: { type: mongoose.Schema.Types.ObjectId, ref: "Alamat", required: true },
+  alamat_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   midtrans_url: { type: String, required: true },
   status: { type: String, enum: ["pending","diproses", "dikirim", "selesai"], default: "pending" },
 }, { timestamps: true });

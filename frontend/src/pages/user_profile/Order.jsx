@@ -15,12 +15,21 @@ const Order = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [alamat, setAlamat] = useState([{}]);
 
-  const PaginatedList = ({ data, showReviewButton = false }) => {
+  const PaginatedList = ({ data, showReviewButton = false, showDoneButton = false }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleDone = async (id) => {
+      try {
+        await axios.post(`${URL_TRANSACTION}/status/${id}`, { status: "selesai" });
+        navigate("/profile/order");
+      } catch (error) {
+        console.error("Error updating status:", error);
+      }
+    }
 
     return (
       <div>
@@ -56,6 +65,11 @@ const Order = () => {
                         Beri Ulasan
                       </Button>
                     </Link>
+                  )}
+                  {showDoneButton && (
+                    <Button type="primary" className="px-10 py-4 text-base font-semibold" onClick={() => handleDone(item.transaction_id)}>
+                      Selesai
+                    </Button>
                   )}
                 </div>
               </div>
@@ -97,7 +111,7 @@ const Order = () => {
           transaction_id: item._id,
         }))
       );
-    return <PaginatedList data={data} />;
+    return <PaginatedList data={data} showDoneButton={true}/>;
   };
   
   const Selesai = () => {
