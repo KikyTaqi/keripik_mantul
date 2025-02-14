@@ -19,6 +19,15 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Price is required!'],
     },
+    terjual: {
+        type: Number,
+    },
+    ulasan: {
+        type: Number,
+    },
+    rating: {
+        type: Number,
+    },
     category_id: {
         type: String,
         required: [true, 'Category is required!'],

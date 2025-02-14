@@ -138,6 +138,8 @@ const Checkout = () => {
         const order = await axios.post(`${URL_TRANSACTION}/checkout/status`,{
             id: id,
             status: status,
+            products: cart,
+            productsCart: null,
         });
         // console.log("TRANSACTIONPAY: "+JSON.stringify(result))
         if(status === "success"){

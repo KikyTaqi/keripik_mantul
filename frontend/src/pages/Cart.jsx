@@ -94,7 +94,7 @@ const CartPage = () => {
       cartItems
         .filter((item) => selectedItems.includes(item.productId))
         .map((item) => ({
-          id: item._id,
+          id: item.productId,
           image: item.thumbnail,
           price: item.price,
           quantity: item.quantity,
@@ -102,7 +102,7 @@ const CartPage = () => {
         }))
     );
 
-    console.log("CEKSELECTED: "+JSON.stringify(selectedCartItems))
+    console.log("CEKSELECTED: "+JSON.stringify(cartItems))
     // if(selectedItems < 1){
     //   setDisabled(true);
     // }else{
@@ -120,10 +120,12 @@ const CartPage = () => {
     )
   }, [selectedItems, cartItems]); // Bergantung pada perubahan selectedItems & cartItems
 
-  const handlePayment = async (text, result, status, id) => {
+  const handlePayment = async (text, result, status, id, products) => {
     const order = await axios.post(`${URL_TRANSACTION}/checkout/status`,{
       id: id,
       status: status,
+      products: null,
+      productsCart: products,
     });
     // console.log("TRANSACTIONPAY: "+JSON.stringify(result))
     if(status === "success"){
@@ -174,9 +176,9 @@ const CartPage = () => {
           // console.log("TRANSACTION: "+JSON.stringify(res.data.order_id));
           if (window.snap && typeof window.snap.pay === "function") {
               window.snap.pay(token, {
-                  onSuccess: (result) => handlePayment("Pembayaran berhasil! Terima kasih telah berbelanja di sini😊", result, "success", res.data.order_id),
-                  onPending: (result) => handlePayment("Pembayaran tertunda!", result, "pending", res.data.order_id),
-                  onError: (result) => handlePayment("Pembayaran gagal!", result, "error", res.data.order_id),
+                  onSuccess: (result) => handlePayment("Pembayaran berhasil! Terima kasih telah berbelanja di sini😊", result, "success", res.data.order_id, selectedCartItems),
+                  onPending: (result) => handlePayment("Pembayaran tertunda!", result, "pending", res.data.order_id, selectedCartItems),
+                  onError: (result) => handlePayment("Pembayaran gagal!", result, "error", res.data.order_id, selectedCartItems),
               });
           } else {
               console.error("Midtrans Snap belum tersedia.");

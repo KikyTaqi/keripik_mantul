@@ -58,7 +58,7 @@ const Dashboard = () => {
         setOrders(filteredProducts);
     }; 
     const fetchReview = async () => {
-        const response = await axios.get("http://localhost:4000/api/Review");
+        const response = await axios.get("http://localhost:4000/api/ulasan");
         setReview(response.data);
         setReviewsCount(response.data.length);
     };
@@ -119,6 +119,7 @@ const Dashboard = () => {
                 },
             },        
         ];
+
     const columnsOrders = [
             {
                 title: "NO",

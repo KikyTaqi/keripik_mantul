@@ -117,6 +117,14 @@ const PilihKategori = () => {
         setCartItems(updatedCart.data.items || []);
     };
 
+    const formatTerjual = (angka) => {
+        if (angka >= 1000) {
+            return `${(angka / 1000).toFixed(1)}RB`.replace(".0", ""); // Hapus .0 jika tidak perlu
+        }
+        return angka;
+    };
+    
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -184,7 +192,7 @@ const PilihKategori = () => {
                                                 description={`Rp ${product.price?.toLocaleString("id-ID")}`}
                                             />
                                             <div className="flex justify-between items-center">
-                                                <p>0 Terjual</p>
+                                                <p>{formatTerjual(product.terjual) || 0} Terjual</p>
                                                 <div className="flex flex-row-reverse">
                                                     <Button
                                                         type="secondary"

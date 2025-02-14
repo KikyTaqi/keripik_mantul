@@ -3,7 +3,7 @@ import { Card, Col, Row, Button, Typography, message, Skeleton } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import { FaHeart, FaRegHeart, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
-import { URL_KATEGORI, URL_PRODUCT, URL_CART, URL_USER } from "../utils/Endpoint";
+import { URL_KATEGORI, URL_PRODUCT, URL_CART, URL_USER, URL_TRANSACTION } from "../utils/Endpoint";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 import jumbotron_home from "../assets/jumbotron_home.jpg";
@@ -19,6 +19,7 @@ const { Title } = Typography;
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [users, setUsers] = useState({});
+    const [transaction, setTransaction] = useState([]);
     const [kategoris, setKategoris] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -45,11 +46,13 @@ const Home = () => {
                 setUserId(userId);
     
                 // Mengambil data produk dan cart bersamaan
-                const [productResponse, cartResponse] = await Promise.all([
+                const [productResponse, cartResponse, ordersResponse] = await Promise.all([
                     axios.get(URL_PRODUCT),
-                    axios.get(`${URL_CART}/${userId}`)
+                    axios.get(`${URL_CART}/${userId}`),
+                    axios.get(`${URL_TRANSACTION}`)
                 ]);
                 
+                setTransaction(ordersResponse.data);
                 setProductsTerlaris(productResponse.data);  // Mengatur produk terlaris
                 setCartItems(cartResponse.data.items || []);  // Mengatur cartItems
     
@@ -98,6 +101,14 @@ const Home = () => {
             console.error("Error removing from cart:", error);
         }
     };
+
+    const formatTerjual = (angka) => {
+        if (angka >= 1000) {
+            return `${(angka / 1000).toFixed(1)}RB`.replace(".0", ""); // Hapus .0 jika tidak perlu
+        }
+        return angka;
+    };
+    
 
     const handleAddToCart = async (product) => {
         if (!userId) {
@@ -237,7 +248,7 @@ const Home = () => {
                                                 description={`Rp ${product.price?.toLocaleString("id-ID")}`}
                                             />
                                             <div className="flex justify-between items-center">
-                                                <p>0 Terjual</p>
+                                                <p>{formatTerjual(product.terjual) || 0} Terjual</p>
                                                 <div className="flex flex-row-reverse">
                                                 <Button
                                                     type="secondary"
@@ -317,7 +328,7 @@ const Home = () => {
                                                 description={`Rp ${product.price?.toLocaleString("id-ID")}`}
                                             />
                                             <div className="flex justify-between items-center">
-                                                <p>0 Terjual</p>
+                                                <p>{formatTerjual(product.terjual) || 0} Terjual</p>
                                                 <div className="flex flex-row-reverse">
                                                 <Button
                                                     type="secondary"

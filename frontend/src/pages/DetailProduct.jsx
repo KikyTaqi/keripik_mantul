@@ -3,7 +3,7 @@ import { Image, message, Button, Col, Row, Pagination, Skeleton, Modal, Rate, In
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import axios from "axios";
-import { URL_PRODUCT, URL_TRANSACTION, URL_ULASAN, URL_USER } from "../utils/Endpoint";
+import { URL_CART, URL_PRODUCT, URL_TRANSACTION, URL_ULASAN, URL_USER } from "../utils/Endpoint";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import '../style.css';
 import { jwtDecode } from "jwt-decode";
@@ -219,6 +219,14 @@ const DetailProduct = () => {
         return username[0] + "*".repeat(username.length - 2) + username.slice(-1);
     };
 
+    const formatTerjual = (angka) => {
+        if (angka >= 1000) {
+            return `${(angka / 1000).toFixed(1)}RB`.replace(".0", ""); // Hapus .0 jika tidak perlu
+        }
+        return angka;
+    };
+    
+
     // Hitung indeks awal dan akhir untuk slicing data ulasan
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
@@ -269,11 +277,11 @@ const DetailProduct = () => {
                                 <>
                                     <h1 className="text-xl font-medium">{Products.name}</h1>
                                     <div className="flex items-center space-x-2">
-                                        <span className="text-lg font-semibold">{Products.rating || "4.3"}</span>
-                                        <div className="flex">{renderStars(Products.rating || 4.8)}</div>
-                                        <span className="text-gray-500">{Products.reviews?.length || "100 Ulasan"}</span>
+                                        <span className="text-lg font-semibold">{Products.rating || 0}</span>
+                                        <div className="flex">{renderStars(Products.rating || 0)}</div>
+                                        <span className="text-gray-500">{Products.ulasan || 0} ulasan</span>
                                     </div>
-                                    <h1 className="text-base font-medium">2,9RB terjual</h1>
+                                    <h1 className="text-base font-medium">{formatTerjual(Products.terjual) || 0} Terjual</h1>
                                     <h1 className="text-2xl font-medium mt-7">Rp {Products.price?.toLocaleString('id-ID')}</h1>
                                     <div className="flex mt-16 pe-28">
                                         <Button

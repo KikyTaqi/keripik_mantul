@@ -6,7 +6,7 @@ router.get("/", getReviews);
 router.post("/:id/ulasan", createReview);
 router.get("/:id", getReviewsByProduct);
 router.delete("/:id/delete", deleteUlasan);
-router.get("/", getUlasan);
+// router.get("/", getUlasan);
 router.patch("/:id/toggle", updateUlasan);
 
 module.exports = router;

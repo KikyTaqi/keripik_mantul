@@ -7,6 +7,7 @@ const {
     updateStatus,
     getTransaction,
     getDetailTransaction,
+    getProductSales,
     // handleMidtransNotification,
 } = require("../controllers/TransactionController");
 
@@ -18,6 +19,7 @@ router.post('/products', getProducts);
 router.post('/products/get', findProducts);
 router.post('/checkout/status', updateStatus);
 router.get('/checkout/get/:id', getTransaction);
+router.get('/checkout/product/get/:id', getProductSales);
 // router.post("/midtrans/notification", handleMidtransNotification);
 
 module.exports = router;
