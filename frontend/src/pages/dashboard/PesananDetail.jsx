@@ -76,9 +76,9 @@ const OrderDetails = () => {
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
-                <option value="Diproses">Diproses</option>
-                <option value="Dikirim">Dikirim</option>
-                <option value="Selesai">Selesai</option>
+                <option value="diproses">diproses</option>
+                <option value="dikirim">dikirim</option>
+                <option value="selesai">selesai</option>
               </select>
             </td>
           </tr>
