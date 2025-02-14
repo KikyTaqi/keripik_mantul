@@ -272,5 +272,25 @@ exports.getDetailTransaction = async (req, res) => {
     }
 };
 
+exports.Update = async (req, res) => {
+    try {
+        const { status } = req.body;
+    
+        if (!status) return res.status(400).json({ message: "Status tidak boleh kosong" });
+    
+        const transaction = await Transaction.findByIdAndUpdate(
+          req.params.id,
+          { status },
+          { new: true }
+        );
+    
+        if (!transaction) return res.status(404).json({ message: "Transaksi tidak ditemukan" });
+    
+        res.json({ message: "Status berhasil diperbarui", transaction });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+};
+
 
 

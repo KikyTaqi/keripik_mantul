@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Image, ConfigProvider, message } from 'antd';
 import axios from 'axios';
 import { URL_TRANSACTION } from '../../utils/Endpoint';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../style.css';
 import { FaCirclePlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
 
 const Pesanan = () => {
     const [pesanan, setPesanan] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,26 +45,58 @@ const Pesanan = () => {
             dataIndex: 'transaction_id',
             key: 'ID',
             align: "center",
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Customer',
             dataIndex: 'first_name',
             key: 'first_name',
             align: "center",
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Produk',
             dataIndex: 'item_details',
             key: 'produk',
             align: "center",
-            render: (items) => items.map(item => item.name).join(", ") // Gabungkan nama produk dengan koma
+            render: (items) => items.map(item => item.name).join(", "), // Gabungkan nama produk dengan koma
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Jumlah',
             dataIndex: 'item_details',
             key: 'jumlah',
             align: "center",
-            render: (items) => items.reduce((total, item) => total + item.quantity, 0) // Menjumlahkan semua quantity
+            render: (items) => items.reduce((total, item) => total + item.quantity, 0), // Menjumlahkan semua quantity
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Total Harga',
@@ -71,6 +104,14 @@ const Pesanan = () => {
             key: 'price',
             align: "center",
             render: (price) => `Rp ${price.toLocaleString('id-ID')}`,
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
         {
             title: 'Tanggal Pesanan',
@@ -79,13 +120,29 @@ const Pesanan = () => {
             align: "center",
             render: (text) => new Date(text).toLocaleDateString("id-ID", { 
               day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" 
-            })
+            }),
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },          
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'Status',
             align: "center",
+            onCell: (record) => {
+                return {
+                    style: { cursor: 'pointer' },
+                    onClick: () => {
+                        navigate(`/dashboard/pesanan/detail/${record?._id}`);
+                    },
+                };
+            }
         },
     ];
 

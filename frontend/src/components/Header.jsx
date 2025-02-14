@@ -104,6 +104,11 @@ const Header = () => {
         path: "/dashboard/profile/edit/password",
         back: true,
       },
+      {
+        name: "Detail Pesanan",
+        path: "/dashboard/pesanan/detail/:id",
+        back: true,
+      },
     ];
 
     const activeMenu = menuItems.find((item) => {
