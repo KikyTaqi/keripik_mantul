@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Tabs, ConfigProvider, Pagination } from "antd";
+import { Button, Tabs, ConfigProvider, Pagination, Popconfirm } from "antd";
 import axios from "axios";
 import { URL_ALAMAT, URL_TRANSACTION, URL_USER } from "../../utils/Endpoint";
 import { useNavigate, Link } from "react-router-dom";
@@ -17,15 +17,17 @@ const Order = () => {
 
   const PaginatedList = ({ data, showReviewButton = false, showDoneButton = false }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 7;
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
 
     const handleDone = async (id) => {
       try {
-        await axios.post(`${URL_TRANSACTION}/status/${id}`, { status: "selesai" });
-        navigate("/profile/order");
+        // console.log("IDDD: "+id);
+        await axios.post(`${URL_TRANSACTION}/status/${id}`, { status: "selesai" }).then(res => {
+          navigate(0);
+        });
       } catch (error) {
         console.error("Error updating status:", error);
       }
@@ -67,9 +69,30 @@ const Order = () => {
                     </Link>
                   )}
                   {showDoneButton && (
-                    <Button type="primary" className="px-10 py-4 text-base font-semibold" onClick={() => handleDone(item.transaction_id)}>
-                      Selesai
-                    </Button>
+                    <>
+                      <Popconfirm
+                          title="Selesaikan Transaksi Ini?"
+                          description="Apakah kamu yakin ingin menyelesaikan transaksi?"
+                          onConfirm={() => handleDone(item.transaction_id)}
+                          okButtonProps={{ 
+                              style: {
+                                  backgroundColor: "#800000",
+                              }
+                          }}
+                          cancelButtonProps={{
+                              style: {
+                                  borderColor: "#800000",
+                                  color: "#800000",
+                              }
+                          }}
+                          okText="Iya"
+                          cancelText="Batal"
+                      >
+                        <Button type="primary" className="px-10 py-4 text-base font-semibold">
+                          Selesai
+                        </Button>
+                      </Popconfirm>
+                    </>
                   )}
                 </div>
               </div>
@@ -99,7 +122,7 @@ const Order = () => {
           transaction_id: item._id, // Pastikan setiap item memiliki transaction_id
         }))
       );
-    return <PaginatedList data={data} />;
+    return <PaginatedList data={data} showDoneButton={true}/>;
   };
   
   const Dikirim = () => {
