@@ -185,7 +185,8 @@ exports.changeStatus = async (req,res) => {
 
     try {
         // console.log("222222");
-        const order = await Transaction.findOne({transaction_id: req.params.id});
+        const order = await Transaction.findOne({_id: req.params.id});
+        console.log("ORDER: "+JSON.stringify(req.params.id));
 
         order.status = status;
         order.waktu_selesai = new Date();
