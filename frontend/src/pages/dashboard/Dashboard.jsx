@@ -34,8 +34,9 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:4000/api/products");
         setProducts(response.data);
         setProductsCount(response.data.length);
-        const filteredProducts = response.data.slice(0, 5).map(({ thumbnail, __v, cloudinaryId, ...rest }) => rest);
+        const filteredProducts = response.data.sort((a,b) => b.terjual - a.terjual).slice(0, 5).map(({ thumbnail, __v, cloudinaryId, ...rest }) => rest);
         setProducts(filteredProducts);
+        // console.log("PRODUK: "+JSON.stringify(filteredProducts.sort((a,b) => b.terjual - a.terjual)));
     };
 
     const fetchUser = async () => {
@@ -54,8 +55,8 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:4000/api/transactions");
         setOrders(response.data);
         setOrdersCount(response.data.length);
-        const filteredProducts = response.data.slice(0, 5).map(({ __v, ...rest }) => rest);
-        setOrders(filteredProducts);
+        const filteredOrders = response.data.slice(0, 5).map(({ __v, ...rest }) => rest);
+        setOrders(filteredOrders);
     }; 
     const fetchReview = async () => {
         const response = await axios.get("http://localhost:4000/api/ulasan");
@@ -82,13 +83,13 @@ const Dashboard = () => {
     };
 
     const columns = [
-            {
-                title: "NO",
-                key: "no",
-                align: "center",
-                width: "5px",
-                render: (_, __, index) => index + 1, // row numbering
-            },
+            // {
+            //     title: "NO",
+            //     key: "no",
+            //     align: "center",
+            //     width: "5px",
+            //     render: (_, __, index) => index + 1, // row numbering
+            // },
             {
                 title: 'Nama Produk',
                 dataIndex: 'name',
@@ -121,13 +122,13 @@ const Dashboard = () => {
         ];
 
     const columnsOrders = [
-            {
-                title: "NO",
-                key: "no",
-                align: "center",
-                width: "5px",
-                render: (_, __, index) => index + 1, // row numbering
-            },
+            // {
+            //     title: "NO",
+            //     key: "no",
+            //     align: "center",
+            //     width: "5px",
+            //     render: (_, __, index) => index + 1, // row numbering
+            // },
             {
                 title: 'Customer',
                 dataIndex: 'first_name',

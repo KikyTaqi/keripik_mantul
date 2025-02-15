@@ -22,6 +22,7 @@ const Home = () => {
     const [transaction, setTransaction] = useState([]);
     const [kategoris, setKategoris] = useState([]);
     const [productsTerlaris, setProductsTerlaris] = useState([]);
+    const [productsRecomend, setProductsRecomend] = useState([]);
     const [loading, setLoading] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const [userId, setUserId] = useState("");
@@ -46,14 +47,16 @@ const Home = () => {
                 setUserId(userId);
     
                 // Mengambil data produk dan cart bersamaan
-                const [productResponse, cartResponse, ordersResponse] = await Promise.all([
+                const [productResponse, n, cartResponse, ordersResponse] = await Promise.all([
+                    axios.get(URL_PRODUCT),
                     axios.get(URL_PRODUCT),
                     axios.get(`${URL_CART}/${userId}`),
                     axios.get(`${URL_TRANSACTION}`)
                 ]);
                 
                 setTransaction(ordersResponse.data);
-                setProductsTerlaris(productResponse.data);  // Mengatur produk terlaris
+                setProductsRecomend(productResponse.data);  
+                setProductsTerlaris(n.data.sort((a, b) => b.terjual - a.terjual));  // Mengatur produk terlaris
                 setCartItems(cartResponse.data.items || []);  // Mengatur cartItems
     
             } catch (err) {
@@ -224,18 +227,22 @@ const Home = () => {
                                                 height: '436px',
                                                 minHeight: '436px',
                                                 padding: 10,
-                                                }}
-                                                hoverable
+                                            }}
+                                            hoverable
                                             onClick={() => {
                                                 navigate(`/products/${product._id}`);
                                                 window.scrollTo(0, 0);
                                             }}                                            
                                             cover={
                                                 <img
-                                                    alt={product.name}
-                                                    className="border border-[#F2E8C6] p-2"
-                                                    src={product.thumbnail}
-                                                    style={{ minHeight: "250px", objectFit: "cover" }}
+                                                alt={product.name}
+                                                className="border border-[#F2E8C6] p-2"
+                                                src={product.thumbnail}
+                                                style={{
+                                                        minHeight: "250px",
+                                                        maxHeight: '250px',
+                                                        objectFit: "cover"
+                                                    }}
                                                 />
                                             }
                                         >
@@ -294,7 +301,7 @@ const Home = () => {
                                 </Card>
                                 </Col>
                             ))
-                            : productsTerlaris.slice(0, 4).map((product) => {
+                            : productsRecomend.slice(0, 4).map((product) => {
                                 const isInCart = Array.isArray(cartItems) && cartItems.some(items => items.productId === product._id);
                                 return (
                                     <Col span={6} key={`${product._id}-${isInCart}`}>
@@ -315,7 +322,11 @@ const Home = () => {
                                                     alt={product.name}
                                                     className="border border-[#F2E8C6] p-2"
                                                     src={product.thumbnail}
-                                                    style={{ minHeight: "250px", objectFit: "cover" }}
+                                                    style={{
+                                                        minHeight: "250px",
+                                                        maxHeight: '250px',
+                                                        objectFit: "cover"
+                                                    }}
                                                 />
                                             }
                                         >

@@ -154,10 +154,10 @@ const OrderDetail = () => {
             </div>
 
             {/* Jika statusnya Dikirim */}
-            {transaction.status === "dikirim" && (
+            {transaction.status === "dikirim" || transaction.status === "selesai" && (
               <div className="grid grid-cols-2 text-base font-semibold">
                 <div>Waktu Pengiriman</div>
-                <div className="text-end text-lg">{transaction.waktu_pengiriman || "-"}</div>
+                <div className="text-end text-lg">{new Date(transaction.waktu_pengiriman || transaction.updatedAt).toLocaleString("id-ID") || "-"}</div>
               </div>
             )}
 
@@ -165,7 +165,7 @@ const OrderDetail = () => {
             {transaction.status === "selesai" && (
               <div className="grid grid-cols-2 text-base font-semibold">
                 <div>Waktu Selesai</div>
-                <div className="text-end text-lg">{transaction.waktu_selesai || "-"}</div>
+                <div className="text-end text-lg">{new Date(transaction.waktu_selesai).toLocaleString("id-ID") || "-"}</div>
               </div>
             )}
 

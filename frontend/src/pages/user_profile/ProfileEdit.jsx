@@ -21,7 +21,7 @@ const ProfileEdit = () => {
         const reader = new FileReader();
         reader.addEventListener('load', () => callback(reader.result));
         reader.readAsDataURL(img);
-      };
+    };
       
       const beforeUpload = (file) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -170,9 +170,10 @@ const ProfileEdit = () => {
             });
     
             if (response) {
-                message.success("Profile edited successfully!");
+                localStorage.setItem("userToken", response.data.token);
                 form.resetFields();
                 navigate("/profile");
+                message.success("Profile edited successfully!");
             }
         } catch (error) {
             console.error("Error:", error.response?.data || error.message);

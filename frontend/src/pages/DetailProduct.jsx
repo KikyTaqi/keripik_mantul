@@ -94,49 +94,6 @@ const DetailProduct = () => {
         }
     }
 
-    const handleSubmitReview = async () => {
-        if (!rating || !comment) {
-            message.error("Harap isi rating dan komentar!");
-            return;
-        }
-    
-        try {
-            const token = localStorage.getItem("userToken");
-            const decoded = jwtDecode(token);
-    
-            console.log("Mengirim ulasan untuk produk:", id);
-    
-            const response = await axios.post(`${URL_ULASAN}/${id}/ulasan`, {
-                userId: decoded._id,
-                username: decoded.name,
-                rating,
-                comment,
-            });
-            
-            console.log("bakankdnajkak: " + decoded.name);
-            
-            console.log("Response dari server:", response.data);
-    
-            message.success("Ulasan berhasil ditambahkan!");
-    
-            // Tutup modal
-            setIsModalOpen(false);
-    
-            // Reset input
-            setRating(0);
-            setComment("");
-    
-            // Tambahkan ulasan baru ke awal array
-            setUlasan((prevUlasan) => [response.data, ...prevUlasan]);
-    
-        } catch (error) {
-            console.error("Gagal menambahkan ulasan:", error.response?.data || error.message);
-            message.error("Terjadi kesalahan saat menambahkan ulasan.");
-        }
-    };
-    
-      
-    
 
     const addToCart = async (productcart) => {
         try {
@@ -231,6 +188,7 @@ const DetailProduct = () => {
     const indexOfLastReview = currentPage * reviewsPerPage;
     const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
     const currentReviews = Array.isArray(ulasan) ? ulasan.slice(indexOfFirstReview, indexOfLastReview) : [];
+    const totalRating = ulasan.reduce((sum, review) => sum + review.rating, 0);
 
     return (
         <div>
@@ -277,9 +235,9 @@ const DetailProduct = () => {
                                 <>
                                     <h1 className="text-xl font-medium">{Products.name}</h1>
                                     <div className="flex items-center space-x-2">
-                                        <span className="text-lg font-semibold">{Products.rating || 0}</span>
-                                        <div className="flex">{renderStars(Products.rating || 0)}</div>
-                                        <span className="text-gray-500">{Products.ulasan || 0} ulasan</span>
+                                        <span className="text-lg font-semibold">{ulasan.length > 0 ? (totalRating / ulasan.length).toFixed(1) : 0}</span>
+                                        <div className="flex">{renderStars(ulasan.length > 0 ? (totalRating / ulasan.length).toFixed(1) : 0)}</div>
+                                        <span className="text-gray-500">{ulasan.length || 0} ulasan</span>
                                     </div>
                                     <h1 className="text-base font-medium">{formatTerjual(Products.terjual) || 0} Terjual</h1>
                                     <h1 className="text-2xl font-medium mt-7">Rp {Products.price?.toLocaleString('id-ID')}</h1>
@@ -333,43 +291,6 @@ const DetailProduct = () => {
                 </div>
 
                 <hr />
-
-                {/* Ulasan Produk */}
-                <Button
-                    type="primary"
-                    className="bg-red-800 text-white rounded-3xl px-4 py-2 mb-4"
-                    onClick={showModal}
-                >
-                    Tambah Ulasan
-                </Button>
-
-                <Modal
-                    title="Tambah Ulasan"
-                    open={isModalOpen}
-                    onCancel={handleCancel}
-                    footer={[
-                        <Button key="back" onClick={handleCancel}>
-                            Batal
-                        </Button>,
-                        <Button key="submit" type="primary" onClick={handleSubmitReview}>
-                            Kirim Ulasan
-                        </Button>,
-                    ]}
-                >
-                    <div className="mb-3">
-                        <h4 className="font-medium">Rating:</h4>
-                        <Rate allowHalf value={rating} onChange={setRating} />
-                    </div>
-                    <div className="mb-3">
-                        <h4 className="font-medium">Komentar:</h4>
-                        <Input.TextArea
-                            rows={4}
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            placeholder="Tulis ulasan Anda di sini..."
-                        />
-                    </div>
-                </Modal>
                 <div className="my-5">
                     <h1 className="text-lg font-medium mb-5">Ulasan Produk</h1>
                     <Row>

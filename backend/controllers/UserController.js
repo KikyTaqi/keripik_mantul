@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const cloudinary = require('../config/cloudinary');
+const jwt = require('jsonwebtoken');              
+const secretkey = process.env.JWT_SECRET;
 
 exports.getUsers = async (req, res) => {
     try {
@@ -106,9 +108,16 @@ exports.editProfile = async (req, res) => {
         //     }
         // }
         user = await User.findByIdAndUpdate(id, updateUser, {new: true});
-        console.log("User: "+user);
-        console.log("User: "+JSON.stringify(updateUser));
-        res.status(200).json({ message: 'Profile updated successfully!' });
+
+        const userPayload = {
+            _id: user._id,
+            role: user.role,
+            name: user.name,
+            email: user.email,
+        }
+
+        const userToken = jwt.sign(userPayload, secretkey, { expiresIn: '1h' });
+        res.status(200).json({ message: 'Profile updated successfully!', token: userToken });
     }catch (err) {
         res.status(500).json({ message: err.message });
     }

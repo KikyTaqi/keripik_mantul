@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Tabs, ConfigProvider, Pagination, Popconfirm } from "antd";
+import { Button, Tabs, ConfigProvider, Pagination, Popconfirm, message } from "antd";
 import axios from "axios";
 import { URL_ALAMAT, URL_TRANSACTION, URL_USER } from "../../utils/Endpoint";
 import { useNavigate, Link } from "react-router-dom";
@@ -27,6 +27,7 @@ const Order = () => {
         // console.log("IDDD: "+id);
         await axios.post(`${URL_TRANSACTION}/status/${id}`, { status: "selesai" }).then(res => {
           navigate(0);
+          message.success("Transaksi berhasil diselesaikan!");
         });
       } catch (error) {
         console.error("Error updating status:", error);
@@ -62,7 +63,7 @@ const Order = () => {
                     </Button>
                   </Link>
                   {showReviewButton && (
-                    <Link to={`/profile/order/review/${item.transaction_id || item._id}`}>
+                    <Link to={`/profile/order/review/${item.id}`}>
                       <Button type="primary" className="px-10 py-4 text-base font-semibold">
                         Beri Ulasan
                       </Button>
@@ -116,18 +117,20 @@ const Order = () => {
   const Diproses = () => {
     const data = product
       .filter((item) => item.status === "diproses")
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
       .flatMap((item) =>
         item.item_details.map((detail) => ({
           ...detail,
           transaction_id: item._id, // Pastikan setiap item memiliki transaction_id
         }))
       );
-    return <PaginatedList data={data} showDoneButton={true}/>;
+    return <PaginatedList data={data}/>;
   };
   
   const Dikirim = () => {
     const data = product
       .filter((item) => item.status === "dikirim")
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
       .flatMap((item) =>
         item.item_details.map((detail) => ({
           ...detail,
@@ -140,6 +143,7 @@ const Order = () => {
   const Selesai = () => {
     const data = product
       .filter((item) => item.status === "selesai")
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
       .flatMap((item) =>
         item.item_details.map((detail) => ({
           ...detail,

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Tabs, ConfigProvider, Pagination, Rate, Input } from "antd";
+import { Button, Tabs, ConfigProvider, Pagination, Rate, Input, message } from "antd";
 import { LuMapPin } from "react-icons/lu";
 import axios from "axios";
-import { URL_USER } from "../../utils/Endpoint";
-import { useNavigate } from "react-router-dom";
+import { URL_ULASAN, URL_USER } from "../../utils/Endpoint";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../style.css";
 import { jwtDecode } from "jwt-decode";
 
@@ -13,6 +13,8 @@ const Review = () => {
   const navigate = useNavigate();
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
+  const params = useParams();
+  const id = params.id;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,17 +60,10 @@ const Review = () => {
             console.log("Response dari server:", response.data);
     
             message.success("Ulasan berhasil ditambahkan!");
-    
-            // Tutup modal
-            setIsModalOpen(false);
-    
-            // Reset input
+
             setRating(0);
             setComment("");
-    
-            // Tambahkan ulasan baru ke awal array
-            setUlasan((prevUlasan) => [response.data, ...prevUlasan]);
-    
+            navigate(`/products/${id}`);
         } catch (error) {
             console.error("Gagal menambahkan ulasan:", error.response?.data || error.message);
             message.error("Terjadi kesalahan saat menambahkan ulasan.");

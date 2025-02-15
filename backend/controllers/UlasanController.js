@@ -36,8 +36,8 @@ exports.createReview = async (req, res) => {
         
         // Hitung rata-rata rating (jika ada review)
         const averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0;
-        product.ulasan = (product.ulasan || 0) + 1;
-        product.rating = parseFloat(averageRating);
+        // product.ulasan = (product.ulasan || 0) + 1;
+        // product.rating = parseFloat(averageRating);
         product.save();
 
         console.log("cekulasan: "+JSON.stringify(product));
