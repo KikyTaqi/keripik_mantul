@@ -279,13 +279,15 @@ exports.Update = async (req, res) => {
     
         if (!status) return res.status(400).json({ message: "Status tidak boleh kosong" });
     
-        const transaction = await Transaction.findByIdAndUpdate(
-          req.params.id,
-          { status },
-          { new: true }
-        );
+        const transaction = await Transaction.findById(req.params.id);
     
         if (!transaction) return res.status(404).json({ message: "Transaksi tidak ditemukan" });
+
+        transaction.status = status;
+        if(status === "dikirim"){
+            transaction.waktu_pengiriman = new Date();
+        }
+        transaction.save();
     
         res.json({ message: "Status berhasil diperbarui", transaction });
       } catch (error) {

@@ -22,7 +22,6 @@ import Order from "./pages/user_profile/Order";
 import OrderDetail from "./pages/user_profile/OrderDetail";
 import Review from "./pages/user_profile/Review";
 
-
 // Product
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
@@ -117,7 +116,7 @@ const App = () => {
                                           <Route path="/password/change" element={<UserChangePassword />} />
                                           <Route path="/order" element={<Order />} />
                                           <Route path="/order/detail/:id" element={<OrderDetail />} />
-                                          <Route path="/order/review" element={<Review />} />
+                                          <Route path="/order/review/:id" element={<Review />} />
                                         </Routes>
                                       </Content>
                                     </div>

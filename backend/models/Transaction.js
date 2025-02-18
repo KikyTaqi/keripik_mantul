@@ -17,6 +17,9 @@ const TransactionSchema = new mongoose.Schema({
   alamat_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   midtrans_url: { type: String, required: true },
   status: { type: String, enum: ["pending","diproses", "dikirim", "selesai"], default: "pending" },
+  waktu_pembayaran: { type: Date },
+  waktu_pengiriman: { type: Date },
+  waktu_selesai: { type: Date },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Transaction", TransactionSchema);
