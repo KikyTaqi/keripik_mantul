@@ -16,7 +16,7 @@ const OrderDetails = () => {
       try {
         const response = await axios.get(`${URL_TRANSACTION}/${id}`);
         setTransaction(response.data);
-        setStatus(response.data.status); // Set status dari database
+        setStatus(response.data.status);
       } catch (error) {
         console.error("Error fetching order detail:", error.response?.data || error.message);
       } finally {
@@ -44,8 +44,8 @@ const OrderDetails = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <table className="w-full border-collapse border border-gray-300">
+    <div className="max-w-2xl mx-auto p-2 rounded-lg">
+      <table className="w-full border-collapse border">
         <tbody>
           {transaction &&
             Object.entries({
@@ -63,13 +63,13 @@ const OrderDetails = () => {
               "Ongkos Kirim": `Rp3.000`,
               "Total Harga": `Rp${transaction.gross_amount.toLocaleString('id-ID')}`,
             }).map(([label, value], index) => (
-              <tr key={index} className="border-b border-gray-300">
-                <td className="p-2 font-medium bg-gray-100">{label}</td>
+              <tr key={index} className="border">
+                <td className="p-2 font-medium border-r">{label}</td>
                 <td className="p-2">{value}</td>
               </tr>
             ))}
-          <tr className="border-b border-gray-300">
-            <td className="p-2 font-medium bg-gray-100">Status Pesanan</td>
+          <tr className="border">
+            <td className="p-2 font-medium border-r">Status Pesanan</td>
             <td className="p-2">
               <select
                 className="border rounded px-2 py-1 bg-yellow-200"
@@ -84,12 +84,14 @@ const OrderDetails = () => {
           </tr>
         </tbody>
       </table>
-      <button
-        onClick={handleStatusChange}
-        className="mt-4 px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700"
-      >
-        Simpan Perubahan
-      </button>
+      <div className="mt-4 flex justify-end">
+        <button
+          onClick={handleStatusChange}
+          className="px-4 py-2 bg-red-800 text-white rounded shadow hover:bg-red-700"
+        >
+          Simpan Perubahan
+        </button>
+      </div>
     </div>
   );
 };
